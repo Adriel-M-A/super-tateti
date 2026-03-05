@@ -1,7 +1,7 @@
 import React from 'react';
 import * as LucideIcons from 'lucide-react';
 
-const Cell = ({ value, onClick, isSelectable, level, winner = null, playersConfig = null }) => {
+const Cell = ({ value, onClick, isSelectable, level, winner = null, playersConfig = null, currentPlayerSymbol = null }) => {
     // Si hay un ganador en este sub-tablero (y estamos renderizándolo como una celda del super-tablero)
     if (level === 'super' && winner) {
         if (winner === 'DRAW') {
@@ -30,11 +30,16 @@ const Cell = ({ value, onClick, isSelectable, level, winner = null, playersConfi
         }
 
         const config = playersConfig ? (winner === 'X' ? playersConfig.P1 : playersConfig.P2) : null;
+        const isCurrentPlayer = winner === currentPlayerSymbol;
 
         return (
             <div
-                className={`aspect-square flex items-center justify-center rounded-lg transition-all duration-500 bg-white/10 shadow-lg`}
-                style={{ color: config ? config.color : (winner === 'X' ? '#3b82f6' : '#ef4444') }}
+                className={`aspect-square flex items-center justify-center rounded-lg transition-all duration-500 bg-white/10 shadow-lg ${isCurrentPlayer ? 'scale-105 z-10' : ''}`}
+                style={{
+                    color: config ? config.color : (winner === 'X' ? '#3b82f6' : '#ef4444'),
+                    filter: isCurrentPlayer ? `drop-shadow(0 0 15px ${config?.color || 'currentColor'})` : 'none',
+                    opacity: isCurrentPlayer ? 1 : 0.8
+                }}
             >
                 {config
                     ? React.createElement(LucideIcons[config.icon], { size: 80, strokeWidth: 4 })
@@ -53,36 +58,44 @@ const Cell = ({ value, onClick, isSelectable, level, winner = null, playersConfi
                     level="sub"
                     isSelectable={isSelectable}
                     playersConfig={playersConfig}
+                    currentPlayerSymbol={currentPlayerSymbol}
                 />
             </div>
         );
     }
 
     const config = (playersConfig && value) ? (value === 'X' ? playersConfig.P1 : playersConfig.P2) : null;
+    const isCurrentPlayer = value === currentPlayerSymbol;
 
     return (
         <button
             onClick={isSelectable ? onClick : undefined}
             className={`
-        aspect-square flex items-center justify-center transition-all duration-200
+        aspect-square flex items-center justify-center transition-all duration-300
         ${!value && isSelectable ? 'hover:bg-cell-hover cursor-pointer' : 'cursor-default'}
         ${level === 'sub' ? 'border border-cell-border' : 'border-4 border-board-border'}
         bg-transparent
+        ${isCurrentPlayer ? 'scale-110 z-10' : ''}
       `}
             style={{
                 color: config ? config.color : (value === 'X' ? '#3b82f6' : (value === 'O' ? '#ef4444' : 'currentColor')),
-                filter: value ? 'drop-shadow(0 0 8px currentColor)' : 'none'
+                filter: isCurrentPlayer ? `drop-shadow(0 0 10px ${config?.color || 'currentColor'})` : 'none',
+                opacity: isCurrentPlayer ? 1 : 0.7
             }}
         >
             {config
-                ? React.createElement(LucideIcons[config.icon], { size: level === 'sub' ? 24 : 56, strokeWidth: 3 })
+                ? React.createElement(LucideIcons[config.icon], {
+                    size: level === 'sub' ? 24 : 56,
+                    strokeWidth: 3,
+                    className: isCurrentPlayer ? 'animate-pulse' : ''
+                })
                 : <span className={`font-bold ${level === 'sub' ? 'text-2xl' : 'text-6xl'}`}>{value}</span>
             }
         </button>
     );
 };
 
-const Board = ({ cells, onCellClick, level = 'super', isSelectable = true, activeSubBoard = null, subBoardWinners = [], playersConfig = null }) => {
+const Board = ({ cells, onCellClick, level = 'super', isSelectable = true, activeSubBoard = null, subBoardWinners = [], playersConfig = null, currentPlayerSymbol = null }) => {
     return (
         <div className={`grid grid-cols-3 gap-1 w-full aspect-square ${level === 'super' ? 'max-w-lg mx-auto p-4 bg-transparent' : ''}`}>
             {cells.map((cell, index) => {
@@ -96,6 +109,7 @@ const Board = ({ cells, onCellClick, level = 'super', isSelectable = true, activ
                         isSelectable={canPlayInThisCell}
                         winner={level === 'super' ? subBoardWinners[index] : null}
                         playersConfig={playersConfig}
+                        currentPlayerSymbol={currentPlayerSymbol}
                         onClick={level === 'super'
                             ? (cellIndex) => onCellClick(index, cellIndex)
                             : () => onCellClick(index)

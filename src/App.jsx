@@ -197,6 +197,7 @@ function App() {
               activeSubBoard={activeSubBoard}
               subBoardWinners={subBoardWinners}
               playersConfig={players}
+              currentPlayerSymbol={isXNext ? 'X' : 'O'}
             />
           </div>
         )}
