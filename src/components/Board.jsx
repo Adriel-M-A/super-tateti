@@ -2,10 +2,9 @@ import React from 'react';
 
 // Representa una celda individual que puede ser un valor (X, O, null) o un sub-tablero
 const Cell = ({ value, onClick, isSelectable, level }) => {
-    // Si el valor es un array, significa que es un sub-tablero (recursividad)
     if (Array.isArray(value)) {
         return (
-            <div className={`p-1 border shadow-inner transition-all duration-300 ${isSelectable ? 'bg-slate-800/50 border-violet-500/50 shadow-violet-500/20' : 'bg-slate-900/20 border-slate-700/30 grayscale-[0.5]'}`}>
+            <div className={`p-1 border transition-all duration-300 ${isSelectable ? 'bg-cell-hover border-board-border shadow-lg' : 'bg-transparent border-cell-border opacity-40'}`}>
                 <Board
                     cells={value}
                     onCellClick={onClick}
@@ -16,17 +15,17 @@ const Cell = ({ value, onClick, isSelectable, level }) => {
         );
     }
 
-    // Si es una celda final (X, O o vacío)
     return (
         <button
             onClick={isSelectable ? onClick : undefined}
             className={`
-        aspect-square flex items-center justify-center text-3xl font-bold transition-all duration-200
-        ${level === 'sub' ? 'text-xl' : 'text-5xl'}
-        ${!value && isSelectable ? 'hover:bg-violet-500/10 cursor-pointer' : 'cursor-default'}
-        ${level === 'sub' ? 'border-[0.5px] border-slate-700/50' : 'border-2 border-slate-600'}
-        ${value === 'X' ? 'text-violet-500 drop-shadow-[0_0_8px_rgba(139,92,246,0.5)]' : ''}
-        ${value === 'O' ? 'text-pink-500 drop-shadow-[0_0_8px_rgba(236,72,153,0.5)]' : ''}
+        aspect-square flex items-center justify-center font-bold transition-all duration-200
+        ${level === 'sub' ? 'text-2xl' : 'text-6xl'}
+        ${!value && isSelectable ? 'hover:bg-cell-hover cursor-pointer' : 'cursor-default'}
+        ${level === 'sub' ? 'border border-cell-border' : 'border-4 border-board-border'}
+        ${value === 'X' ? 'text-blue-500 drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]' : ''}
+        ${value === 'O' ? 'text-red-500 drop-shadow-[0_0_10px_rgba(239,68,68,0.5)]' : ''}
+        bg-transparent
       `}
         >
             {value}
@@ -36,9 +35,8 @@ const Cell = ({ value, onClick, isSelectable, level }) => {
 
 const Board = ({ cells, onCellClick, level = 'super', isSelectable = true, activeSubBoard = null }) => {
     return (
-        <div className={`grid grid-cols-3 gap-1 w-full aspect-square ${level === 'super' ? 'max-w-md mx-auto p-2 bg-slate-800 rounded-xl shadow-2xl border border-slate-700' : ''}`}>
+        <div className={`grid grid-cols-3 gap-1 w-full aspect-square ${level === 'super' ? 'max-w-lg mx-auto p-4 bg-transparent' : ''}`}>
             {cells.map((cell, index) => {
-                // En el nivel super, determinamos si este sub-tablero es el que debe jugarse
                 const canPlayInThisCell = level === 'super' ? (activeSubBoard === null || activeSubBoard === index) : isSelectable;
 
                 return (

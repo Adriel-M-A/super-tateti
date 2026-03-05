@@ -1,1 +1,37 @@
 @import "tailwindcss";
+
+@theme {
+    --color-page-bg: var(--page-bg);
+    --color-page-text: var(--page-text);
+    --color-board-border: var(--board-border);
+    --color-cell-border: var(--cell-border);
+    --color-cell-hover: var(--cell-hover);
+}
+
+:root {
+    --page-bg: #f8fafc;
+    /* slate-50 */
+    --page-text: #0f172a;
+    /* slate-900 */
+    --board-border: rgba(0, 0, 0, 0.15);
+    --cell-border: rgba(0, 0, 0, 0.08);
+    --cell-hover: rgba(0, 0, 0, 0.04);
+
+    color-scheme: light dark;
+}
+
+.dark {
+    --page-bg: #020617;
+    /* slate-950 */
+    --page-text: #f8fafc;
+    /* slate-50 */
+    --board-border: rgba(255, 255, 255, 0.25);
+    --cell-border: rgba(255, 255, 255, 0.1);
+    --cell-hover: rgba(255, 255, 255, 0.1);
+}
+
+body {
+    background-color: var(--page-bg);
+    color: var(--page-text);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}

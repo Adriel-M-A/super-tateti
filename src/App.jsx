@@ -1,11 +1,23 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Board from './components/Board'
 
 function App() {
-  // El estado inicial es un array de 9 elementos, cada uno es un array de 9 nulls (los sub-tableros)
+  // Estado inicial del tablero
   const [board, setBoard] = useState(Array(9).fill(null).map(() => Array(9).fill(null)))
   const [isXNext, setIsXNext] = useState(true)
-  const [activeSubBoard, setActiveSubBoard] = useState(null) // null significa que puede jugar en cualquier lado
+  const [activeSubBoard, setActiveSubBoard] = useState(null)
+  const [isDarkMode, setIsDarkMode] = useState(true)
+
+  // Aplicar o quitar la clase 'dark' del elemento html
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark')
+    } else {
+      document.documentElement.classList.remove('dark')
+    }
+  }, [isDarkMode])
+
+  const toggleTheme = () => setIsDarkMode(!isDarkMode)
 
   const handleCellClick = (boardIndex, cellIndex) => {
     // Por ahora solo una función simple para demostrar la interactividad
@@ -31,15 +43,26 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen bg-page-bg text-page-text flex flex-col items-center justify-center p-4 transition-colors duration-300">
+      <button
+        onClick={toggleTheme}
+        className="absolute top-4 right-4 p-2 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:scale-110 transition-all font-bold text-sm"
+        title="Cambiar tema"
+      >
+        {isDarkMode ? '🌞 MODO CLARO' : '🌙 MODO OSCURO'}
+      </button>
+
       <header className="mb-8 text-center">
-        <h1 className="text-4xl md:text-6xl font-black mb-2 bg-clip-text text-transparent from-violet-400 to-pink-400 drop-shadow-sm">
+        <h1 className="text-4xl md:text-6xl font-black mb-4 uppercase tracking-tighter">
           SUPER TA-TE-TI
         </h1>
-        <div className="flex items-center justify-center gap-4 text-xl font-medium">
-          <span className={isXNext ? 'text-violet-400 border-b-2 border-violet-400' : 'text-slate-500'}>Jugador X</span>
-          <span className="text-slate-700">|</span>
-          <span className={!isXNext ? 'text-pink-400 border-b-2 border-pink-400' : 'text-slate-500'}>Jugador O</span>
+        <div className="flex items-center justify-center gap-8 text-2xl font-bold">
+          <div className={`px-4 py-2 rounded-lg transition-all ${isXNext ? 'bg-blue-600 text-white shadow-[0_0_15px_rgba(37,99,235,0.5)] scale-110' : 'text-slate-500 opacity-50'}`}>
+            JUGADOR X
+          </div>
+          <div className={`px-4 py-2 rounded-lg transition-all ${!isXNext ? 'bg-red-600 text-white shadow-[0_0_15px_rgba(220,38,38,0.5)] scale-110' : 'text-slate-500 opacity-50'}`}>
+            JUGADOR O
+          </div>
         </div>
       </header>
 
