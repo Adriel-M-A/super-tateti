@@ -1,15 +1,25 @@
 import React from 'react';
 
 // Representa una celda individual que puede ser un valor (X, O, null) o un sub-tablero
-const Cell = ({ value, onClick, isSelectable, level }) => {
+const Cell = ({ value, onClick, isSelectable, level, winner = null }) => {
+    // Si hay un ganador en este sub-tablero (y estamos renderizándolo como una celda del super-tablero)
+    if (level === 'super' && winner) {
+        return (
+            <div className={`aspect-square flex items-center justify-center text-8xl font-black rounded-lg transition-all duration-500 bg-white/10 ${winner === 'X' ? 'text-blue-500/80' : 'text-red-500/80 shadow-[inset_0_0_20px_rgba(239,68,68,0.2)]'}`}>
+                {winner}
+            </div>
+        );
+    }
+
     if (Array.isArray(value)) {
         return (
-            <div className={`p-1 border transition-all duration-300 ${isSelectable ? 'bg-cell-hover border-board-border shadow-lg' : 'bg-transparent border-cell-border opacity-40'}`}>
+            <div className={`p-1 border transition-all duration-300 ${isSelectable ? 'bg-cell-hover border-board-border shadow-lg scale-[1.02]' : 'bg-transparent border-cell-border opacity-40'}`}>
                 <Board
                     cells={value}
                     onCellClick={onClick}
                     level="sub"
                     isSelectable={isSelectable}
+                    boardIndex={null} // El boardIndex se pasará desde el nivel superior
                 />
             </div>
         );
@@ -33,7 +43,7 @@ const Cell = ({ value, onClick, isSelectable, level }) => {
     );
 };
 
-const Board = ({ cells, onCellClick, level = 'super', isSelectable = true, activeSubBoard = null }) => {
+const Board = ({ cells, onCellClick, level = 'super', isSelectable = true, activeSubBoard = null, subBoardWinners = [], boardIndex = null }) => {
     return (
         <div className={`grid grid-cols-3 gap-1 w-full aspect-square ${level === 'super' ? 'max-w-lg mx-auto p-4 bg-transparent' : ''}`}>
             {cells.map((cell, index) => {
@@ -45,7 +55,11 @@ const Board = ({ cells, onCellClick, level = 'super', isSelectable = true, activ
                         value={cell}
                         level={level}
                         isSelectable={canPlayInThisCell}
-                        onClick={() => onCellClick(index)}
+                        winner={level === 'super' ? subBoardWinners[index] : null}
+                        onClick={level === 'super'
+                            ? (cellIndex) => onCellClick(index, cellIndex)
+                            : () => onCellClick(index)
+                        }
                     />
                 );
             })}
