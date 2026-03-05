@@ -15,7 +15,7 @@ const Cell = ({ index, value, onClick, isSelectable, level, winner = null, playe
         ${index % 3 < 2 ? (isSuper ? 'border-r-4' : (isSubHighlight ? 'border-r-2' : 'border-r')) : ''}
     `.trim();
 
-    const borderColorClass = isSuper ? 'border-board-border' : (isSubHighlight ? 'border-white/70' : 'border-cell-border');
+    const borderColorClass = isSuper ? 'border-board-border' : (isSubHighlight ? 'border-border-highlight' : 'border-cell-border');
 
     // Si hay un ganador en este sub-tablero (y estamos renderizándolo como una celda del super-tablero)
     if (isSuper && winner) {
@@ -24,7 +24,7 @@ const Cell = ({ index, value, onClick, isSelectable, level, winner = null, playe
             const color2 = playersConfig?.P2.color || '#ef4444';
             return (
                 <div className={`relative ${borderClasses} ${borderColorClass} aspect-square`}>
-                    <div className="absolute inset-0 flex items-center justify-center rounded-lg transition-all duration-500 bg-white/5 border border-white/10 overflow-hidden group">
+                    <div className="absolute inset-0 flex items-center justify-center rounded-lg transition-all duration-500 bg-cell-hover border border-board-border overflow-hidden group">
                         <span
                             className="text-6xl font-black absolute top-1/2 left-1/2 -translate-x-3/4 -translate-y-3/4 -rotate-12 group-hover:scale-110 transition-transform opacity-40"
                             style={{ color: color1 }}
@@ -52,7 +52,7 @@ const Cell = ({ index, value, onClick, isSelectable, level, winner = null, playe
         return (
             <div className={`relative ${borderClasses} ${borderColorClass} aspect-square`}>
                 <div
-                    className={`aspect-square flex items-center justify-center transition-all duration-500 bg-white/10 shadow-lg`}
+                    className={`aspect-square flex items-center justify-center transition-all duration-500 bg-cell-hover shadow-lg`}
                     style={{
                         color: config ? config.color : (winner === 'X' ? '#3b82f6' : '#ef4444'),
                         filter: isWinnerPlayer ? `drop-shadow(0 0 20px ${config?.color || 'currentColor'}) brightness(1.2)` : 'none',
@@ -97,7 +97,7 @@ const Cell = ({ index, value, onClick, isSelectable, level, winner = null, playe
                 onClick={isSelectable ? onClick : undefined}
                 className={`
                     w-full h-full flex items-center justify-center transition-all duration-300
-                    ${!value && isSelectable ? 'hover:bg-white/5 cursor-pointer' : 'cursor-default'}
+                    ${!value && isSelectable ? 'hover:bg-cell-hover cursor-pointer' : 'cursor-default'}
                     bg-transparent
                     ${isCurrentPlayer ? 'z-10' : ''}
                     ${isSuper ? 'p-6' : 'p-2'}

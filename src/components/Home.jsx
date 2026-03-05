@@ -3,7 +3,7 @@ import { LayoutGrid, Play, Info, Trophy, Square } from 'lucide-react';
 const GameCard = ({ title, description, icon: Icon, onClick, color }) => (
   <button
     onClick={onClick}
-    className="group relative flex flex-col items-center p-8 bg-white/5 border border-white/10 rounded-3xl backdrop-blur-md transition-all duration-500 hover:bg-white/10 hover:scale-[1.02] hover:shadow-2xl text-left w-full max-w-sm overflow-hidden"
+    className="group relative flex flex-col items-center p-8 bg-cell-hover border border-board-border rounded-3xl backdrop-blur-md transition-all duration-500 hover:shadow-2xl text-left w-full max-w-sm overflow-hidden"
   >
     <div
       className="absolute top-0 right-0 w-32 h-32 -mr-16 -mt-16 rounded-full blur-3xl opacity-20 transition-opacity group-hover:opacity-40"
@@ -11,7 +11,7 @@ const GameCard = ({ title, description, icon: Icon, onClick, color }) => (
     ></div>
 
     <div
-      className="p-4 rounded-2xl bg-white/10 mb-6 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3"
+      className="p-4 rounded-2xl bg-cell-hover mb-6 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3"
       style={{ color: color }}
     >
       <Icon size={48} strokeWidth={2.5} />
@@ -22,7 +22,7 @@ const GameCard = ({ title, description, icon: Icon, onClick, color }) => (
       {description}
     </p>
 
-    <div className="flex items-center gap-2 text-xs font-black uppercase tracking-widest py-2 px-4 rounded-full bg-white/10 group-hover:bg-white group-hover:text-slate-950 transition-colors">
+    <div className="flex items-center gap-2 text-xs font-black uppercase tracking-widest py-2 px-4 rounded-full bg-cell-hover group-hover:bg-page-text group-hover:text-page-bg transition-colors">
       <Play size={14} fill="currentColor" />
       Jugar Ahora
     </div>
@@ -72,7 +72,7 @@ const Home = ({ onSelectGame }) => {
         ))}
 
         {/* Placeholder para próximos juegos */}
-        <div className="flex flex-col items-center justify-center p-8 border-2 border-dashed border-white/5 rounded-3xl w-full max-w-sm opacity-30">
+        <div className="flex flex-col items-center justify-center p-8 border-2 border-dashed border-board-border rounded-3xl w-full max-w-sm opacity-30">
           <Trophy size={48} className="text-slate-500 mb-4" />
           <p className="text-slate-500 font-black uppercase tracking-tighter">Próximamente</p>
         </div>

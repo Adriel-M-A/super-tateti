@@ -26,7 +26,7 @@ const PlayerSetup = ({ onComplete }) => {
     };
 
     const renderSelector = (player, setPlayer, otherPlayer, label) => (
-        <div className="flex flex-col gap-6 p-6 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-sm">
+        <div className="flex flex-col gap-6 p-6 bg-cell-hover rounded-2xl border border-board-border backdrop-blur-sm">
             <h3 className="text-2xl font-black uppercase italic tracking-tighter text-center">{label}</h3>
 
             <div>
@@ -40,7 +40,7 @@ const PlayerSetup = ({ onComplete }) => {
                                 key={id}
                                 disabled={isTaken}
                                 onClick={() => setPlayer({ ...player, icon: id })}
-                                className={`p-3 rounded-xl transition-all ${isSelected ? 'bg-white/20 scale-110 shadow-lg' : 'hover:bg-white/10'
+                                className={`p-3 rounded-xl transition-all ${isSelected ? 'bg-page-text/10 scale-110 shadow-lg' : 'hover:bg-page-text/5'
                                     } ${isTaken ? 'opacity-20 cursor-not-allowed' : 'cursor-pointer'}`}
                             >
                                 <Icon size={32} color={isSelected ? player.color : 'currentColor'} strokeWidth={3} />
@@ -61,7 +61,7 @@ const PlayerSetup = ({ onComplete }) => {
                                 key={id}
                                 disabled={isTaken}
                                 onClick={() => setPlayer({ ...player, color: hex })}
-                                className={`w-10 h-10 rounded-full transition-all ${bg} ${isSelected ? 'ring-4 ring-white scale-110 shadow-lg' : 'opacity-60 hover:opacity-100'
+                                className={`w-10 h-10 rounded-full transition-all ${bg} ${isSelected ? 'ring-4 ring-page-text scale-110 shadow-lg' : 'opacity-60 hover:opacity-100'
                                     } ${isTaken ? 'hidden' : 'block cursor-pointer'}`}
                             />
                         );
@@ -80,7 +80,7 @@ const PlayerSetup = ({ onComplete }) => {
 
             <button
                 onClick={handleStart}
-                className="px-12 py-4 bg-white text-slate-950 font-black text-xl rounded-full hover:scale-105 active:scale-95 transition-all shadow-[0_0_30px_rgba(255,255,255,0.3)] uppercase"
+                className="px-12 py-4 bg-page-text text-page-bg font-black text-xl rounded-full hover:scale-105 active:scale-95 transition-all shadow-xl uppercase"
             >
                 Comenzar Batalla
             </button>
