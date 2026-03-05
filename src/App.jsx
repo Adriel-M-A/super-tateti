@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import Home from './components/Home'
 import SuperTaTeTi from './games/SuperTaTeTi'
-import * as LucideIcons from 'lucide-react'
+import ClassicTaTeTi from './games/ClassicTaTeTi'
 
 function App() {
   const [view, setView] = useState('home'); // 'home' | 'super-tateti'
@@ -45,6 +45,9 @@ function App() {
           <div className="w-full flex justify-center py-10">
             {view === 'super-tateti' && (
               <SuperTaTeTi onExit={handleReturnHome} />
+            )}
+            {view === 'classic-tateti' && (
+              <ClassicTaTeTi onExit={handleReturnHome} />
             )}
             {/* Otros juegos se añadirán aquí con condicionales similates */}
           </div>

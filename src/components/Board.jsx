@@ -1,5 +1,10 @@
-import React from 'react';
-import * as LucideIcons from 'lucide-react';
+import { X, Circle, Triangle, Square, Hexagon } from 'lucide-react';
+
+const icons = { X, Circle, Triangle, Square, Hexagon };
+const IconRenderer = ({ iconName, ...props }) => {
+    const Icon = icons[iconName];
+    return Icon ? <Icon {...props} /> : null;
+};
 
 const Cell = ({ value, onClick, isSelectable, level, winner = null, playersConfig = null, currentPlayerSymbol = null }) => {
     // Si hay un ganador en este sub-tablero (y estamos renderizándolo como una celda del super-tablero)
@@ -13,13 +18,13 @@ const Cell = ({ value, onClick, isSelectable, level, winner = null, playersConfi
                         className="text-6xl font-black absolute top-1/2 left-1/2 -translate-x-3/4 -translate-y-3/4 -rotate-12 group-hover:scale-110 transition-transform opacity-40"
                         style={{ color: color1 }}
                     >
-                        {playersConfig ? React.createElement(LucideIcons[playersConfig.P1.icon], { size: 64, strokeWidth: 3 }) : 'X'}
+                        {playersConfig ? <IconRenderer iconName={playersConfig.P1.icon} size={64} strokeWidth={3} /> : 'X'}
                     </span>
                     <span
                         className="text-6xl font-black absolute top-1/2 left-1/2 -translate-x-1/4 -translate-y-1/4 rotate-12 group-hover:scale-110 transition-transform opacity-40"
                         style={{ color: color2 }}
                     >
-                        {playersConfig ? React.createElement(LucideIcons[playersConfig.P2.icon], { size: 64, strokeWidth: 3 }) : 'O'}
+                        {playersConfig ? <IconRenderer iconName={playersConfig.P2.icon} size={64} strokeWidth={3} /> : 'O'}
                     </span>
                     <div
                         className="absolute inset-0 animate-pulse opacity-20"
@@ -42,7 +47,7 @@ const Cell = ({ value, onClick, isSelectable, level, winner = null, playersConfi
                 }}
             >
                 {config
-                    ? React.createElement(LucideIcons[config.icon], { size: 80, strokeWidth: 4 })
+                    ? <IconRenderer iconName={config.icon} size={80} strokeWidth={4} />
                     : <span className="text-8xl font-black">{winner}</span>
                 }
             </div>
@@ -84,11 +89,12 @@ const Cell = ({ value, onClick, isSelectable, level, winner = null, playersConfi
             }}
         >
             {config
-                ? React.createElement(LucideIcons[config.icon], {
-                    size: level === 'sub' ? 24 : 56,
-                    strokeWidth: 3,
-                    className: isCurrentPlayer ? 'animate-pulse' : ''
-                })
+                ? <IconRenderer
+                    iconName={config.icon}
+                    size={level === 'sub' ? 24 : 56}
+                    strokeWidth={3}
+                    className={isCurrentPlayer ? 'animate-pulse' : ''}
+                />
                 : <span className={`font-bold ${level === 'sub' ? 'text-2xl' : 'text-6xl'}`}>{value}</span>
             }
         </button>

@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState } from 'react';
 import { X, Circle, Triangle, Square, Hexagon } from 'lucide-react';
 
 const ICON_OPTIONS = [
@@ -18,8 +18,8 @@ const COLOR_OPTIONS = [
 ];
 
 const PlayerSetup = ({ onComplete }) => {
-    const [p1, setP1] = React.useState({ icon: ICON_OPTIONS[0].id, color: COLOR_OPTIONS[0].hex });
-    const [p2, setP2] = React.useState({ icon: ICON_OPTIONS[1].id, color: COLOR_OPTIONS[1].hex });
+    const [p1, setP1] = useState({ icon: ICON_OPTIONS[0].id, color: COLOR_OPTIONS[0].hex });
+    const [p2, setP2] = useState({ icon: ICON_OPTIONS[1].id, color: COLOR_OPTIONS[1].hex });
 
     const handleStart = () => {
         onComplete({ P1: p1, P2: p2 });

@@ -1,17 +1,16 @@
-import React from 'react';
-import { LayoutGrid, Play, Info, Trophy } from 'lucide-react';
+import { LayoutGrid, Play, Info, Trophy, Square } from 'lucide-react';
 
 const GameCard = ({ title, description, icon: Icon, onClick, color }) => (
   <button
     onClick={onClick}
     className="group relative flex flex-col items-center p-8 bg-white/5 border border-white/10 rounded-3xl backdrop-blur-md transition-all duration-500 hover:bg-white/10 hover:scale-[1.02] hover:shadow-2xl text-left w-full max-w-sm overflow-hidden"
   >
-    <div 
+    <div
       className="absolute top-0 right-0 w-32 h-32 -mr-16 -mt-16 rounded-full blur-3xl opacity-20 transition-opacity group-hover:opacity-40"
       style={{ backgroundColor: color }}
     ></div>
-    
-    <div 
+
+    <div
       className="p-4 rounded-2xl bg-white/10 mb-6 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3"
       style={{ color: color }}
     >
@@ -39,6 +38,13 @@ const Home = ({ onSelectGame }) => {
       icon: LayoutGrid,
       color: '#3b82f6' // Azul vibrante
     },
+    {
+      id: 'classic-tateti',
+      title: 'Ta-Te-Ti Clásico',
+      description: 'El juego original de 3x3 que todos conocemos. Rápido, divertido y perfecto para una partida rápida.',
+      icon: Square,
+      color: '#22c55e' // Verde esmeralda
+    },
     // Aquí se agregarán más juegos en el futuro
   ];
 
@@ -46,13 +52,13 @@ const Home = ({ onSelectGame }) => {
     <div className="min-h-screen flex flex-col items-center justify-center p-6 animate-in fade-in duration-700">
       <header className="mb-16 text-center">
         <div className="inline-block px-4 py-1.5 mb-4 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-black uppercase tracking-[0.2em] animate-pulse">
-            Elige tu Batalla
+          Elige tu Batalla
         </div>
         <h1 className="text-6xl md:text-8xl font-black uppercase tracking-tighter mb-4 italic">
-            GAMES<span className="text-blue-500">HUB</span>
+          GAMES<span className="text-blue-500">HUB</span>
         </h1>
         <p className="text-slate-500 font-bold uppercase tracking-widest max-w-md mx-auto">
-            Selecciona un desafío para comenzar
+          Selecciona un desafío para comenzar
         </p>
       </header>
 
@@ -74,12 +80,12 @@ const Home = ({ onSelectGame }) => {
 
       <footer className="mt-20 flex items-center gap-6 opacity-40 hover:opacity-100 transition-opacity">
         <div className="flex items-center gap-2 text-sm font-bold uppercase tracking-widest cursor-help">
-            <Info size={16} />
-            Cómo Jugar
+          <Info size={16} />
+          Cómo Jugar
         </div>
         <div className="w-1 h-1 rounded-full bg-slate-500"></div>
         <div className="text-sm font-bold uppercase tracking-widest text-slate-500">
-            v1.0.0
+          v1.0.0
         </div>
       </footer>
     </div>

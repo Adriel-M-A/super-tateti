@@ -3,19 +3,16 @@ import Board from '../components/Board';
 import PlayerSetup from '../components/PlayerSetup';
 import { ArrowLeft, X, Circle } from 'lucide-react';
 
-const SuperTaTeTi = ({ onExit }) => {
-    // Estados del juego
+const ClassicTaTeTi = ({ onExit }) => {
     const [setupMode, setSetupMode] = useState(true);
     const [players, setPlayers] = useState({
         P1: { icon: 'X', color: '#3b82f6' },
         P2: { icon: 'Circle', color: '#ef4444' }
     });
 
-    const [board, setBoard] = useState(Array(9).fill(null).map(() => Array(9).fill(null)));
+    const [board, setBoard] = useState(Array(9).fill(null));
     const [isXNext, setIsXNext] = useState(true);
-    const [activeSubBoard, setActiveSubBoard] = useState(null);
-    const [subBoardWinners, setSubBoardWinners] = useState(Array(9).fill(null));
-    const [globalWinner, setGlobalWinner] = useState(null);
+    const [winner, setWinner] = useState(null);
 
     const handleSetupComplete = (selectedPlayers) => {
         setPlayers(selectedPlayers);
@@ -27,46 +24,23 @@ const SuperTaTeTi = ({ onExit }) => {
             [0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]
         ];
         for (const [a, b, c] of lines) {
-            if (cells[a] && cells[a] !== 'DRAW' && cells[a] === cells[b] && cells[a] === cells[c]) return cells[a];
-
-            const xLine = [a, b, c].every(idx => cells[idx] === 'X' || cells[idx] === 'DRAW');
-            const hasX = [a, b, c].some(idx => cells[idx] === 'X');
-            if (xLine && hasX) return 'X';
-
-            const oLine = [a, b, c].every(idx => cells[idx] === 'O' || cells[idx] === 'DRAW');
-            const hasO = [a, b, c].some(idx => cells[idx] === 'O');
-            if (oLine && hasO) return 'O';
+            if (cells[a] && cells[a] === cells[b] && cells[a] === cells[c]) return cells[a];
         }
+        if (cells.every(cell => cell !== null)) return 'DRAW';
         return null;
     };
 
-    const handleCellClick = (boardIndex, cellIndex) => {
-        if (globalWinner || (activeSubBoard !== null && activeSubBoard !== boardIndex) || subBoardWinners[boardIndex] || board[boardIndex][cellIndex]) return;
+    const handleCellClick = (index) => {
+        if (winner || board[index]) return;
 
-        const newBoard = board.map((subBoard, bIdx) => {
-            if (bIdx === boardIndex) {
-                const newSubBoard = [...subBoard];
-                newSubBoard[cellIndex] = isXNext ? 'X' : 'O';
-                return newSubBoard;
-            }
-            return subBoard;
-        });
+        const newBoard = [...board];
+        newBoard[index] = isXNext ? 'X' : 'O';
 
-        const newSubBoardWinners = [...subBoardWinners];
-        const winner = checkWinner(newBoard[boardIndex]);
-        if (winner) newSubBoardWinners[boardIndex] = winner;
-        else if (newBoard[boardIndex].every(cell => cell !== null)) newSubBoardWinners[boardIndex] = 'DRAW';
-
-        const finalWinner = checkWinner(newSubBoardWinners);
-        if (finalWinner) setGlobalWinner(finalWinner);
-
-        let nextActiveSubBoard = cellIndex;
-        if (newSubBoardWinners[nextActiveSubBoard]) nextActiveSubBoard = null;
+        const win = checkWinner(newBoard);
+        if (win) setWinner(win);
 
         setBoard(newBoard);
-        setSubBoardWinners(newSubBoardWinners);
         setIsXNext(!isXNext);
-        setActiveSubBoard(nextActiveSubBoard);
     };
 
     return (
@@ -78,8 +52,8 @@ const SuperTaTeTi = ({ onExit }) => {
                 >
                     <ArrowLeft size={16} /> Volver al Home
                 </button>
-                <div className="text-xs font-black uppercase tracking-[0.3em] text-blue-500/50">
-                    Super Ta-Te-Ti Mode
+                <div className="text-xs font-black uppercase tracking-[0.3em] text-green-500/50">
+                    Classic Mode
                 </div>
             </div>
 
@@ -88,11 +62,11 @@ const SuperTaTeTi = ({ onExit }) => {
             ) : (
                 <div className="flex flex-col items-center">
                     <header className="mb-12 text-center w-full">
-                        {globalWinner ? (
+                        {winner ? (
                             <div className="bg-white/5 p-8 rounded-3xl border-4 animate-bounce shadow-2xl flex flex-col items-center gap-4 transition-all"
-                                style={{ borderColor: players[globalWinner === 'X' ? 'P1' : 'P2'].color }}>
-                                <h2 className="text-4xl font-black uppercase tracking-tighter" style={{ color: players[globalWinner === 'X' ? 'P1' : 'P2'].color }}>
-                                    ¡GANADOR JUGADOR {globalWinner === 'X' ? '1' : '2'}!
+                                style={{ borderColor: winner === 'DRAW' ? '#94a3b8' : players[winner === 'X' ? 'P1' : 'P2'].color }}>
+                                <h2 className="text-4xl font-black uppercase tracking-tighter" style={{ color: winner === 'DRAW' ? '#94a3b8' : players[winner === 'X' ? 'P1' : 'P2'].color }}>
+                                    {winner === 'DRAW' ? '¡EMPATE!' : `¡GANADOR JUGADOR ${winner === 'X' ? '1' : '2'}!`}
                                 </h2>
                                 <button onClick={() => window.location.reload()} className="mt-4 px-6 py-2 bg-white text-slate-950 rounded-lg hover:scale-105 transition-all uppercase text-sm font-bold">
                                     Reiniciar
@@ -112,19 +86,19 @@ const SuperTaTeTi = ({ onExit }) => {
                         )}
                     </header>
 
-                    <div className="w-full max-w-2xl mx-auto">
+                    <div className="w-full max-w-md mx-auto aspect-square">
                         <Board
                             cells={board}
                             onCellClick={handleCellClick}
-                            activeSubBoard={activeSubBoard}
-                            subBoardWinners={subBoardWinners}
+                            level="sub" // Usamos nivel "sub" para que renderice celdas simples
+                            isSelectable={!winner}
                             playersConfig={players}
                             currentPlayerSymbol={isXNext ? 'X' : 'O'}
                         />
                     </div>
 
-                    <footer className="mt-12 text-slate-500 text-sm font-bold uppercase tracking-widest text-center">
-                        {activeSubBoard === null ? "Libertad de movimiento" : `Casilla Requerida: ${activeSubBoard + 1}`}
+                    <footer className="mt-12 text-slate-500 text-sm font-black uppercase tracking-widest text-center italic opacity-30">
+                        Tres en raya de toda la vida
                     </footer>
                 </div>
             )}
@@ -132,4 +106,4 @@ const SuperTaTeTi = ({ onExit }) => {
     );
 };
 
-export default SuperTaTeTi;
+export default ClassicTaTeTi;
