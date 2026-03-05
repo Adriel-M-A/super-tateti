@@ -2,12 +2,21 @@ import { useState, useCallback } from 'react';
 import { ArrowLeft, RotateCcw, Trophy, Users as UsersIcon, X, Circle, Triangle, Square, Hexagon } from 'lucide-react';
 import DotsAndBoxesSetup from '../components/DotsAndBoxesSetup';
 import DotsAndBoxesBoard from '../components/DotsAndBoxesBoard';
+import GameLayout from '../components/GameLayout';
 
 const icons = { X, Circle, Triangle, Square, Hexagon };
 const IconRenderer = ({ iconName, ...props }) => {
     const Icon = icons[iconName];
     return Icon ? <Icon {...props} /> : null;
 };
+
+const DOTS_AND_BOXES_RULES = [
+    "Conecta dos puntos adyacentes de forma horizontal o vertical.",
+    "Si al trazar una línea completas un cuadrado de 1x1, este será tuyo y ganarás 1 punto.",
+    "Al completar un cuadrado, mantienes tu turno y puedes trazar otra línea.",
+    "El juego termina cuando todos los cuadrados han sido capturados.",
+    "Gana el jugador que haya conquistado más territorio."
+];
 
 const DotsAndBoxes = ({ onExit }) => {
     const [gameState, setGameState] = useState('setup'); // 'setup' | 'playing' | 'finished'
@@ -133,49 +142,21 @@ const DotsAndBoxes = ({ onExit }) => {
     };
 
     return (
-        <div className="w-full max-w-6xl flex flex-col items-center">
-            {/* Cabecera */}
-            <div className="w-full flex justify-between items-center mb-8 px-4">
-                <button
-                    onClick={onExit}
-                    className="p-3 rounded-2xl bg-cell-hover border border-board-border text-slate-400 hover:text-white hover:scale-110 active:scale-95 transition-all backdrop-blur-md"
-                >
-                    <ArrowLeft size={24} />
-                </button>
-
-                <div className="flex flex-col items-center">
-                    <h2 className="text-2xl font-black uppercase italic tracking-tighter text-blue-500">Puntos y Cajas</h2>
-                    {gameState === 'playing' && (
-                        <div className="flex gap-4 mt-2">
-                            {players.map((p, i) => (
-                                <div
-                                    key={p.id}
-                                    className={`flex items-center gap-2 px-3 py-1 rounded-full border transition-all ${i === currentPlayerIndex ? 'bg-page-text/10 border-page-text scale-110' : 'border-board-border opacity-50'
-                                        }`}
-                                    style={{ color: p.color }}
-                                >
-                                    <span className="font-black text-xs uppercase">{p.name}: {scores[i]}</span>
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                </div>
-
-                <button
-                    onClick={gameState === 'playing' ? resetGame : () => setGameState('setup')}
-                    className="p-3 rounded-2xl bg-cell-hover border border-board-border text-slate-400 hover:text-white hover:scale-110 active:scale-95 transition-all backdrop-blur-md"
-                >
-                    <RotateCcw size={24} />
-                </button>
-            </div>
-
-            {/* Contenido Principal */}
+        <div className="w-full flex flex-col items-center">
             {gameState === 'setup' && (
                 <DotsAndBoxesSetup onComplete={initializeGame} />
             )}
 
             {gameState === 'playing' && (
-                <div className="w-full flex items-center justify-center p-4">
+                <GameLayout
+                    gameTitle="Puntos y Cajas"
+                    onExit={onExit}
+                    onReset={resetGame}
+                    players={players}
+                    currentPlayerIndex={currentPlayerIndex}
+                    scores={scores}
+                    rules={DOTS_AND_BOXES_RULES}
+                >
                     <DotsAndBoxesBoard
                         size={boardSize}
                         lines={lines}
@@ -184,11 +165,11 @@ const DotsAndBoxes = ({ onExit }) => {
                         onMove={handleMove}
                         players={players}
                     />
-                </div>
+                </GameLayout>
             )}
 
             {gameState === 'finished' && (
-                <div className="flex flex-col items-center gap-8 animate-in zoom-in duration-500">
+                <div className="flex flex-col items-center gap-8 animate-in zoom-in duration-500 py-12">
                     <div className="p-12 bg-cell-hover border-4 border-page-text rounded-[4rem] flex flex-col items-center gap-6 shadow-2xl max-w-xl text-center">
                         <Trophy size={120} className="text-yellow-500 animate-bounce" />
                         <div>

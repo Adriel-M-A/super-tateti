@@ -1,13 +1,22 @@
 import { useState } from 'react';
 import Board from '../components/Board';
 import PlayerSetup from '../components/PlayerSetup';
-import { ArrowLeft, X, Circle } from 'lucide-react';
+import GameLayout from '../components/GameLayout';
+import { Trophy, X, Circle } from 'lucide-react';
+
+const CLASSIC_RULES = [
+    "El juego se desarrolla en un tablero de 3x3.",
+    "Dos jugadores (X y O) se turnan para marcar una casilla vacía.",
+    "El primer jugador en lograr 3 marcas en línea (horizontal, vertical o diagonal) gana.",
+    "Si todas las casillas se llenan sin un ganador, el resultado es empate.",
+    "La estrategia consiste en bloquear al oponente mientras creas tu propia línea."
+];
 
 const ClassicTaTeTi = ({ onExit }) => {
     const [setupMode, setSetupMode] = useState(true);
     const [players, setPlayers] = useState({
-        P1: { icon: 'X', color: '#3b82f6' },
-        P2: { icon: 'Circle', color: '#ef4444' }
+        P1: { id: 'P1', name: 'Jugador 1', icon: 'X', color: '#3b82f6' },
+        P2: { id: 'P2', name: 'Jugador 2', icon: 'Circle', color: '#ef4444' }
     });
 
     const [board, setBoard] = useState(Array(9).fill(null));
@@ -15,8 +24,19 @@ const ClassicTaTeTi = ({ onExit }) => {
     const [winner, setWinner] = useState(null);
 
     const handleSetupComplete = (selectedPlayers) => {
-        setPlayers(selectedPlayers);
+        // Adaptar nombres para el layout
+        const adaptedPlayers = {
+            P1: { ...selectedPlayers.P1, id: 'P1', name: 'Jugador 1' },
+            P2: { ...selectedPlayers.P2, id: 'P2', name: 'Jugador 2' }
+        };
+        setPlayers(adaptedPlayers);
         setSetupMode(false);
+    };
+
+    const resetGame = () => {
+        setBoard(Array(9).fill(null));
+        setIsXNext(true);
+        setWinner(null);
     };
 
     const checkWinner = (cells) => {
@@ -43,64 +63,58 @@ const ClassicTaTeTi = ({ onExit }) => {
         setIsXNext(!isXNext);
     };
 
-    return (
-        <div className="w-full max-w-4xl animate-in fade-in duration-500">
-            <div className="flex justify-between items-center mb-8 w-full border-b border-white/5 pb-4">
-                <button
-                    onClick={onExit}
-                    className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-slate-500 hover:text-white transition-colors"
-                >
-                    <ArrowLeft size={16} /> Volver al Home
-                </button>
-                <div className="text-xs font-black uppercase tracking-[0.3em] text-green-500/50">
-                    Classic Mode
-                </div>
-            </div>
+    const playersList = [players.P1, players.P2];
+    const currentPlayerIndex = isXNext ? 0 : 1;
 
+    return (
+        <div className="w-full flex flex-col items-center animate-in fade-in duration-500">
             {setupMode ? (
                 <PlayerSetup onComplete={handleSetupComplete} />
             ) : (
-                <div className="flex flex-col items-center">
-                    <header className="mb-12 text-center w-full">
-                        {winner ? (
-                            <div className="bg-white/5 p-8 rounded-3xl border-4 animate-bounce shadow-2xl flex flex-col items-center gap-4 transition-all"
+                <GameLayout
+                    gameTitle="Ta-Te-Ti Clásico"
+                    onExit={onExit}
+                    onReset={resetGame}
+                    players={playersList}
+                    currentPlayerIndex={currentPlayerIndex}
+                    rules={CLASSIC_RULES}
+                    gameStatus={winner ? 'finished' : 'playing'}
+                >
+                    {winner ? (
+                        <div className="flex flex-col items-center gap-8 animate-in zoom-in duration-500 py-12">
+                            <div className="p-12 bg-cell-hover border-4 rounded-[4rem] flex flex-col items-center gap-6 shadow-2xl max-w-xl text-center transition-all"
                                 style={{ borderColor: winner === 'DRAW' ? '#94a3b8' : players[winner === 'X' ? 'P1' : 'P2'].color }}>
-                                <h2 className="text-4xl font-black uppercase tracking-tighter" style={{ color: winner === 'DRAW' ? '#94a3b8' : players[winner === 'X' ? 'P1' : 'P2'].color }}>
-                                    {winner === 'DRAW' ? '¡EMPATE!' : `¡GANADOR JUGADOR ${winner === 'X' ? '1' : '2'}!`}
-                                </h2>
-                                <button onClick={() => window.location.reload()} className="mt-4 px-6 py-2 bg-white text-slate-950 rounded-lg hover:scale-105 transition-all uppercase text-sm font-bold">
-                                    Reiniciar
+                                <Trophy size={100} className={winner === 'DRAW' ? 'text-slate-400' : 'text-yellow-500 animate-bounce'} />
+                                <div>
+                                    <h2 className="text-5xl font-black uppercase italic tracking-tighter mb-2"
+                                        style={{ color: winner === 'DRAW' ? '#94a3b8' : players[winner === 'X' ? 'P1' : 'P2'].color }}>
+                                        {winner === 'DRAW' ? '¡EMPATE!' : '¡VICTORIA!'}
+                                    </h2>
+                                    <p className="text-slate-500 font-bold uppercase tracking-widest text-sm">
+                                        {winner === 'DRAW' ? 'Nadie ha logrado alinear sus piezas' : `El Jugador ${winner === 'X' ? '1' : '2'} ha ganado la partida`}
+                                    </p>
+                                </div>
+                                <button
+                                    onClick={resetGame}
+                                    className="mt-8 px-12 py-4 bg-page-text text-page-bg font-black text-xl rounded-full hover:scale-105 active:scale-95 transition-all shadow-xl uppercase"
+                                >
+                                    Volver a Jugar
                                 </button>
                             </div>
-                        ) : (
-                            <div className="flex items-center justify-center gap-8 text-2xl font-bold">
-                                <div className={`flex items-center gap-3 px-6 py-3 rounded-2xl transition-all ${isXNext ? 'shadow-lg scale-110 ring-2 ring-white/20' : 'opacity-30'}`}
-                                    style={{ backgroundColor: isXNext ? players.P1.color : 'transparent', color: isXNext ? 'white' : 'currentColor', border: `2px solid ${players.P1.color}` }}>
-                                    {players.P1.icon === 'X' ? <X size={28} strokeWidth={3} /> : <Circle size={28} strokeWidth={3} />} JUGADOR 1
-                                </div>
-                                <div className={`flex items-center gap-3 px-6 py-3 rounded-2xl transition-all ${!isXNext ? 'shadow-lg scale-110 ring-2 ring-white/20' : 'opacity-30'}`}
-                                    style={{ backgroundColor: !isXNext ? players.P2.color : 'transparent', color: !isXNext ? 'white' : 'currentColor', border: `2px solid ${players.P2.color}` }}>
-                                    {players.P2.icon === 'X' ? <X size={28} strokeWidth={3} /> : <Circle size={28} strokeWidth={3} />} JUGADOR 2
-                                </div>
-                            </div>
-                        )}
-                    </header>
-
-                    <div className="w-full max-w-md mx-auto aspect-square">
-                        <Board
-                            cells={board}
-                            onCellClick={handleCellClick}
-                            level="super" // Cambiado de "sub" a "super" para obtener bordes gruesos (4px)
-                            isSelectable={!winner}
-                            playersConfig={players}
-                            currentPlayerSymbol={isXNext ? 'X' : 'O'}
-                        />
-                    </div>
-
-                    <footer className="mt-12 text-slate-500 text-sm font-black uppercase tracking-widest text-center italic opacity-30">
-                        Tres en raya de toda la vida
-                    </footer>
-                </div>
+                        </div>
+                    ) : (
+                        <div className="w-full max-w-md mx-auto aspect-square">
+                            <Board
+                                cells={board}
+                                onCellClick={handleCellClick}
+                                level="super"
+                                isSelectable={!winner}
+                                playersConfig={players}
+                                currentPlayerSymbol={isXNext ? 'X' : 'O'}
+                            />
+                        </div>
+                    )}
+                </GameLayout>
             )}
         </div>
     );
