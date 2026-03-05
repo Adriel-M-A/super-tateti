@@ -90,7 +90,7 @@ const ClassicTaTeTi = ({ onExit }) => {
                         <Board
                             cells={board}
                             onCellClick={handleCellClick}
-                            level="sub" // Usamos nivel "sub" para que renderice celdas simples
+                            level="super" // Cambiado de "sub" a "super" para obtener bordes gruesos (4px)
                             isSelectable={!winner}
                             playersConfig={players}
                             currentPlayerSymbol={isXNext ? 'X' : 'O'}
