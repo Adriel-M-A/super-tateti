@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import Home from './components/Home'
 import SuperTaTeTi from './games/SuperTaTeTi'
 import ClassicTaTeTi from './games/ClassicTaTeTi'
+import DotsAndBoxes from './games/DotsAndBoxes'
 
 function App() {
   const [view, setView] = useState('home'); // 'home' | 'super-tateti'
@@ -48,6 +49,9 @@ function App() {
             )}
             {view === 'classic-tateti' && (
               <ClassicTaTeTi onExit={handleReturnHome} />
+            )}
+            {view === 'dots-and-boxes' && (
+              <DotsAndBoxes onExit={handleReturnHome} />
             )}
             {/* Otros juegos se añadirán aquí con condicionales similates */}
           </div>

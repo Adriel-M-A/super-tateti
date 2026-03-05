@@ -39,6 +39,13 @@ const Home = ({ onSelectGame }) => {
       color: '#3b82f6' // Azul vibrante
     },
     {
+      id: 'dots-and-boxes',
+      title: 'Puntos y Cajas',
+      description: 'Conecta puntos para capturar territorio. El juego de estrategia clásica ahora con soporte para hasta 5 jugadores.',
+      icon: LayoutGrid,
+      color: '#a855f7' // Púrpura estratégico
+    },
+    {
       id: 'classic-tateti',
       title: 'Ta-Te-Ti Clásico',
       description: 'El juego original de 3x3 que todos conocemos. Rápido, divertido y perfecto para una partida rápida.',
