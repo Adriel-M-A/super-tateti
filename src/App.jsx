@@ -30,9 +30,21 @@ function App() {
     ];
     for (let i = 0; i < lines.length; i++) {
       const [a, b, c] = lines[i];
-      if (cells[a] && cells[a] === cells[b] && cells[a] === cells[c]) {
+
+      // Lógica de ganador normal
+      if (cells[a] && cells[a] !== 'DRAW' && cells[a] === cells[b] && cells[a] === cells[c]) {
         return cells[a];
       }
+
+      // Lógica de comodín: Una línea gana para 'X' si tiene solo 'X' y 'DRAW' 
+      // y al menos una 'X' (para evitar que una línea de vacíos cuente)
+      const xLine = [a, b, c].every(idx => cells[idx] === 'X' || cells[idx] === 'DRAW');
+      const hasX = [a, b, c].some(idx => cells[idx] === 'X');
+      if (xLine && hasX) return 'X';
+
+      const oLine = [a, b, c].every(idx => cells[idx] === 'O' || cells[idx] === 'DRAW');
+      const hasO = [a, b, c].some(idx => cells[idx] === 'O');
+      if (oLine && hasO) return 'O';
     }
     return null;
   };
@@ -65,12 +77,15 @@ function App() {
     const winner = checkWinner(newBoard[boardIndex]);
     if (winner) {
       newSubBoardWinners[boardIndex] = winner;
+    } else if (newBoard[boardIndex].every(cell => cell !== null)) {
+      // Si no hay ganador pero el tablero está lleno, es un EMPATE/COMODÍN
+      newSubBoardWinners[boardIndex] = 'DRAW';
+    }
 
-      // Comprobar si esta victoria de sub-tablero gana el juego global
-      const finalWinner = checkWinner(newSubBoardWinners);
-      if (finalWinner) {
-        setGlobalWinner(finalWinner);
-      }
+    // Comprobar si esta victoria de sub-tablero gana el juego global
+    const finalWinner = checkWinner(newSubBoardWinners);
+    if (finalWinner) {
+      setGlobalWinner(finalWinner);
     }
 
     // Determinar el próximo sub-tablero activo

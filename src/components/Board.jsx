@@ -4,6 +4,15 @@ import React from 'react';
 const Cell = ({ value, onClick, isSelectable, level, winner = null }) => {
     // Si hay un ganador en este sub-tablero (y estamos renderizándolo como una celda del super-tablero)
     if (level === 'super' && winner) {
+        if (winner === 'DRAW') {
+            return (
+                <div className="aspect-square flex items-center justify-center rounded-lg transition-all duration-500 bg-white/5 border border-white/10 relative overflow-hidden group">
+                    <span className="text-6xl font-black absolute top-1/2 left-1/2 -translate-x-3/4 -translate-y-3/4 text-blue-500/40 -rotate-12 group-hover:scale-110 transition-transform">X</span>
+                    <span className="text-6xl font-black absolute top-1/2 left-1/2 -translate-x-1/4 -translate-y-1/4 text-red-500/40 rotate-12 group-hover:scale-110 transition-transform">O</span>
+                    <div className="absolute inset-0 bg-linear-to-br from-blue-500/10 to-red-500/10 animate-pulse"></div>
+                </div>
+            );
+        }
         return (
             <div className={`aspect-square flex items-center justify-center text-8xl font-black rounded-lg transition-all duration-500 bg-white/10 ${winner === 'X' ? 'text-blue-500/80' : 'text-red-500/80 shadow-[inset_0_0_20px_rgba(239,68,68,0.2)]'}`}>
                 {winner}

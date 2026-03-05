@@ -22,7 +22,11 @@ La posición de tu jugada en un sub-tateti determina en qué sub-tateti debe jug
 ### 3. Movimiento Libre
 - Si un jugador es enviado a un sub-tateti que ya está terminado (alguien ya lo ganó o hay un empate), ese jugador puede jugar en **cualquier otro sub-tateti disponible** del tablero.
 
-### 4. Fin del Juego
+### 4. Empate como Comodín (Wildcard)
+- Si un sub-tateti termina en **empate** (todas las celdas llenas sin un ganador claro), esa posición en el tablero grande se convierte en un **Comodín**.
+- El comodín sirve para completar una línea de tres para **cualquiera de los dos jugadores**. Es una pieza compartida que añade una capa táctica extra: a veces empatar un tablero es mejor que perderlo, ¡pero también beneficia al rival!
+
+### 5. Fin del Juego
 - El juego termina cuando un jugador consigue ganar el tablero principal (tres celdas grandes en línea) o cuando todos los sub-tatetis están terminados.
 
 ## Tecnologías Utilizadas
