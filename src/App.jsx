@@ -1,14 +1,27 @@
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import Board from './components/Board'
+import PlayerSetup from './components/PlayerSetup'
+import * as LucideIcons from 'lucide-react'
 
 function App() {
-  // Estado inicial del tablero
+  // Estados del juego
+  const [gameState, setGameState] = useState('setup') // 'setup' | 'playing'
+  const [players, setPlayers] = useState({
+    P1: { icon: 'X', color: 'blue' },
+    P2: { icon: 'Circle', color: 'red' }
+  })
+
   const [board, setBoard] = useState(Array(9).fill(null).map(() => Array(9).fill(null)))
   const [isXNext, setIsXNext] = useState(true)
   const [activeSubBoard, setActiveSubBoard] = useState(null)
   const [isDarkMode, setIsDarkMode] = useState(true)
   const [subBoardWinners, setSubBoardWinners] = useState(Array(9).fill(null))
   const [globalWinner, setGlobalWinner] = useState(null)
+
+  const handleSetupComplete = (selectedPlayers) => {
+    setPlayers(selectedPlayers);
+    setGameState('playing');
+  }
 
   // Aplicar o quitar la clase 'dark' del elemento html
   useEffect(() => {
@@ -119,7 +132,9 @@ function App() {
 
         {globalWinner ? (
           <div className="bg-white/10 p-6 rounded-2xl border-4 border-board-border animate-bounce shadow-xl">
-            <h2 className={`text-4xl font-black ${globalWinner === 'X' ? 'text-blue-500' : 'text-red-500'}`}>
+            <h2 className="text-4xl font-black flex items-center gap-4" style={{ color: players[globalWinner === 'X' ? 'P1' : 'P2'].color }}>
+              {/* Renderizamos el icono del ganador */}
+              {React.createElement(LucideIcons[players[globalWinner === 'X' ? 'P1' : 'P2'].icon], { size: 48, strokeWidth: 4 })}
               ¡GANADOR JUGADOR {globalWinner}!
             </h2>
             <button
@@ -129,25 +144,52 @@ function App() {
               Reiniciar Juego
             </button>
           </div>
-        ) : (
+        ) : gameState === 'playing' ? (
           <div className="flex items-center justify-center gap-8 text-2xl font-bold">
-            <div className={`px-4 py-2 rounded-lg transition-all ${isXNext ? 'bg-blue-600 text-white shadow-[0_0_15px_rgba(37,99,235,0.5)] scale-110' : 'text-slate-500 opacity-50'}`}>
-              JUGADOR X
+            <div
+              className={`flex items-center gap-3 px-6 py-3 rounded-2xl transition-all ${isXNext ? 'shadow-lg scale-110' : 'opacity-30'}`}
+              style={{
+                backgroundColor: isXNext ? players.P1.color : 'transparent',
+                color: isXNext ? 'white' : 'currentColor',
+                border: `2px solid ${players.P1.color}`
+              }}
+            >
+              {React.createElement(LucideIcons[players.P1.icon], { size: 28, strokeWidth: 3 })}
+              JUGADOR 1
             </div>
-            <div className={`px-4 py-2 rounded-lg transition-all ${!isXNext ? 'bg-red-600 text-white shadow-[0_0_15px_rgba(220,38,38,0.5)] scale-110' : 'text-slate-500 opacity-50'}`}>
-              JUGADOR O
+            <div
+              className={`flex items-center gap-3 px-6 py-3 rounded-2xl transition-all ${!isXNext ? 'shadow-lg scale-110' : 'opacity-30'}`}
+              style={{
+                backgroundColor: !isXNext ? players.P2.color : 'transparent',
+                color: !isXNext ? 'white' : 'currentColor',
+                border: `2px solid ${players.P2.color}`
+              }}
+            >
+              {React.createElement(LucideIcons[players.P2.icon], { size: 28, strokeWidth: 3 })}
+              JUGADOR 2
             </div>
           </div>
+        ) : (
+          <p className="text-slate-500 font-bold uppercase tracking-widest animate-pulse">
+            Configura tu identidad de batalla
+          </p>
         )}
       </header>
 
-      <main className="w-full max-w-2xl">
-        <Board
-          cells={board}
-          onCellClick={handleCellClick}
-          activeSubBoard={activeSubBoard}
-          subBoardWinners={subBoardWinners}
-        />
+      <main className="w-full flex justify-center">
+        {gameState === 'setup' ? (
+          <PlayerSetup onComplete={handleSetupComplete} />
+        ) : (
+          <div className="w-full max-w-2xl">
+            <Board
+              cells={board}
+              onCellClick={handleCellClick}
+              activeSubBoard={activeSubBoard}
+              subBoardWinners={subBoardWinners}
+              playersConfig={players}
+            />
+          </div>
+        )}
       </main>
 
       <footer className="mt-8 text-slate-500 text-sm italic">
