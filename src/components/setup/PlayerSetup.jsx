@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import SetupLayout from './SetupLayout';
+import SetupLayout from '../layout/SetupLayout';
 import PlayerConfigRow, { COLOR_OPTIONS, ICON_OPTIONS } from './PlayerConfigRow';
 
 const PlayerSetup = ({ title = "Ta-Te-Ti", onComplete }) => {

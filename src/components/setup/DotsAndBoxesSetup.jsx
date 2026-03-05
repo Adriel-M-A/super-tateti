@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Users, LayoutGrid } from 'lucide-react';
-import SetupLayout from './SetupLayout';
+import SetupLayout from '../layout/SetupLayout';
 import PlayerConfigRow, { COLOR_OPTIONS, ICON_OPTIONS } from './PlayerConfigRow';
 
 const BOARD_SIZES = [

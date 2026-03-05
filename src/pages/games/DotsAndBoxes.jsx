@@ -1,22 +1,9 @@
 import { useState, useCallback } from 'react';
 import { ArrowLeft, RotateCcw, Trophy, Users as UsersIcon, X, Circle, Triangle, Square, Hexagon } from 'lucide-react';
-import DotsAndBoxesSetup from '../components/DotsAndBoxesSetup';
-import DotsAndBoxesBoard from '../components/DotsAndBoxesBoard';
-import GameLayout from '../components/GameLayout';
-
-const icons = { X, Circle, Triangle, Square, Hexagon };
-const IconRenderer = ({ iconName, ...props }) => {
-    const Icon = icons[iconName];
-    return Icon ? <Icon {...props} /> : null;
-};
-
-const DOTS_AND_BOXES_RULES = [
-    "Conecta dos puntos adyacentes de forma horizontal o vertical.",
-    "Si al trazar una línea completas un cuadrado de 1x1, este será tuyo y ganarás 1 punto.",
-    "Al completar un cuadrado, mantienes tu turno y puedes trazar otra línea.",
-    "El juego termina cuando todos los cuadrados han sido capturados.",
-    "Gana el jugador que haya conquistado más territorio."
-];
+import DotsAndBoxesSetup from '../../components/setup/DotsAndBoxesSetup';
+import DotsAndBoxesBoard from '../../components/game/DotsAndBoxesBoard';
+import GameLayout from '../../components/layout/GameLayout';
+import { DOTS_AND_BOXES_RULES } from '../../constants/gameRules';
 
 const DotsAndBoxes = ({ onExit }) => {
     const [gameState, setGameState] = useState('setup'); // 'setup' | 'playing' | 'finished'

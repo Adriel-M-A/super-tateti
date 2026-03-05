@@ -1,16 +1,9 @@
 import { useState } from 'react';
-import Board from '../components/Board';
-import PlayerSetup from '../components/PlayerSetup';
-import GameLayout from '../components/GameLayout';
+import Board from '../../components/game/Board';
+import PlayerSetup from '../../components/setup/PlayerSetup';
+import GameLayout from '../../components/layout/GameLayout';
 import { Trophy, X, Circle } from 'lucide-react';
-
-const SUPER_RULES = [
-    "Juego de Ta-Te-Ti dentro de otro Ta-Te-Ti.",
-    "Tu movimiento determina en qué sub-tablero debe jugar el siguiente jugador.",
-    "Gana un sub-tablero alineando 3 piezas en él.",
-    "Gana el juego global alineando 3 sub-tableros ganados.",
-    "Si te envían a un sub-tablero ya completado, tienes libertad de movimiento."
-];
+import { SUPER_RULES } from '../../constants/gameRules';
 
 const SuperTaTeTi = ({ onExit }) => {
     const [setupMode, setSetupMode] = useState(true);

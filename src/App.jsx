@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
-import Home from './components/Home'
-import SuperTaTeTi from './games/SuperTaTeTi'
-import ClassicTaTeTi from './games/ClassicTaTeTi'
-import DotsAndBoxes from './games/DotsAndBoxes'
+import Home from './pages/Home'
+import SuperTaTeTi from './pages/games/SuperTaTeTi'
+import ClassicTaTeTi from './pages/games/ClassicTaTeTi'
+import DotsAndBoxes from './pages/games/DotsAndBoxes'
 
 function App() {
   const [view, setView] = useState('home'); // 'home' | 'super-tateti'
