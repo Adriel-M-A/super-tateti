@@ -5,15 +5,26 @@ const Cell = ({ value, onClick, isSelectable, level, winner = null, playersConfi
     // Si hay un ganador en este sub-tablero (y estamos renderizándolo como una celda del super-tablero)
     if (level === 'super' && winner) {
         if (winner === 'DRAW') {
+            const color1 = playersConfig?.P1.color || '#3b82f6';
+            const color2 = playersConfig?.P2.color || '#ef4444';
             return (
                 <div className="aspect-square flex items-center justify-center rounded-lg transition-all duration-500 bg-white/5 border border-white/10 relative overflow-hidden group">
-                    <span className="text-6xl font-black absolute top-1/2 left-1/2 -translate-x-3/4 -translate-y-3/4 text-blue-500/40 -rotate-12 group-hover:scale-110 transition-transform">
+                    <span
+                        className="text-6xl font-black absolute top-1/2 left-1/2 -translate-x-3/4 -translate-y-3/4 -rotate-12 group-hover:scale-110 transition-transform opacity-40"
+                        style={{ color: color1 }}
+                    >
                         {playersConfig ? React.createElement(LucideIcons[playersConfig.P1.icon], { size: 64, strokeWidth: 3 }) : 'X'}
                     </span>
-                    <span className="text-6xl font-black absolute top-1/2 left-1/2 -translate-x-1/4 -translate-y-1/4 text-red-500/40 rotate-12 group-hover:scale-110 transition-transform">
+                    <span
+                        className="text-6xl font-black absolute top-1/2 left-1/2 -translate-x-1/4 -translate-y-1/4 rotate-12 group-hover:scale-110 transition-transform opacity-40"
+                        style={{ color: color2 }}
+                    >
                         {playersConfig ? React.createElement(LucideIcons[playersConfig.P2.icon], { size: 64, strokeWidth: 3 }) : 'O'}
                     </span>
-                    <div className="absolute inset-0 bg-linear-to-br from-blue-500/10 to-red-500/10 animate-pulse"></div>
+                    <div
+                        className="absolute inset-0 animate-pulse opacity-20"
+                        style={{ background: `linear-gradient(to bottom right, ${color1}, ${color2})` }}
+                    ></div>
                 </div>
             );
         }

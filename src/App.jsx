@@ -131,11 +131,21 @@ function App() {
         </h1>
 
         {globalWinner ? (
-          <div className="bg-white/10 p-6 rounded-2xl border-4 border-board-border animate-bounce shadow-xl">
-            <h2 className="text-4xl font-black flex items-center gap-4" style={{ color: players[globalWinner === 'X' ? 'P1' : 'P2'].color }}>
-              {/* Renderizamos el icono del ganador */}
-              {React.createElement(LucideIcons[players[globalWinner === 'X' ? 'P1' : 'P2'].icon], { size: 48, strokeWidth: 4 })}
-              ¡GANADOR JUGADOR {globalWinner}!
+          <div
+            className="bg-white/5 p-8 rounded-3xl border-4 animate-bounce shadow-2xl flex flex-col items-center gap-4 transition-all"
+            style={{
+              borderColor: players[globalWinner === 'X' ? 'P1' : 'P2'].color,
+              boxShadow: `0 0 40px ${players[globalWinner === 'X' ? 'P1' : 'P2'].color}44`
+            }}
+          >
+            <div
+              className="p-4 rounded-full bg-white/10"
+              style={{ color: players[globalWinner === 'X' ? 'P1' : 'P2'].color }}
+            >
+              {React.createElement(LucideIcons[players[globalWinner === 'X' ? 'P1' : 'P2'].icon], { size: 64, strokeWidth: 4 })}
+            </div>
+            <h2 className="text-4xl font-black uppercase tracking-tighter" style={{ color: players[globalWinner === 'X' ? 'P1' : 'P2'].color }}>
+              ¡GANADOR JUGADOR {globalWinner === 'X' ? '1' : '2'}!
             </h2>
             <button
               onClick={() => window.location.reload()}
