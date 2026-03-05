@@ -95,7 +95,7 @@ const SuperTaTeTi = ({ onExit }) => {
     return (
         <div className="w-full flex flex-col items-center animate-in fade-in duration-500">
             {setupMode ? (
-                <PlayerSetup onComplete={handleSetupComplete} />
+                <PlayerSetup title="Super Ta-Te-Ti" onComplete={handleSetupComplete} />
             ) : (
                 <GameLayout
                     gameTitle="Super Ta-Te-Ti"

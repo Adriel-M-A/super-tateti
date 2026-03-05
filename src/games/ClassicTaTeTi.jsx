@@ -69,7 +69,7 @@ const ClassicTaTeTi = ({ onExit }) => {
     return (
         <div className="w-full flex flex-col items-center animate-in fade-in duration-500">
             {setupMode ? (
-                <PlayerSetup onComplete={handleSetupComplete} />
+                <PlayerSetup title="Ta-Te-Ti Clásico" onComplete={handleSetupComplete} />
             ) : (
                 <GameLayout
                     gameTitle="Ta-Te-Ti Clásico"

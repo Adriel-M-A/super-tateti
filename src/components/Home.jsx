@@ -32,6 +32,13 @@ const GameCard = ({ title, description, icon: Icon, onClick, color }) => (
 const Home = ({ onSelectGame }) => {
   const games = [
     {
+      id: 'classic-tateti',
+      title: 'Ta-Te-Ti Clásico',
+      description: 'El juego original de 3x3 que todos conocemos. Rápido, divertido y perfecto para una partida rápida.',
+      icon: Square,
+      color: '#22c55e' // Verde esmeralda
+    },
+    {
       id: 'super-tateti',
       title: 'Super Ta-Te-Ti',
       description: 'La versión definitiva y estratégica del clásico tres en raya. Gana sub-tableros para dominar el tablero global.',
@@ -44,13 +51,6 @@ const Home = ({ onSelectGame }) => {
       description: 'Conecta puntos para capturar territorio. El juego de estrategia clásica ahora con soporte para hasta 5 jugadores.',
       icon: LayoutGrid,
       color: '#a855f7' // Púrpura estratégico
-    },
-    {
-      id: 'classic-tateti',
-      title: 'Ta-Te-Ti Clásico',
-      description: 'El juego original de 3x3 que todos conocemos. Rápido, divertido y perfecto para una partida rápida.',
-      icon: Square,
-      color: '#22c55e' // Verde esmeralda
     },
     // Aquí se agregarán más juegos en el futuro
   ];
