@@ -29,3 +29,11 @@ export const EXTENDED_TATETI_RULES = [
     "La partida NO termina al formar una línea; se juega hasta completar todo el tablero.",
     "Gana el jugador con la puntuación más alta al agotarse las celdas vacías."
 ];
+
+export const CONNECT4_RULES = [
+    "Tablero vertical de 7 columnas y 6 filas.",
+    "Las fichas caen hasta la posición libre más baja de la columna elegida.",
+    "Gana el primero en alinear 4 fichas (horizontal, vertical o diagonal).",
+    "Solo se puede jugar en columnas que no estén completamente llenas.",
+    "Estrategia: Anticipa la caída de fichas y bloquea las líneas del oponente."
+];

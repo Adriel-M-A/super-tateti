@@ -58,6 +58,13 @@ const Home = ({ onSelectGame }) => {
       description: 'Tableros gigantes y rectangulares con puntuación acumulativa.',
       icon: Hash,
       color: '#ec4899'
+    },
+    {
+      id: 'connect4',
+      title: 'Conecta 4',
+      description: 'Duelo vertical de estrategia. Alinea cuatro fichas antes que tu rival.',
+      icon: LayoutGrid, // Usamos LayoutGrid por ahora o Columns si prefieres
+      color: '#f59e0b'
     }
   ];
 

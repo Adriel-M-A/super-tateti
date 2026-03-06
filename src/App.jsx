@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react'
 import Home from './pages/Home'
-import SuperTaTeTi from './pages/games/SuperTaTeTi'
-import ClassicTaTeTi from './pages/games/ClassicTaTeTi'
-import DotsAndBoxes from './pages/games/DotsAndBoxes'
-import ExtendedTaTeTi from './pages/games/ExtendedTaTeTi'
+import Connect4 from './pages/games/Connect4';
+import ClassicTaTeTi from './pages/games/ClassicTaTeTi';
+import SuperTaTeTi from './pages/games/SuperTaTeTi';
+import DotsAndBoxes from './pages/games/DotsAndBoxes';
+import ExtendedTaTeTi from './pages/games/ExtendedTaTeTi';
 
 import ThemeToggle from './components/layout/ThemeToggle'
 
@@ -51,6 +52,9 @@ function App() {
             )}
             {view === 'extended-tateti' && (
               <ExtendedTaTeTi onExit={handleReturnHome} />
+            )}
+            {view === 'connect4' && (
+              <Connect4 onExit={handleReturnHome} />
             )}
           </div>
         )}
