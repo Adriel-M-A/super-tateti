@@ -21,3 +21,11 @@ export const DOTS_AND_BOXES_RULES = [
     "El juego termina cuando se han trazado todas las líneas posibles.",
     "El ganador es el jugador con más cuadrados capturados al final."
 ];
+
+export const EXTENDED_TATETI_RULES = [
+    "Objetivo: Formar la mayor cantidad de líneas posibles (3, 4 o 5 según configuración).",
+    "Cada línea formada otorga 1 punto al jugador.",
+    "La partida no se detiene al formar una línea; continúa hasta llenar todo el tablero.",
+    "Las celdas pueden ser parte de múltiples líneas simultáneamente.",
+    "Gana quien acumule más puntos al completar todas las celdas."
+];

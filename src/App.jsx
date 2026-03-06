@@ -3,6 +3,7 @@ import Home from './pages/Home'
 import SuperTaTeTi from './pages/games/SuperTaTeTi'
 import ClassicTaTeTi from './pages/games/ClassicTaTeTi'
 import DotsAndBoxes from './pages/games/DotsAndBoxes'
+import ExtendedTaTeTi from './pages/games/ExtendedTaTeTi'
 
 function App() {
   const [view, setView] = useState('home'); // 'home' | 'super-tateti'
@@ -52,6 +53,9 @@ function App() {
             )}
             {view === 'dots-and-boxes' && (
               <DotsAndBoxes onExit={handleReturnHome} />
+            )}
+            {view === 'extended-tateti' && (
+              <ExtendedTaTeTi onExit={handleReturnHome} />
             )}
             {/* Otros juegos se añadirán aquí con condicionales similates */}
           </div>

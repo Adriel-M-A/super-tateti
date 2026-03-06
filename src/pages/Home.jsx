@@ -1,4 +1,4 @@
-import { LayoutGrid, Play, Info, Trophy, Square } from 'lucide-react';
+import { LayoutGrid, Play, Info, Trophy, Square, Hash } from 'lucide-react';
 
 const GameCard = ({ title, description, icon: Icon, onClick, color }) => (
   <button
@@ -51,6 +51,13 @@ const Home = ({ onSelectGame }) => {
       description: 'Conecta puntos para capturar territorio. El juego de estrategia clásica ahora con soporte para hasta 5 jugadores.',
       icon: LayoutGrid,
       color: '#a855f7' // Púrpura estratégico
+    },
+    {
+      id: 'extended-tateti',
+      title: 'Ta-Te-Ti Extendido',
+      description: 'Tableros gigantes y rectangulares donde el objetivo es formar la mayor cantidad de líneas posibles para ganar.',
+      icon: Hash,
+      color: '#ec4899' // Rosa potente
     },
     // Aquí se agregarán más juegos en el futuro
   ];
