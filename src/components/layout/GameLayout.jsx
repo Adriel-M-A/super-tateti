@@ -1,5 +1,6 @@
 import { ArrowLeft, RotateCcw } from 'lucide-react';
 import GameRules from '../game/GameRules';
+import PlayerStatus from '../game/PlayerStatus';
 
 const GameLayout = ({
     children,
@@ -13,66 +14,59 @@ const GameLayout = ({
     gameStatus = 'playing'
 }) => {
     return (
-        <div className="w-full max-w-7xl flex flex-col items-center min-h-screen p-4 md:p-8">
-            {/* Header Unificado */}
-            <header className="w-full flex justify-between items-center mb-8 gap-4">
+        <div className="w-full max-w-7xl h-full flex flex-col items-center p-4 md:p-6 overflow-hidden">
+            {/* Header Unificado (Solo Título y Acciones) */}
+            <header className="w-full flex justify-between items-center mb-4 md:mb-6 gap-4 shrink-0">
                 <button
                     onClick={onExit}
-                    className="p-3 rounded-2xl bg-cell-hover border border-board-border text-slate-400 hover:text-white hover:scale-110 active:scale-95 transition-all backdrop-blur-md shrink-0 shadow-lg"
+                    className="p-3 rounded-2xl bg-cell-hover border border-board-border text-slate-400 hover:text-white hover:scale-110 active:scale-95 transition-all backdrop-blur-md shadow-lg shrink-0"
                     title="Volver al Home"
                 >
-                    <ArrowLeft size={24} />
+                    <ArrowLeft size={20} />
                 </button>
 
                 <div className="flex flex-col items-center flex-1 min-w-0 text-center">
-                    <h2 className="text-xl md:text-3xl font-black uppercase italic tracking-tighter text-blue-500 truncate w-full">
+                    <h2 className="text-xl md:text-2xl font-black uppercase italic tracking-tighter text-blue-500 truncate w-full">
                         {gameTitle}
                     </h2>
-
-                    {gameStatus === 'playing' && players.length > 0 && (
-                        <div className="flex flex-wrap justify-center gap-2 md:gap-4 mt-3">
-                            {players.map((p, i) => (
-                                <div
-                                    key={p.id || i}
-                                    className={`flex items-center gap-2 px-3 py-1 rounded-full border transition-all duration-500 ${i === currentPlayerIndex
-                                        ? 'bg-page-text/10 border-page-text scale-110 shadow-[0_0_15px_-5px_currentColor]'
-                                        : 'border-board-border opacity-40 grayscale-[0.5]'
-                                        }`}
-                                    style={{ color: p.color }}
-                                >
-                                    <span className="font-black text-[10px] md:text-xs uppercase whitespace-nowrap">
-                                        {p.name}
-                                        {scores.length > 0 && `: ${scores[i]}`}
-                                    </span>
-                                </div>
-                            ))}
-                        </div>
-                    )}
                 </div>
 
                 <button
                     onClick={onReset}
-                    className="p-3 rounded-2xl bg-cell-hover border border-board-border text-slate-400 hover:text-white hover:scale-110 active:scale-95 transition-all backdrop-blur-md shrink-0 shadow-lg"
+                    className="p-3 rounded-2xl bg-cell-hover border border-board-border text-slate-400 hover:text-white hover:scale-110 active:scale-95 transition-all backdrop-blur-md shadow-lg shrink-0"
                     title="Reiniciar Juego"
                 >
-                    <RotateCcw size={24} />
+                    <RotateCcw size={20} />
                 </button>
             </header>
 
-            {/* Main Layout: 3 Columnas (Equilibrado para pantallas grandes) */}
-            <main className="w-full grid grid-cols-1 lg:grid-cols-[1fr_2fr_1fr] gap-8 items-start">
+            {/* Main Layout: 3 Columnas (Optimizado para Viewport) */}
+            <main className="w-full flex-1 grid grid-cols-1 lg:grid-cols-[1.2fr_2.5fr_1fr] gap-6 items-center overflow-hidden">
 
-                {/* Columna 1: Vacía (Balance visual) o Info Extra en el futuro */}
-                <aside className="hidden lg:block order-2 lg:order-1"></aside>
+                {/* Columna 1: Estatus de Jugadores (Desktop Only) */}
+                <aside className="hidden lg:flex h-full flex-col overflow-hidden">
+                    <div className="flex-1 overflow-y-auto px-4 custom-scrollbar py-4">
+                        <PlayerStatus
+                            players={players}
+                            currentPlayerIndex={currentPlayerIndex}
+                            scores={scores}
+                            gameStatus={gameStatus}
+                        />
+                    </div>
+                </aside>
 
                 {/* Columna 2: El Juego (Centro) */}
-                <section className="flex flex-col items-center justify-center order-1 lg:order-2 w-full animate-in fade-in zoom-in duration-500">
-                    {children}
+                <section className="flex flex-col items-center justify-center w-full h-full animate-in fade-in zoom-in duration-500 overflow-visible py-4 relative">
+                    <div className="w-full flex justify-center items-center scale-90 md:scale-95 lg:scale-100 origin-center transition-transform">
+                        {children}
+                    </div>
                 </section>
 
-                {/* Columna 3: Reglas del Juego */}
-                <aside className="order-3 w-full">
-                    <GameRules rules={rules} />
+                {/* Columna 3: Reglas del Juego (Scroll Independiente) */}
+                <aside className="h-full flex flex-col overflow-hidden">
+                    <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar py-4">
+                        <GameRules rules={rules} />
+                    </div>
                 </aside>
             </main>
         </div>

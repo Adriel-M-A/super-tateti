@@ -5,8 +5,10 @@ import ClassicTaTeTi from './pages/games/ClassicTaTeTi'
 import DotsAndBoxes from './pages/games/DotsAndBoxes'
 import ExtendedTaTeTi from './pages/games/ExtendedTaTeTi'
 
+import ThemeToggle from './components/layout/ThemeToggle'
+
 function App() {
-  const [view, setView] = useState('home'); // 'home' | 'super-tateti'
+  const [view, setView] = useState('home');
   const [isDarkMode, setIsDarkMode] = useState(true);
 
   // Aplicar modo oscuro
@@ -29,22 +31,15 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-page-bg text-page-text flex flex-col items-center p-4 transition-colors duration-500 overflow-x-hidden">
-      {/* Botón de Tema Global */}
-      <button
-        onClick={toggleTheme}
-        className="fixed top-6 right-6 z-50 p-3 rounded-2xl bg-white/5 border border-white/10 text-slate-400 hover:text-white hover:scale-110 active:scale-95 transition-all backdrop-blur-md shadow-xl font-black text-[10px] tracking-widest uppercase"
-        title="Cambiar tema de batalla"
-      >
-        {isDarkMode ? '🌞 Light' : '🌙 Dark'}
-      </button>
+    <div className="h-screen bg-page-bg text-page-text flex flex-col items-center transition-colors duration-500 overflow-hidden relative">
+      <ThemeToggle isDarkMode={isDarkMode} onToggle={toggleTheme} />
 
       {/* Orquestador de Vistas */}
-      <main className="w-full max-w-7xl flex flex-col items-center">
+      <main className="w-full h-full max-w-7xl flex flex-col items-center overflow-hidden">
         {view === 'home' ? (
           <Home onSelectGame={handleSelectGame} />
         ) : (
-          <div className="w-full flex justify-center py-10">
+          <div className="w-full h-full flex justify-center py-4 overflow-hidden">
             {view === 'super-tateti' && (
               <SuperTaTeTi onExit={handleReturnHome} />
             )}
@@ -57,17 +52,14 @@ function App() {
             {view === 'extended-tateti' && (
               <ExtendedTaTeTi onExit={handleReturnHome} />
             )}
-            {/* Otros juegos se añadirán aquí con condicionales similates */}
           </div>
         )}
       </main>
 
-      {/* Footer minimalista global (opcional) */}
-      {view !== 'home' && (
-        <footer className="mt-auto py-8 text-slate-500 text-[10px] font-black uppercase tracking-[0.5em] opacity-20 pointer-events-none">
-          Super Ta-Te-Ti v4.0 • Build with Passion
-        </footer>
-      )}
+      {/* Indicador de versión sutil */}
+      <div className="fixed bottom-4 left-6 text-[8px] font-black uppercase tracking-[0.3em] text-slate-500/20 pointer-events-none italic">
+        GamesHub v1.0.0 • Production Ready
+      </div>
     </div>
   )
 }
