@@ -20,11 +20,7 @@ const SuperTaTeTi = ({ onExit }) => {
     const [globalWinner, setGlobalWinner] = useState(null);
 
     const handleSetupComplete = (selectedPlayers) => {
-        const adaptedPlayers = {
-            P1: { ...selectedPlayers.P1, id: 'P1', name: 'Jugador 1' },
-            P2: { ...selectedPlayers.P2, id: 'P2', name: 'Jugador 2' }
-        };
-        setPlayers(adaptedPlayers);
+        setPlayers(selectedPlayers);
         setSetupMode(false);
     };
 
@@ -121,8 +117,6 @@ const SuperTaTeTi = ({ onExit }) => {
                                     onCellClick={handleCellClick}
                                     activeSubBoard={activeSubBoard}
                                     subBoardWinners={subBoardWinners}
-                                    playersConfig={players}
-                                    currentPlayerSymbol={isXNext ? 'X' : 'O'}
                                 />
                                 <div className="mt-8 px-6 py-3 rounded-2xl bg-cell-hover border border-board-border text-slate-500 text-xs font-black uppercase tracking-[0.2em] shadow-inner italic">
                                     {activeSubBoard === null ? "Libertad de movimiento" : `Casilla Requerida: ${activeSubBoard + 1}`}

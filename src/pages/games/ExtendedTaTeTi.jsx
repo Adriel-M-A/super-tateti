@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { Trophy } from 'lucide-react';
+
 import GameLayout from '../../components/layout/GameLayout';
 import ExtendedTaTeTiSetup from '../../components/setup/ExtendedTaTeTiSetup';
 import ExtendedTaTeTiBoard from '../../components/game/ExtendedTaTeTiBoard';
@@ -178,7 +178,6 @@ const ExtendedTaTeTi = ({ onExit }) => {
                                     cols={config.cols}
                                     board={board}
                                     completedLines={completedLines}
-                                    players={players}
                                     onCellClick={handleCellClick}
                                 />
                             </div>

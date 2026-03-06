@@ -155,9 +155,7 @@ const DotsAndBoxes = ({ onExit }) => {
                                 size={boardSize}
                                 lines={lines}
                                 boxes={boxes}
-                                currentPlayer={players[currentPlayerIndex]}
                                 onMove={handleMove}
-                                players={players}
                             />
                         ) : (() => {
                             const isDraw = winner.length > 1 && winner.length === players.length;

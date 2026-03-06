@@ -1,25 +1,7 @@
 import React from 'react';
-import { X, Circle, Triangle, Square, Hexagon, User } from 'lucide-react';
-
-const ICON_MAP = { X, Circle, Triangle, Square, Hexagon };
-
-const ICON_OPTIONS = [
-    { id: 'X', Icon: X, label: 'Cruz' },
-    { id: 'Circle', Icon: Circle, label: 'Círculo' },
-    { id: 'Triangle', Icon: Triangle, label: 'Triángulo' },
-    { id: 'Square', Icon: Square, label: 'Cuadrado' },
-    { id: 'Hexagon', Icon: Hexagon, label: 'Hexágono' },
-];
-
-const COLOR_OPTIONS = [
-    { id: 'blue', hex: '#3b82f6', label: 'Azul', bg: 'bg-blue-500' },
-    { id: 'red', hex: '#ef4444', label: 'Rojo', bg: 'bg-red-500' },
-    { id: 'green', hex: '#22c55e', label: 'Verde', bg: 'bg-green-500' },
-    { id: 'yellow', hex: '#eab308', label: 'Amarillo', bg: 'bg-yellow-500' },
-    { id: 'orange', hex: '#f97316', label: 'Naranja', bg: 'bg-orange-500' },
-    { id: 'purple', hex: '#a855f7', label: 'Púrpura', bg: 'bg-purple-500' },
-    { id: 'pink', hex: '#ec4899', label: 'Rosa', bg: 'bg-pink-500' },
-];
+import { User } from 'lucide-react';
+import IconRenderer from '../game/IconRenderer';
+import { ICON_OPTIONS, COLOR_OPTIONS } from '../../hooks/usePlayerSetup';
 
 const PlayerConfigRow = ({
     index,
@@ -37,10 +19,7 @@ const PlayerConfigRow = ({
                     className="w-12 h-12 flex items-center justify-center transition-all"
                     style={{ color: player.color }}
                 >
-                    {ICON_MAP[player.icon] ?
-                        React.createElement(ICON_MAP[player.icon], { size: 40, strokeWidth: 3 }) :
-                        <User size={40} />
-                    }
+                    <IconRenderer iconName={player.icon} size={40} strokeWidth={3} />
                 </div>
                 <h4 className="font-black uppercase italic tracking-tighter text-sm md:text-base whitespace-nowrap" style={{ color: player.color }}>
                     {player.name || `Jugador ${index + 1}`}
@@ -54,7 +33,7 @@ const PlayerConfigRow = ({
             <div className="flex-1 flex flex-col items-center md:items-start gap-2 w-full">
                 <p className="text-[9px] font-black uppercase tracking-widest text-slate-500 italic opacity-50">Símbolo</p>
                 <div className="flex flex-wrap justify-center md:justify-start gap-2">
-                    {ICON_OPTIONS.map(({ id, Icon }) => {
+                    {ICON_OPTIONS.map(({ id }) => {
                         const isSelected = player.icon === id;
                         const isTaken = takenIcons.includes(id) && !isSelected;
                         return (
@@ -68,7 +47,7 @@ const PlayerConfigRow = ({
                                     ${isTaken ? 'opacity-10 grayscale cursor-not-allowed scale-90' : 'cursor-pointer'}
                                 `}
                             >
-                                <Icon size={20} color={isSelected ? player.color : 'currentColor'} strokeWidth={3} />
+                                <IconRenderer iconName={id} size={20} color={isSelected ? player.color : 'currentColor'} strokeWidth={3} />
                             </button>
                         );
                     })}

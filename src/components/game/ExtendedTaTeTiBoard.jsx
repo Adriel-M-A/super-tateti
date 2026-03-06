@@ -1,13 +1,10 @@
 import React, { useMemo } from 'react';
-import { X, Circle, Triangle, Square, Hexagon } from 'lucide-react';
+import IconRenderer from './IconRenderer';
+import { useGame } from '../../contexts/GameContext';
 
-const icons = { X, Circle, Triangle, Square, Hexagon };
-const IconRenderer = ({ iconName, ...props }) => {
-    const Icon = icons[iconName];
-    return Icon ? <Icon {...props} /> : null;
-};
-
-const ExtendedTaTeTiBoard = ({ rows, cols, board, completedLines, players, onCellClick }) => {
+const ExtendedTaTeTiBoard = ({ rows, cols, board, completedLines, players: propsPlayers, onCellClick }) => {
+    const { players: contextPlayers } = useGame();
+    const players = propsPlayers || contextPlayers;
     // Calcular tamaño de celda adaptable
     const cellSize = useMemo(() => {
         const maxDim = Math.max(rows, cols);

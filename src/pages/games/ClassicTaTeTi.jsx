@@ -18,12 +18,7 @@ const ClassicTaTeTi = ({ onExit }) => {
     const [winner, setWinner] = useState(null);
 
     const handleSetupComplete = (selectedPlayers) => {
-        // Adaptar nombres para el layout
-        const adaptedPlayers = {
-            P1: { ...selectedPlayers.P1, id: 'P1', name: 'Jugador 1' },
-            P2: { ...selectedPlayers.P2, id: 'P2', name: 'Jugador 2' }
-        };
-        setPlayers(adaptedPlayers);
+        setPlayers(selectedPlayers);
         setSetupMode(false);
     };
 
@@ -96,8 +91,6 @@ const ClassicTaTeTi = ({ onExit }) => {
                                     onCellClick={handleCellClick}
                                     level="super"
                                     isSelectable={!winner}
-                                    playersConfig={players}
-                                    currentPlayerSymbol={isXNext ? 'X' : 'O'}
                                 />
                             </div>
                         )}

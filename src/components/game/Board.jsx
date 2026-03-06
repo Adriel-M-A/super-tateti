@@ -1,12 +1,18 @@
-import { X, Circle, Triangle, Square, Hexagon } from 'lucide-react';
-
-const icons = { X, Circle, Triangle, Square, Hexagon };
-const IconRenderer = ({ iconName, ...props }) => {
-    const Icon = icons[iconName];
-    return Icon ? <Icon {...props} /> : null;
-};
+import IconRenderer from './IconRenderer';
+import { useGame } from '../../contexts/GameContext';
 
 const Cell = ({ index, value, onClick, isSelectable, level, winner = null, playersConfig = null, currentPlayerSymbol = null, isHighlighted = false }) => {
+    const { players, currentPlayerIndex } = useGame();
+
+    // Adaptar configuración de jugadores (soporta objeto P1/P2 o array del contexto)
+    const activeConfig = playersConfig || {
+        P1: players[0],
+        P2: players[1]
+    };
+
+    // Símbolo actual basado en el turno si no se provee
+    const activeSymbol = currentPlayerSymbol || (currentPlayerIndex === 0 ? 'X' : 'O');
+
     const isSuper = level === 'super';
     const isSubHighlight = level === 'sub' && isHighlighted;
 
@@ -20,8 +26,8 @@ const Cell = ({ index, value, onClick, isSelectable, level, winner = null, playe
     // Si hay un ganador en este sub-tablero (y estamos renderizándolo como una celda del super-tablero)
     if (isSuper && winner) {
         if (winner === 'DRAW') {
-            const color1 = playersConfig?.P1.color || '#3b82f6';
-            const color2 = playersConfig?.P2.color || '#ef4444';
+            const color1 = activeConfig?.P1?.color || '#3b82f6';
+            const color2 = activeConfig?.P2?.color || '#ef4444';
             return (
                 <div className={`relative ${borderClasses} ${borderColorClass} aspect-square`}>
                     <div className="absolute inset-0 flex items-center justify-center rounded-lg transition-all duration-500 bg-cell-hover border border-board-border overflow-hidden group">
@@ -29,13 +35,13 @@ const Cell = ({ index, value, onClick, isSelectable, level, winner = null, playe
                             className="text-6xl font-black absolute top-1/2 left-1/2 -translate-x-3/4 -translate-y-3/4 -rotate-12 group-hover:scale-110 transition-transform opacity-40"
                             style={{ color: color1 }}
                         >
-                            {playersConfig ? <IconRenderer iconName={playersConfig.P1.icon} size={64} strokeWidth={3} /> : 'X'}
+                            {activeConfig?.P1 ? <IconRenderer iconName={activeConfig.P1.icon} size={64} strokeWidth={3} /> : 'X'}
                         </span>
                         <span
                             className="text-6xl font-black absolute top-1/2 left-1/2 -translate-x-1/4 -translate-y-1/4 rotate-12 group-hover:scale-110 transition-transform opacity-40"
                             style={{ color: color2 }}
                         >
-                            {playersConfig ? <IconRenderer iconName={playersConfig.P2.icon} size={64} strokeWidth={3} /> : 'O'}
+                            {activeConfig?.P2 ? <IconRenderer iconName={activeConfig.P2.icon} size={64} strokeWidth={3} /> : 'O'}
                         </span>
                         <div
                             className="absolute inset-0 animate-pulse opacity-20"
@@ -46,21 +52,21 @@ const Cell = ({ index, value, onClick, isSelectable, level, winner = null, playe
             );
         }
 
-        const config = playersConfig ? (winner === 'X' ? playersConfig.P1 : playersConfig.P2) : null;
-        const isWinnerPlayer = winner === currentPlayerSymbol;
+        const winnerConfig = activeConfig ? (winner === 'X' ? activeConfig.P1 : activeConfig.P2) : null;
+        const isWinnerPlayer = winner === activeSymbol;
 
         return (
             <div className={`relative ${borderClasses} ${borderColorClass} aspect-square`}>
                 <div
                     className={`aspect-square flex items-center justify-center transition-all duration-500 bg-cell-hover shadow-lg`}
                     style={{
-                        color: config ? config.color : (winner === 'X' ? '#3b82f6' : '#ef4444'),
-                        filter: isWinnerPlayer ? `drop-shadow(0 0 20px ${config?.color || 'currentColor'}) brightness(1.2)` : 'none',
+                        color: winnerConfig ? winnerConfig.color : (winner === 'X' ? '#3b82f6' : '#ef4444'),
+                        filter: isWinnerPlayer ? `drop-shadow(0 0 20px ${winnerConfig?.color || 'currentColor'}) brightness(1.2)` : 'none',
                         opacity: isWinnerPlayer ? 1 : 0.8
                     }}
                 >
-                    {config
-                        ? <IconRenderer iconName={config.icon} size={80} strokeWidth={4} />
+                    {winnerConfig
+                        ? <IconRenderer iconName={winnerConfig.icon} size={80} strokeWidth={4} />
                         : <span className="text-8xl font-black">{winner}</span>
                     }
                 </div>
@@ -69,8 +75,6 @@ const Cell = ({ index, value, onClick, isSelectable, level, winner = null, playe
     }
 
     if (Array.isArray(value)) {
-        // Bloque de sub-tablero manejado arriba
-
         return (
             <div className={`relative ${borderClasses} ${borderColorClass} h-full w-full`}>
                 <div className={`p-4 w-full h-full transition-all duration-500 ${isSelectable ? 'z-10 opacity-100' : 'opacity-40 grayscale-[0.5]'}`}>
@@ -80,16 +84,16 @@ const Cell = ({ index, value, onClick, isSelectable, level, winner = null, playe
                         level="sub"
                         isSelectable={isSelectable}
                         isHighlighted={isSelectable}
-                        playersConfig={playersConfig}
-                        currentPlayerSymbol={currentPlayerSymbol}
+                        playersConfig={activeConfig}
+                        currentPlayerSymbol={activeSymbol}
                     />
                 </div>
             </div>
         );
     }
 
-    const config = (playersConfig && value) ? (value === 'X' ? playersConfig.P1 : playersConfig.P2) : null;
-    const isCurrentPlayer = value === currentPlayerSymbol;
+    const cellOwnerConfig = (activeConfig && value) ? (value === 'X' ? activeConfig.P1 : activeConfig.P2) : null;
+    const isCurrentPlayer = value === activeSymbol;
 
     return (
         <div className={`relative ${borderClasses} ${borderColorClass} aspect-square`}>
@@ -103,14 +107,14 @@ const Cell = ({ index, value, onClick, isSelectable, level, winner = null, playe
                     ${isSuper ? 'p-6' : 'p-2'}
                 `}
                 style={{
-                    color: config ? config.color : (value === 'X' ? '#3b82f6' : (value === 'O' ? '#ef4444' : 'currentColor')),
+                    color: cellOwnerConfig ? cellOwnerConfig.color : (value === 'X' ? '#3b82f6' : (value === 'O' ? '#ef4444' : 'currentColor')),
                     filter: isCurrentPlayer ? 'brightness(1.5)' : 'none',
                     opacity: isCurrentPlayer ? 1 : 0.7
                 }}
             >
-                {config
+                {cellOwnerConfig
                     ? <IconRenderer
-                        iconName={config.icon}
+                        iconName={cellOwnerConfig.icon}
                         size={isSuper ? 56 : 24}
                         strokeWidth={3}
                     />

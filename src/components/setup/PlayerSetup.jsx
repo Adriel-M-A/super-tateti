@@ -1,25 +1,16 @@
-import { useState } from 'react';
+import usePlayerSetup from '../../hooks/usePlayerSetup';
 import SetupLayout from '../layout/SetupLayout';
-import PlayerConfigRow, { COLOR_OPTIONS, ICON_OPTIONS } from './PlayerConfigRow';
+import PlayerConfigRow from './PlayerConfigRow';
 
 const PlayerSetup = ({ title = "Ta-Te-Ti", onComplete }) => {
-    const [players, setPlayers] = useState([
-        { id: 'P1', name: 'Jugador 1', icon: ICON_OPTIONS[0].id, color: COLOR_OPTIONS[0].hex },
-        { id: 'P2', name: 'Jugador 2', icon: ICON_OPTIONS[1].id, color: COLOR_OPTIONS[1].hex }
-    ]);
+    const { players, updatePlayer, getVisiblePlayers, getTakenResources } = usePlayerSetup(2);
 
-    const updatePlayer = (index, updates) => {
-        const newPlayers = [...players];
-        newPlayers[index] = { ...newPlayers[index], ...updates };
-        setPlayers(newPlayers);
-    };
+    const activePlayers = getVisiblePlayers(2);
+    const { takenIcons, takenColors } = getTakenResources(activePlayers);
 
     const handleStart = () => {
-        onComplete({ P1: players[0], P2: players[1] });
+        onComplete({ P1: activePlayers[0], P2: activePlayers[1] });
     };
-
-    const takenIcons = players.map(p => p.icon);
-    const takenColors = players.map(p => p.color);
 
     return (
         <SetupLayout
@@ -28,7 +19,7 @@ const PlayerSetup = ({ title = "Ta-Te-Ti", onComplete }) => {
             onStart={handleStart}
         >
             <div className="flex flex-col gap-6 w-full max-w-3xl mx-auto">
-                {players.map((player, idx) => (
+                {activePlayers.map((player, idx) => (
                     <PlayerConfigRow
                         key={player.id}
                         index={idx}

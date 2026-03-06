@@ -28,7 +28,7 @@ const PlayerStatus = () => {
             <div className="flex flex-col gap-3">
                 {players.map((player, idx) => {
                     const isCurrent = idx === currentPlayerIndex && gameStatus === 'playing';
-                    const score = Array.isArray(scores) ? scores[idx] : scores[player.id];
+                    const score = scores[player.id];
 
                     return (
                         <div

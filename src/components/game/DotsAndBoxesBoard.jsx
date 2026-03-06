@@ -1,13 +1,11 @@
 import { useState, useMemo } from 'react';
-import { X, Circle, Triangle, Square, Hexagon } from 'lucide-react';
+import IconRenderer from './IconRenderer';
+import { useGame } from '../../contexts/GameContext';
 
-const icons = { X, Circle, Triangle, Square, Hexagon };
-const IconRenderer = ({ iconName, ...props }) => {
-    const Icon = icons[iconName];
-    return Icon ? <Icon {...props} /> : null;
-};
-
-const DotsAndBoxesBoard = ({ size, lines, boxes, currentPlayer, onMove, players }) => {
+const DotsAndBoxesBoard = ({ size, lines, boxes, currentPlayer: propsCurrentPlayer, onMove, players: propsPlayers }) => {
+    const { players: contextPlayers, currentPlayerIndex } = useGame();
+    const players = propsPlayers || contextPlayers;
+    const currentPlayer = propsCurrentPlayer || players[currentPlayerIndex];
     const [selectedDot, setSelectedDot] = useState(null); // { r, c }
 
     const numDots = size + 1;

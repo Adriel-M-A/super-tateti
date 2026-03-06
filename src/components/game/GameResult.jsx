@@ -32,9 +32,7 @@ const GameResult = ({ winners, isDraw, onReplay, onSetup }) => {
                 {/* Winner Card(s) */}
                 <div className="flex flex-wrap justify-center gap-6 w-full mt-2">
                     {winners.map((player) => {
-                        const score = Array.isArray(scores)
-                            ? scores[winners.findIndex(w => w.id === player.id)] // Esto es un poco frágil si scores es array
-                            : scores[player.id];
+                        const score = scores[player.id];
 
                         return (
                             <div
