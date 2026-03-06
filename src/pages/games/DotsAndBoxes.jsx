@@ -1,8 +1,8 @@
 import { useState, useCallback } from 'react';
-import { ArrowLeft, RotateCcw, Trophy, Users as UsersIcon, X, Circle, Triangle, Square, Hexagon } from 'lucide-react';
 import DotsAndBoxesSetup from '../../components/setup/DotsAndBoxesSetup';
 import DotsAndBoxesBoard from '../../components/game/DotsAndBoxesBoard';
 import GameLayout from '../../components/layout/GameLayout';
+import GameResult from '../../components/game/GameResult';
 import { DOTS_AND_BOXES_RULES } from '../../constants/gameRules';
 
 const DotsAndBoxes = ({ onExit }) => {
@@ -134,7 +134,7 @@ const DotsAndBoxes = ({ onExit }) => {
                 <DotsAndBoxesSetup onComplete={initializeGame} />
             )}
 
-            {gameState === 'playing' && (
+            {(gameState === 'playing' || gameState === 'finished') && (
                 <GameLayout
                     gameTitle="Puntos y Cajas"
                     onExit={onExit}
@@ -143,53 +143,36 @@ const DotsAndBoxes = ({ onExit }) => {
                     currentPlayerIndex={currentPlayerIndex}
                     scores={scores}
                     rules={DOTS_AND_BOXES_RULES}
+                    gameStatus={gameState}
                 >
-                    <DotsAndBoxesBoard
-                        size={boardSize}
-                        lines={lines}
-                        boxes={boxes}
-                        currentPlayer={players[currentPlayerIndex]}
-                        onMove={handleMove}
-                        players={players}
-                    />
+                    {gameState === 'playing' ? (
+                        <DotsAndBoxesBoard
+                            size={boardSize}
+                            lines={lines}
+                            boxes={boxes}
+                            currentPlayer={players[currentPlayerIndex]}
+                            onMove={handleMove}
+                            players={players}
+                        />
+                    ) : (() => {
+                        const winnerScores = {};
+                        players.forEach((p, i) => winnerScores[p.id] = scores[i]);
+                        const isDraw = winner.length > 1 && winner.length === players.length;
+
+                        return (
+                            <GameResult
+                                winners={winner}
+                                isDraw={isDraw}
+                                scores={winnerScores}
+                                onReplay={resetGame}
+                                onSetup={() => {
+                                    setGameState('setup');
+                                    setWinner(null);
+                                }}
+                            />
+                        );
+                    })()}
                 </GameLayout>
-            )}
-
-            {gameState === 'finished' && (
-                <div className="flex flex-col items-center gap-8 animate-in zoom-in duration-500 py-12">
-                    <div className="p-12 bg-cell-hover border-4 border-page-text rounded-[4rem] flex flex-col items-center gap-6 shadow-2xl max-w-xl text-center">
-                        <Trophy size={120} className="text-yellow-500 animate-bounce" />
-                        <div>
-                            <h3 className="text-5xl font-black uppercase italic tracking-tighter mb-2">
-                                {winner.length > 1 ? '¡Empate!' : '¡Victoria!'}
-                            </h3>
-                            <p className="text-slate-500 font-bold uppercase tracking-widest">
-                                {winner.length > 1
-                                    ? 'Varios jugadores han dominado el tablero'
-                                    : `${winner[0].name} ha conquistado el territorio`
-                                }
-                            </p>
-                        </div>
-
-                        <div className="flex gap-4 mt-4">
-                            {winner.map(p => (
-                                <div key={p.id} className="flex flex-col items-center gap-2">
-                                    <div className="p-4 rounded-2xl bg-page-bg" style={{ color: p.color }}>
-                                        <IconRenderer iconName={p.icon} size={48} strokeWidth={3} />
-                                    </div>
-                                    <span className="font-black uppercase tracking-tighter" style={{ color: p.color }}>{p.name}</span>
-                                </div>
-                            ))}
-                        </div>
-
-                        <button
-                            onClick={() => setGameState('setup')}
-                            className="mt-8 px-12 py-4 bg-page-text text-page-bg font-black text-xl rounded-full hover:scale-105 active:scale-95 transition-all shadow-xl uppercase"
-                        >
-                            Volver a Jugar
-                        </button>
-                    </div>
-                </div>
             )}
         </div>
     );

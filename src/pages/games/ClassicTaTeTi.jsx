@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Board from '../../components/game/Board';
 import PlayerSetup from '../../components/setup/PlayerSetup';
 import GameLayout from '../../components/layout/GameLayout';
-import { Trophy, X, Circle } from 'lucide-react';
+import GameResult from '../../components/game/GameResult';
 import { CLASSIC_RULES } from '../../constants/gameRules';
 
 const ClassicTaTeTi = ({ onExit }) => {
@@ -74,27 +74,15 @@ const ClassicTaTeTi = ({ onExit }) => {
                     gameStatus={winner ? 'finished' : 'playing'}
                 >
                     {winner ? (
-                        <div className="flex flex-col items-center gap-8 animate-in zoom-in duration-500 py-12">
-                            <div className="p-12 bg-cell-hover border-4 rounded-[4rem] flex flex-col items-center gap-6 shadow-2xl max-w-xl text-center transition-all"
-                                style={{ borderColor: winner === 'DRAW' ? '#94a3b8' : players[winner === 'X' ? 'P1' : 'P2'].color }}>
-                                <Trophy size={100} className={winner === 'DRAW' ? 'text-slate-400' : 'text-yellow-500 animate-bounce'} />
-                                <div>
-                                    <h2 className="text-5xl font-black uppercase italic tracking-tighter mb-2"
-                                        style={{ color: winner === 'DRAW' ? '#94a3b8' : players[winner === 'X' ? 'P1' : 'P2'].color }}>
-                                        {winner === 'DRAW' ? '¡EMPATE!' : '¡VICTORIA!'}
-                                    </h2>
-                                    <p className="text-slate-500 font-bold uppercase tracking-widest text-sm">
-                                        {winner === 'DRAW' ? 'Nadie ha logrado alinear sus piezas' : `El Jugador ${winner === 'X' ? '1' : '2'} ha ganado la partida`}
-                                    </p>
-                                </div>
-                                <button
-                                    onClick={resetGame}
-                                    className="mt-8 px-12 py-4 bg-page-text text-page-bg font-black text-xl rounded-full hover:scale-105 active:scale-95 transition-all shadow-xl uppercase"
-                                >
-                                    Volver a Jugar
-                                </button>
-                            </div>
-                        </div>
+                        <GameResult
+                            winners={winner === 'DRAW' ? [players.P1, players.P2] : [winner === 'X' ? players.P1 : players.P2]}
+                            isDraw={winner === 'DRAW'}
+                            onReplay={resetGame}
+                            onSetup={() => {
+                                resetGame();
+                                setSetupMode(true);
+                            }}
+                        />
                     ) : (
                         <div className="w-full max-w-md mx-auto aspect-square">
                             <Board

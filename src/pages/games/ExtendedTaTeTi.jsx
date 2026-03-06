@@ -3,6 +3,7 @@ import { Trophy } from 'lucide-react';
 import GameLayout from '../../components/layout/GameLayout';
 import ExtendedTaTeTiSetup from '../../components/setup/ExtendedTaTeTiSetup';
 import ExtendedTaTeTiBoard from '../../components/game/ExtendedTaTeTiBoard';
+import GameResult from '../../components/game/GameResult';
 import { EXTENDED_TATETI_RULES } from '../../constants/gameRules';
 
 const ExtendedTaTeTi = ({ onExit }) => {
@@ -151,7 +152,7 @@ const ExtendedTaTeTi = ({ onExit }) => {
                 <ExtendedTaTeTiSetup onComplete={initializeGame} />
             )}
 
-            {gameState === 'playing' && (
+            {(gameState === 'playing' || gameState === 'finished') && (
                 <GameLayout
                     gameTitle="Ta-Te-Ti Extendido"
                     onExit={onExit}
@@ -160,75 +161,38 @@ const ExtendedTaTeTi = ({ onExit }) => {
                     currentPlayerIndex={currentPlayerIndex}
                     scores={players.map(p => scores[p.id])}
                     rules={EXTENDED_TATETI_RULES}
-                    gameStatus="playing"
+                    gameStatus={gameState}
                 >
-                    <div className="flex flex-col items-center gap-6">
-                        <div className="px-6 py-2 rounded-full bg-cell-hover border border-board-border text-[10px] font-black uppercase tracking-widest text-slate-500 italic">
-                            Objetivo: {config.winCondition} en línea • {config.cols}x{config.rows}
-                        </div>
-                        <ExtendedTaTeTiBoard
-                            rows={config.rows}
-                            cols={config.cols}
-                            board={board}
-                            completedLines={completedLines}
-                            players={players}
-                            onCellClick={handleCellClick}
-                        />
-                    </div>
-                </GameLayout>
-            )}
-
-            {gameState === 'finished' && (
-                <div className="flex flex-col items-center gap-8 animate-in zoom-in duration-500 py-12">
-                    {(() => {
-                        const { winners, maxScore } = getWinner();
-                        return (
-                            <div className="p-12 bg-cell-hover border-4 border-page-text rounded-[4rem] flex flex-col items-center gap-6 shadow-2xl max-w-xl text-center">
-                                <Trophy size={120} className="text-yellow-500 animate-bounce" />
-                                <div>
-                                    <h3 className="text-5xl font-black uppercase italic tracking-tighter mb-2">
-                                        {winners.length > 1 ? '¡Empate!' : '¡Victoria!'}
-                                    </h3>
-                                    <p className="text-slate-500 font-bold uppercase tracking-widest leading-relaxed">
-                                        {winners.length > 1
-                                            ? `Gran batalla con ${maxScore} puntos cada uno`
-                                            : `${winners[0].name} domina la grilla con ${maxScore} puntos`
-                                        }
-                                    </p>
-                                </div>
-
-                                <div className="flex flex-wrap justify-center gap-6 mt-4">
-                                    {winners.map(p => (
-                                        <div key={p.id} className="flex flex-col items-center gap-2">
-                                            <div className="p-6 rounded-3xl bg-page-bg shadow-inner" style={{ color: p.color }}>
-                                                {/* Icono decorativo */}
-                                                <div className="text-5xl font-black">
-                                                    {scores[p.id]}
-                                                </div>
-                                            </div>
-                                            <span className="font-black uppercase tracking-tighter text-lg">{p.name}</span>
-                                        </div>
-                                    ))}
-                                </div>
-
-                                <div className="flex flex-col sm:flex-row gap-4 mt-8">
-                                    <button
-                                        onClick={handleReset}
-                                        className="px-8 py-4 bg-page-text text-page-bg font-black text-xl rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-xl uppercase"
-                                    >
-                                        Revancha rápida
-                                    </button>
-                                    <button
-                                        onClick={backToSetup}
-                                        className="px-8 py-4 bg-page-text/10 text-page-text font-black text-xl rounded-2xl hover:scale-105 active:scale-95 transition-all uppercase border border-page-text/20"
-                                    >
-                                        Nueva Configuración
-                                    </button>
-                                </div>
+                    {gameState === 'playing' ? (
+                        <div className="flex flex-col items-center gap-6">
+                            <div className="px-6 py-2 rounded-full bg-cell-hover border border-board-border text-[10px] font-black uppercase tracking-widest text-slate-500 italic">
+                                Objetivo: {config.winCondition} en línea • {config.cols}x{config.rows}
                             </div>
+                            <ExtendedTaTeTiBoard
+                                rows={config.rows}
+                                cols={config.cols}
+                                board={board}
+                                completedLines={completedLines}
+                                players={players}
+                                onCellClick={handleCellClick}
+                            />
+                        </div>
+                    ) : (() => {
+                        const { winners } = getWinner();
+                        const isDraw = winners.length === players.length && winners.length > 1 &&
+                            Object.values(scores).every(s => s === Object.values(scores)[0]);
+
+                        return (
+                            <GameResult
+                                winners={winners}
+                                isDraw={isDraw && winners.length > 2}
+                                scores={scores}
+                                onReplay={handleReset}
+                                onSetup={backToSetup}
+                            />
                         );
                     })()}
-                </div>
+                </GameLayout>
             )}
         </div>
     );

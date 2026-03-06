@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Board from '../../components/game/Board';
 import PlayerSetup from '../../components/setup/PlayerSetup';
 import GameLayout from '../../components/layout/GameLayout';
-import { Trophy, X, Circle } from 'lucide-react';
+import GameResult from '../../components/game/GameResult';
 import { SUPER_RULES } from '../../constants/gameRules';
 
 const SuperTaTeTi = ({ onExit }) => {
@@ -100,27 +100,14 @@ const SuperTaTeTi = ({ onExit }) => {
                     gameStatus={globalWinner ? 'finished' : 'playing'}
                 >
                     {globalWinner ? (
-                        <div className="flex flex-col items-center gap-8 animate-in zoom-in duration-500 py-12">
-                            <div className="p-12 bg-cell-hover border-4 rounded-[4rem] flex flex-col items-center gap-6 shadow-2xl max-w-xl text-center transition-all"
-                                style={{ borderColor: players[globalWinner === 'X' ? 'P1' : 'P2'].color }}>
-                                <Trophy size={100} className="text-yellow-500 animate-bounce" />
-                                <div>
-                                    <h2 className="text-5xl font-black uppercase italic tracking-tighter mb-2"
-                                        style={{ color: players[globalWinner === 'X' ? 'P1' : 'P2'].color }}>
-                                        ¡VICTORIA!
-                                    </h2>
-                                    <p className="text-slate-500 font-bold uppercase tracking-widest text-sm">
-                                        El Jugador {globalWinner === 'X' ? '1' : '2'} ha conquistado el tablero global
-                                    </p>
-                                </div>
-                                <button
-                                    onClick={resetGame}
-                                    className="mt-8 px-12 py-4 bg-page-text text-page-bg font-black text-xl rounded-full hover:scale-105 active:scale-95 transition-all shadow-xl uppercase"
-                                >
-                                    Volver a Jugar
-                                </button>
-                            </div>
-                        </div>
+                        <GameResult
+                            winners={[globalWinner === 'X' ? players.P1 : players.P2]}
+                            onReplay={resetGame}
+                            onSetup={() => {
+                                resetGame();
+                                setSetupMode(true);
+                            }}
+                        />
                     ) : (
                         <div className="w-full max-w-2xl mx-auto flex flex-col items-center gap-6">
                             <Board
