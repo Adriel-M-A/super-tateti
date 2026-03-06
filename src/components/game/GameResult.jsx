@@ -1,14 +1,10 @@
 import { Trophy, RefreshCcw, Settings, Users } from 'lucide-react';
-import { X, Circle, Triangle, Square, Hexagon } from 'lucide-react';
+import IconRenderer from './IconRenderer';
+import { useGame } from '../../contexts/GameContext';
 
-const icons = { X, Circle, Triangle, Square, Hexagon };
+const GameResult = ({ winners, isDraw, onReplay, onSetup }) => {
+    const { scores = {} } = useGame();
 
-const IconRenderer = ({ iconName, ...props }) => {
-    const Icon = icons[iconName];
-    return Icon ? <Icon {...props} /> : null;
-};
-
-const GameResult = ({ winners, isDraw, scores, onReplay, onSetup }) => {
     return (
         <div className="flex flex-col items-center justify-center p-4 animate-in zoom-in duration-500 w-full max-w-lg mx-auto">
             <div className="w-full flex flex-col items-center gap-6 p-6 relative text-center">
@@ -35,31 +31,37 @@ const GameResult = ({ winners, isDraw, scores, onReplay, onSetup }) => {
 
                 {/* Winner Card(s) */}
                 <div className="flex flex-wrap justify-center gap-6 w-full mt-2">
-                    {winners.map((player) => (
-                        <div
-                            key={player.id}
-                            className="flex flex-col items-center gap-2 group"
-                        >
+                    {winners.map((player) => {
+                        const score = Array.isArray(scores)
+                            ? scores[winners.findIndex(w => w.id === player.id)] // Esto es un poco frágil si scores es array
+                            : scores[player.id];
+
+                        return (
                             <div
-                                className="relative transition-transform group-hover:scale-110"
-                                style={{ color: player.color }}
+                                key={player.id}
+                                className="flex flex-col items-center gap-2 group"
                             >
-                                <IconRenderer
-                                    iconName={player.icon}
-                                    size={44}
-                                    strokeWidth={3}
-                                />
-                                {scores && scores[player.id] !== undefined && (
-                                    <div className="absolute -top-3 -right-3 bg-page-text text-page-bg w-7 h-7 rounded-full flex items-center justify-center font-black text-[10px] border-2 border-page-bg shadow-sm">
-                                        {scores[player.id]}
-                                    </div>
-                                )}
+                                <div
+                                    className="relative transition-transform group-hover:scale-110"
+                                    style={{ color: player.color }}
+                                >
+                                    <IconRenderer
+                                        iconName={player.icon}
+                                        size={44}
+                                        strokeWidth={3}
+                                    />
+                                    {score !== undefined && score !== null && (
+                                        <div className="absolute -top-3 -right-3 bg-page-text text-page-bg w-7 h-7 rounded-full flex items-center justify-center font-black text-[10px] border-2 border-page-bg shadow-sm">
+                                            {score}
+                                        </div>
+                                    )}
+                                </div>
+                                <span className="font-black uppercase tracking-tighter text-[10px] text-page-text/60">
+                                    {player.name}
+                                </span>
                             </div>
-                            <span className="font-black uppercase tracking-tighter text-[10px] text-page-text/60">
-                                {player.name}
-                            </span>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
 
                 {/* Buttons */}

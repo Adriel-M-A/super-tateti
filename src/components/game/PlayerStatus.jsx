@@ -1,7 +1,10 @@
 import { Users } from 'lucide-react';
 import IconRenderer from './IconRenderer';
+import { useGame } from '../../contexts/GameContext';
 
-const PlayerStatus = ({ players = [], currentPlayerIndex, scores = [], gameStatus = 'playing' }) => {
+const PlayerStatus = () => {
+    const { players = [], currentPlayerIndex, scores = [], gameStatus = 'playing' } = useGame();
+
     if (players.length === 0) return null;
 
     return (
@@ -25,7 +28,7 @@ const PlayerStatus = ({ players = [], currentPlayerIndex, scores = [], gameStatu
             <div className="flex flex-col gap-3">
                 {players.map((player, idx) => {
                     const isCurrent = idx === currentPlayerIndex && gameStatus === 'playing';
-                    const score = scores[idx] !== undefined ? scores[idx] : null;
+                    const score = Array.isArray(scores) ? scores[idx] : scores[player.id];
 
                     return (
                         <div
@@ -72,7 +75,7 @@ const PlayerStatus = ({ players = [], currentPlayerIndex, scores = [], gameStatu
                             </div>
 
                             {/* Puntuación */}
-                            {score !== null && (
+                            {score !== undefined && score !== null && (
                                 <div className={`shrink-0 px-2.5 py-1 rounded-xl font-black text-sm tabular-nums transition-all ${isCurrent ? 'bg-page-text/10 text-page-text' : 'bg-transparent text-slate-600'
                                     }`}>
                                     {score}

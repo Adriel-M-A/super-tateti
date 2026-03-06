@@ -4,6 +4,7 @@ import PlayerSetup from '../../components/setup/PlayerSetup';
 import GameLayout from '../../components/layout/GameLayout';
 import GameResult from '../../components/game/GameResult';
 import { CLASSIC_RULES } from '../../constants/gameRules';
+import { GameProvider } from '../../contexts/GameContext';
 
 const ClassicTaTeTi = ({ onExit }) => {
     const [setupMode, setSetupMode] = useState(true);
@@ -59,43 +60,49 @@ const ClassicTaTeTi = ({ onExit }) => {
     const playersList = [players.P1, players.P2];
     const currentPlayerIndex = isXNext ? 0 : 1;
 
+    const contextValue = {
+        players: playersList,
+        currentPlayerIndex,
+        scores: {}, // El clásico de momento no guarda scores acumulados entre partidas
+        gameStatus: winner ? 'finished' : 'playing',
+        gameTitle: "Ta-Te-Ti Clásico",
+        rules: CLASSIC_RULES
+    };
+
     return (
         <div className="w-full flex flex-col items-center animate-in fade-in duration-500">
             {setupMode ? (
                 <PlayerSetup title="Ta-Te-Ti Clásico" onComplete={handleSetupComplete} />
             ) : (
-                <GameLayout
-                    gameTitle="Ta-Te-Ti Clásico"
-                    onExit={onExit}
-                    onReset={resetGame}
-                    players={playersList}
-                    currentPlayerIndex={currentPlayerIndex}
-                    rules={CLASSIC_RULES}
-                    gameStatus={winner ? 'finished' : 'playing'}
-                >
-                    {winner ? (
-                        <GameResult
-                            winners={winner === 'DRAW' ? [players.P1, players.P2] : [winner === 'X' ? players.P1 : players.P2]}
-                            isDraw={winner === 'DRAW'}
-                            onReplay={resetGame}
-                            onSetup={() => {
-                                resetGame();
-                                setSetupMode(true);
-                            }}
-                        />
-                    ) : (
-                        <div className="w-full max-w-md mx-auto aspect-square">
-                            <Board
-                                cells={board}
-                                onCellClick={handleCellClick}
-                                level="super"
-                                isSelectable={!winner}
-                                playersConfig={players}
-                                currentPlayerSymbol={isXNext ? 'X' : 'O'}
+                <GameProvider value={contextValue}>
+                    <GameLayout
+                        onExit={onExit}
+                        onReset={resetGame}
+                    >
+                        {winner ? (
+                            <GameResult
+                                winners={winner === 'DRAW' ? playersList : [winner === 'X' ? players.P1 : players.P2]}
+                                isDraw={winner === 'DRAW'}
+                                onReplay={resetGame}
+                                onSetup={() => {
+                                    resetGame();
+                                    setSetupMode(true);
+                                }}
                             />
-                        </div>
-                    )}
-                </GameLayout>
+                        ) : (
+                            <div className="w-full max-w-md mx-auto aspect-square">
+                                <Board
+                                    cells={board}
+                                    onCellClick={handleCellClick}
+                                    level="super"
+                                    isSelectable={!winner}
+                                    playersConfig={players}
+                                    currentPlayerSymbol={isXNext ? 'X' : 'O'}
+                                />
+                            </div>
+                        )}
+                    </GameLayout>
+                </GameProvider>
             )}
         </div>
     );

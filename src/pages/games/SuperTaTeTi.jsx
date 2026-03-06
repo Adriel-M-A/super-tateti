@@ -4,6 +4,7 @@ import PlayerSetup from '../../components/setup/PlayerSetup';
 import GameLayout from '../../components/layout/GameLayout';
 import GameResult from '../../components/game/GameResult';
 import { SUPER_RULES } from '../../constants/gameRules';
+import { GameProvider } from '../../contexts/GameContext';
 
 const SuperTaTeTi = ({ onExit }) => {
     const [setupMode, setSetupMode] = useState(true);
@@ -85,45 +86,51 @@ const SuperTaTeTi = ({ onExit }) => {
     const playersList = [players.P1, players.P2];
     const currentPlayerIndex = isXNext ? 0 : 1;
 
+    const contextValue = {
+        players: playersList,
+        currentPlayerIndex,
+        scores: {}, // El clásico de momento no guarda scores acumulados entre partidas
+        gameStatus: globalWinner ? 'finished' : 'playing',
+        gameTitle: "Super Ta-Te-Ti",
+        rules: SUPER_RULES
+    };
+
     return (
         <div className="w-full flex flex-col items-center animate-in fade-in duration-500">
             {setupMode ? (
                 <PlayerSetup title="Super Ta-Te-Ti" onComplete={handleSetupComplete} />
             ) : (
-                <GameLayout
-                    gameTitle="Super Ta-Te-Ti"
-                    onExit={onExit}
-                    onReset={resetGame}
-                    players={playersList}
-                    currentPlayerIndex={currentPlayerIndex}
-                    rules={SUPER_RULES}
-                    gameStatus={globalWinner ? 'finished' : 'playing'}
-                >
-                    {globalWinner ? (
-                        <GameResult
-                            winners={[globalWinner === 'X' ? players.P1 : players.P2]}
-                            onReplay={resetGame}
-                            onSetup={() => {
-                                resetGame();
-                                setSetupMode(true);
-                            }}
-                        />
-                    ) : (
-                        <div className="w-full max-w-2xl mx-auto flex flex-col items-center gap-6">
-                            <Board
-                                cells={board}
-                                onCellClick={handleCellClick}
-                                activeSubBoard={activeSubBoard}
-                                subBoardWinners={subBoardWinners}
-                                playersConfig={players}
-                                currentPlayerSymbol={isXNext ? 'X' : 'O'}
+                <GameProvider value={contextValue}>
+                    <GameLayout
+                        onExit={onExit}
+                        onReset={resetGame}
+                    >
+                        {globalWinner ? (
+                            <GameResult
+                                winners={[globalWinner === 'X' ? players.P1 : players.P2]}
+                                onReplay={resetGame}
+                                onSetup={() => {
+                                    resetGame();
+                                    setSetupMode(true);
+                                }}
                             />
-                            <div className="mt-8 px-6 py-3 rounded-2xl bg-cell-hover border border-board-border text-slate-500 text-xs font-black uppercase tracking-[0.2em] shadow-inner italic">
-                                {activeSubBoard === null ? "Libertad de movimiento" : `Casilla Requerida: ${activeSubBoard + 1}`}
+                        ) : (
+                            <div className="w-full max-w-2xl mx-auto flex flex-col items-center gap-6">
+                                <Board
+                                    cells={board}
+                                    onCellClick={handleCellClick}
+                                    activeSubBoard={activeSubBoard}
+                                    subBoardWinners={subBoardWinners}
+                                    playersConfig={players}
+                                    currentPlayerSymbol={isXNext ? 'X' : 'O'}
+                                />
+                                <div className="mt-8 px-6 py-3 rounded-2xl bg-cell-hover border border-board-border text-slate-500 text-xs font-black uppercase tracking-[0.2em] shadow-inner italic">
+                                    {activeSubBoard === null ? "Libertad de movimiento" : `Casilla Requerida: ${activeSubBoard + 1}`}
+                                </div>
                             </div>
-                        </div>
-                    )}
-                </GameLayout>
+                        )}
+                    </GameLayout>
+                </GameProvider>
             )}
         </div>
     );

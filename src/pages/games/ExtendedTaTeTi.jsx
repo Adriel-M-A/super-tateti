@@ -5,6 +5,7 @@ import ExtendedTaTeTiSetup from '../../components/setup/ExtendedTaTeTiSetup';
 import ExtendedTaTeTiBoard from '../../components/game/ExtendedTaTeTiBoard';
 import GameResult from '../../components/game/GameResult';
 import { EXTENDED_TATETI_RULES } from '../../constants/gameRules';
+import { GameProvider } from '../../contexts/GameContext';
 
 const ExtendedTaTeTi = ({ onExit }) => {
     const [gameState, setGameState] = useState('setup'); // 'setup' | 'playing' | 'finished'
@@ -146,6 +147,15 @@ const ExtendedTaTeTi = ({ onExit }) => {
         return { winners, maxScore };
     };
 
+    const contextValue = {
+        players,
+        currentPlayerIndex,
+        scores,
+        gameStatus: gameState,
+        gameTitle: "Ta-Te-Ti Extendido",
+        rules: EXTENDED_TATETI_RULES
+    };
+
     return (
         <div className="w-full flex flex-col items-center">
             {gameState === 'setup' && (
@@ -153,46 +163,41 @@ const ExtendedTaTeTi = ({ onExit }) => {
             )}
 
             {(gameState === 'playing' || gameState === 'finished') && (
-                <GameLayout
-                    gameTitle="Ta-Te-Ti Extendido"
-                    onExit={onExit}
-                    onReset={handleReset}
-                    players={players}
-                    currentPlayerIndex={currentPlayerIndex}
-                    scores={players.map(p => scores[p.id])}
-                    rules={EXTENDED_TATETI_RULES}
-                    gameStatus={gameState}
-                >
-                    {gameState === 'playing' ? (
-                        <div className="flex flex-col items-center gap-6">
-                            <div className="px-6 py-2 rounded-full bg-cell-hover border border-board-border text-[10px] font-black uppercase tracking-widest text-slate-500 italic">
-                                Objetivo: {config.winCondition} en línea • {config.cols}x{config.rows}
+                <GameProvider value={contextValue}>
+                    <GameLayout
+                        onExit={onExit}
+                        onReset={handleReset}
+                    >
+                        {gameState === 'playing' ? (
+                            <div className="flex flex-col items-center gap-6">
+                                <div className="px-6 py-2 rounded-full bg-cell-hover border border-board-border text-[10px] font-black uppercase tracking-widest text-slate-500 italic">
+                                    Objetivo: {config.winCondition} en línea • {config.cols}x{config.rows}
+                                </div>
+                                <ExtendedTaTeTiBoard
+                                    rows={config.rows}
+                                    cols={config.cols}
+                                    board={board}
+                                    completedLines={completedLines}
+                                    players={players}
+                                    onCellClick={handleCellClick}
+                                />
                             </div>
-                            <ExtendedTaTeTiBoard
-                                rows={config.rows}
-                                cols={config.cols}
-                                board={board}
-                                completedLines={completedLines}
-                                players={players}
-                                onCellClick={handleCellClick}
-                            />
-                        </div>
-                    ) : (() => {
-                        const { winners } = getWinner();
-                        const isDraw = winners.length === players.length && winners.length > 1 &&
-                            Object.values(scores).every(s => s === Object.values(scores)[0]);
+                        ) : (() => {
+                            const { winners } = getWinner();
+                            const isDraw = winners.length === players.length && winners.length > 1 &&
+                                Object.values(scores).every(s => s === Object.values(scores)[0]);
 
-                        return (
-                            <GameResult
-                                winners={winners}
-                                isDraw={isDraw && winners.length > 2}
-                                scores={scores}
-                                onReplay={handleReset}
-                                onSetup={backToSetup}
-                            />
-                        );
-                    })()}
-                </GameLayout>
+                            return (
+                                <GameResult
+                                    winners={winners}
+                                    isDraw={isDraw && winners.length > 2}
+                                    onReplay={handleReset}
+                                    onSetup={backToSetup}
+                                />
+                            );
+                        })()}
+                    </GameLayout>
+                </GameProvider>
             )}
         </div>
     );

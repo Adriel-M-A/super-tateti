@@ -1,6 +1,9 @@
 import { BookOpen, ChevronRight } from 'lucide-react';
+import { useGame } from '../../contexts/GameContext';
 
-const GameRules = ({ rules = [] }) => {
+const GameRules = () => {
+    const { rules = [] } = useGame();
+
     if (!rules || rules.length === 0) return null;
 
     return (

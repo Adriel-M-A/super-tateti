@@ -4,6 +4,7 @@ import DotsAndBoxesBoard from '../../components/game/DotsAndBoxesBoard';
 import GameLayout from '../../components/layout/GameLayout';
 import GameResult from '../../components/game/GameResult';
 import { DOTS_AND_BOXES_RULES } from '../../constants/gameRules';
+import { GameProvider } from '../../contexts/GameContext';
 
 const DotsAndBoxes = ({ onExit }) => {
     const [gameState, setGameState] = useState('setup'); // 'setup' | 'playing' | 'finished'
@@ -12,8 +13,6 @@ const DotsAndBoxes = ({ onExit }) => {
     const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
 
     // Estado del tablero: líneas y cajas
-    // lines.h[r][c] es la línea horizontal entre (r,c) y (r, c+1)
-    // lines.v[r][c] es la línea vertical entre (r,c) y (r+1, c)
     const [lines, setLines] = useState({ h: [], v: [] });
     const [boxes, setBoxes] = useState([]); // [r][c] almacena el playerIndex o null
     const [scores, setScores] = useState([]);
@@ -114,8 +113,6 @@ const DotsAndBoxes = ({ onExit }) => {
     }, [gameState, lines, boxes, scores, currentPlayerIndex, players, boardSize]);
 
     const checkIsBoxComplete = (r, c, currentLines) => {
-        // Una caja en (r, c) está delimitada por:
-        // h[r][c], h[r+1][c], v[r][c], v[r][c+1]
         return (
             currentLines.h[r][c] !== null &&
             currentLines.h[r + 1][c] !== null &&
@@ -128,6 +125,19 @@ const DotsAndBoxes = ({ onExit }) => {
         initializeGame({ players, boardSize });
     };
 
+    // Convertir scores a objeto por ID para el contexto
+    const scoresById = {};
+    players.forEach((p, i) => scoresById[p.id] = scores[i]);
+
+    const contextValue = {
+        players,
+        currentPlayerIndex,
+        scores: scoresById,
+        gameStatus: gameState,
+        gameTitle: "Puntos y Cajas",
+        rules: DOTS_AND_BOXES_RULES
+    };
+
     return (
         <div className="w-full flex flex-col items-center">
             {gameState === 'setup' && (
@@ -135,44 +145,37 @@ const DotsAndBoxes = ({ onExit }) => {
             )}
 
             {(gameState === 'playing' || gameState === 'finished') && (
-                <GameLayout
-                    gameTitle="Puntos y Cajas"
-                    onExit={onExit}
-                    onReset={resetGame}
-                    players={players}
-                    currentPlayerIndex={currentPlayerIndex}
-                    scores={scores}
-                    rules={DOTS_AND_BOXES_RULES}
-                    gameStatus={gameState}
-                >
-                    {gameState === 'playing' ? (
-                        <DotsAndBoxesBoard
-                            size={boardSize}
-                            lines={lines}
-                            boxes={boxes}
-                            currentPlayer={players[currentPlayerIndex]}
-                            onMove={handleMove}
-                            players={players}
-                        />
-                    ) : (() => {
-                        const winnerScores = {};
-                        players.forEach((p, i) => winnerScores[p.id] = scores[i]);
-                        const isDraw = winner.length > 1 && winner.length === players.length;
-
-                        return (
-                            <GameResult
-                                winners={winner}
-                                isDraw={isDraw}
-                                scores={winnerScores}
-                                onReplay={resetGame}
-                                onSetup={() => {
-                                    setGameState('setup');
-                                    setWinner(null);
-                                }}
+                <GameProvider value={contextValue}>
+                    <GameLayout
+                        onExit={onExit}
+                        onReset={resetGame}
+                    >
+                        {gameState === 'playing' ? (
+                            <DotsAndBoxesBoard
+                                size={boardSize}
+                                lines={lines}
+                                boxes={boxes}
+                                currentPlayer={players[currentPlayerIndex]}
+                                onMove={handleMove}
+                                players={players}
                             />
-                        );
-                    })()}
-                </GameLayout>
+                        ) : (() => {
+                            const isDraw = winner.length > 1 && winner.length === players.length;
+
+                            return (
+                                <GameResult
+                                    winners={winner}
+                                    isDraw={isDraw}
+                                    onReplay={resetGame}
+                                    onSetup={() => {
+                                        setGameState('setup');
+                                        setWinner(null);
+                                    }}
+                                />
+                            );
+                        })()}
+                    </GameLayout>
+                </GameProvider>
             )}
         </div>
     );

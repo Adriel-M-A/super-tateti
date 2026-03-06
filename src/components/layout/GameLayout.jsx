@@ -1,18 +1,15 @@
 import { ArrowLeft, RotateCcw } from 'lucide-react';
 import GameRules from '../game/GameRules';
 import PlayerStatus from '../game/PlayerStatus';
+import { useGame } from '../../contexts/GameContext';
 
 const GameLayout = ({
     children,
-    gameTitle,
     onExit,
-    onReset,
-    players = [],
-    currentPlayerIndex,
-    scores = [],
-    rules = [],
-    gameStatus = 'playing'
+    onReset
 }) => {
+    const { gameTitle } = useGame();
+
     return (
         <div className="w-full max-w-7xl h-full flex flex-col items-center p-4 md:p-6 overflow-hidden">
             {/* Header Unificado (Solo Título y Acciones) */}
@@ -46,12 +43,7 @@ const GameLayout = ({
                 {/* Columna 1: Estatus de Jugadores (Desktop Only) */}
                 <aside className="hidden lg:flex h-full flex-col overflow-hidden">
                     <div className="flex-1 overflow-y-auto px-4 custom-scrollbar py-4">
-                        <PlayerStatus
-                            players={players}
-                            currentPlayerIndex={currentPlayerIndex}
-                            scores={scores}
-                            gameStatus={gameStatus}
-                        />
+                        <PlayerStatus />
                     </div>
                 </aside>
 
@@ -65,7 +57,7 @@ const GameLayout = ({
                 {/* Columna 3: Reglas del Juego (Scroll Independiente) */}
                 <aside className="h-full flex flex-col overflow-hidden">
                     <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar py-4">
-                        <GameRules rules={rules} />
+                        <GameRules />
                     </div>
                 </aside>
             </main>
