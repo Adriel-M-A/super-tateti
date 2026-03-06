@@ -1,4 +1,4 @@
-import { ArrowLeft, RotateCcw } from 'lucide-react';
+import { Home, RotateCcw, Settings2 } from 'lucide-react';
 import GameRules from '../game/GameRules';
 import PlayerStatus from '../game/PlayerStatus';
 import GameTacticalHint from '../game/GameTacticalHint';
@@ -8,6 +8,7 @@ const GameLayout = ({
     children,
     onExit,
     onReset,
+    onConfig,
     tacticalHint
 }) => {
     const { gameTitle } = useGame();
@@ -21,7 +22,7 @@ const GameLayout = ({
                     className="p-3 rounded-2xl bg-cell-hover border border-board-border text-slate-400 hover:text-white hover:scale-110 active:scale-95 transition-all backdrop-blur-md shadow-lg shrink-0"
                     title="Volver al Home"
                 >
-                    <ArrowLeft size={20} />
+                    <Home size={20} />
                 </button>
 
                 <div className="flex flex-col items-center flex-1 min-w-0 text-center">
@@ -30,13 +31,25 @@ const GameLayout = ({
                     </h2>
                 </div>
 
-                <button
-                    onClick={onReset}
-                    className="p-3 rounded-2xl bg-cell-hover border border-board-border text-slate-400 hover:text-white hover:scale-110 active:scale-95 transition-all backdrop-blur-md shadow-lg shrink-0"
-                    title="Reiniciar Juego"
-                >
-                    <RotateCcw size={20} />
-                </button>
+                <div className="flex items-center gap-2 md:gap-3 shrink-0">
+                    {onConfig && (
+                        <button
+                            onClick={onConfig}
+                            className="p-3 rounded-2xl bg-cell-hover border border-board-border text-slate-400 hover:text-white hover:scale-110 active:scale-95 transition-all backdrop-blur-md shadow-lg"
+                            title="Configuración del Juego"
+                        >
+                            <Settings2 size={20} />
+                        </button>
+                    )}
+
+                    <button
+                        onClick={onReset}
+                        className="p-3 rounded-2xl bg-cell-hover border border-board-border text-slate-400 hover:text-white hover:scale-110 active:scale-95 transition-all backdrop-blur-md shadow-lg"
+                        title="Reiniciar Juego"
+                    >
+                        <RotateCcw size={20} />
+                    </button>
+                </div>
             </header>
 
             {/* Main Layout: 3 Columnas (Optimizado para Viewport) */}

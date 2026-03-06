@@ -19,6 +19,18 @@ const ExtendedTaTeTi = ({ onExit }) => {
     const initializeGame = (setupData) => {
         const { players: selectedPlayers, rows, cols, winCondition } = setupData;
 
+        // Persistencia Inteligente
+        const isSameStructure = rows === config.rows &&
+            cols === config.cols &&
+            winCondition === config.winCondition &&
+            selectedPlayers.length === players.length;
+
+        if (isSameStructure && players.length > 0) {
+            setPlayers(selectedPlayers);
+            setGameState('playing');
+            return;
+        }
+
         const initialBoard = Array.from({ length: rows }, () => Array(cols).fill(null));
         const initialScores = {};
         selectedPlayers.forEach(p => initialScores[p.id] = 0);
@@ -159,7 +171,12 @@ const ExtendedTaTeTi = ({ onExit }) => {
     return (
         <div className="w-full flex flex-col items-center">
             {gameState === 'setup' && (
-                <ExtendedTaTeTiSetup onComplete={initializeGame} />
+                <ExtendedTaTeTiSetup
+                    onComplete={initializeGame}
+                    initialPlayers={players}
+                    initialConfig={config}
+                    isGameInProgress={board.some(r => r.some(c => c !== null))}
+                />
             )}
 
             {(gameState === 'playing' || gameState === 'finished') && (
@@ -167,6 +184,7 @@ const ExtendedTaTeTi = ({ onExit }) => {
                     <GameLayout
                         onExit={onExit}
                         onReset={handleReset}
+                        onConfig={backToSetup}
                         tacticalHint={`Objetivo: ${config.winCondition} en línea • ${config.cols}x${config.rows}`}
                     >
                         {gameState === 'playing' ? (

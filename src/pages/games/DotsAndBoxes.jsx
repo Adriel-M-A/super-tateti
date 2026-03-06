@@ -20,6 +20,17 @@ const DotsAndBoxes = ({ onExit }) => {
 
     const initializeGame = (setupData) => {
         const { players: configPlayers, boardSize: size } = setupData;
+
+        // Persistencia Inteligente: ¿Ha cambiado algo estructural?
+        const isSameStructure = size === boardSize && configPlayers.length === players.length;
+
+        if (isSameStructure && players.length > 0) {
+            setPlayers(configPlayers);
+            setGameState('playing');
+            return;
+        }
+
+        // Reinicio Total (solo si cambia estructura o es partida nueva)
         setPlayers(configPlayers);
         setBoardSize(size);
         setScores(new Array(configPlayers.length).fill(0));
@@ -141,7 +152,12 @@ const DotsAndBoxes = ({ onExit }) => {
     return (
         <div className="w-full flex flex-col items-center">
             {gameState === 'setup' && (
-                <DotsAndBoxesSetup onComplete={initializeGame} />
+                <DotsAndBoxesSetup
+                    onComplete={initializeGame}
+                    initialPlayers={players}
+                    initialBoardSize={boardSize}
+                    isGameInProgress={lines.h.some(r => r.some(c => c !== null)) || lines.v.some(r => r.some(c => c !== null))}
+                />
             )}
 
             {(gameState === 'playing' || gameState === 'finished') && (
@@ -149,6 +165,7 @@ const DotsAndBoxes = ({ onExit }) => {
                     <GameLayout
                         onExit={onExit}
                         onReset={resetGame}
+                        onConfig={() => setGameState('setup')}
                         tacticalHint="Duelo por puntos • Cierra cajas para sumar"
                     >
                         {gameState === 'playing' ? (

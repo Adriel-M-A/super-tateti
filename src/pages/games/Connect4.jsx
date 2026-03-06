@@ -17,8 +17,15 @@ const Connect4 = ({ onExit }) => {
     const [winner, setWinner] = useState(null);
     const [winningCells, setWinningCells] = useState([]);
 
-    const initializeGame = (setupData) => {
+    const handleSetupComplete = (setupData) => {
         setPlayers(setupData.players);
+        setGameState('playing');
+        // No reiniciamos el grid ni el turno aquí para permitir persistencia
+    };
+
+    const initializeGame = (setupData) => {
+        // Este se usa para el RESET real del botón de reiniciar
+        if (setupData?.players) setPlayers(setupData.players);
         setGrid(Array.from({ length: ROWS }, () => new Array(COLS).fill(null)));
         setCurrentPlayerIndex(0);
         setGameState('playing');
@@ -116,7 +123,7 @@ const Connect4 = ({ onExit }) => {
     return (
         <div className="w-full flex flex-col items-center">
             {gameState === 'setup' && (
-                <Connect4Setup onComplete={initializeGame} />
+                <Connect4Setup onComplete={handleSetupComplete} initialPlayers={players} />
             )}
 
             {(gameState === 'playing' || gameState === 'finished') && (
@@ -124,6 +131,7 @@ const Connect4 = ({ onExit }) => {
                     <GameLayout
                         onExit={onExit}
                         onReset={resetGame}
+                        onConfig={() => setGameState('setup')}
                         tacticalHint="Objetivo: 4 en línea • Gravedad activa"
                     >
                         {gameState === 'playing' ? (

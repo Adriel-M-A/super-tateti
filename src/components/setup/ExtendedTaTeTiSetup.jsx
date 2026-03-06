@@ -5,16 +5,29 @@ import SetupSelector from './SetupSelector';
 import usePlayerSetup from '../../hooks/usePlayerSetup';
 import { Users, LayoutGrid, Hash, Swords } from 'lucide-react';
 
-const ExtendedTaTeTiSetup = ({ onComplete }) => {
-    const [numPlayers, setNumPlayers] = useState(2);
-    const [rows, setRows] = useState(7);
-    const [cols, setCols] = useState(7);
-    const [winCondition, setWinCondition] = useState(4);
+const ExtendedTaTeTiSetup = ({
+    onComplete,
+    initialPlayers = null,
+    initialConfig = null,
+    isGameInProgress = false
+}) => {
+    const [numPlayers, setNumPlayers] = useState(initialPlayers?.length || 2);
+    const [rows, setRows] = useState(initialConfig?.rows || 7);
+    const [cols, setCols] = useState(initialConfig?.cols || 7);
+    const [winCondition, setWinCondition] = useState(initialConfig?.winCondition || 4);
 
-    const { players, updatePlayer, getVisiblePlayers, getTakenResources } = usePlayerSetup(2, 5);
+    const { players, updatePlayer, getVisiblePlayers, getTakenResources } = usePlayerSetup(2, 5, initialPlayers);
 
     const activePlayers = getVisiblePlayers(numPlayers);
     const { takenIcons, takenColors } = getTakenResources(activePlayers);
+
+    // Detección de cambios que Borran Partida
+    const isRestartRequired = isGameInProgress && (
+        numPlayers !== initialPlayers?.length ||
+        rows !== initialConfig?.rows ||
+        cols !== initialConfig?.cols ||
+        winCondition !== initialConfig?.winCondition
+    );
 
     const handleStart = () => {
         onComplete({
@@ -30,6 +43,7 @@ const ExtendedTaTeTiSetup = ({ onComplete }) => {
             gameTitle="Ta-Te-Ti Extendido"
             onBack={() => window.location.reload()}
             onStart={handleStart}
+            warning={isRestartRequired ? "¡Atención! Cambiar el tamaño o cantidad de jugadores reiniciará la partida" : null}
         >
             <div className="space-y-8 w-full max-w-4xl mx-auto pb-10">
                 {/* Configuración del Tablero y Reglas */}

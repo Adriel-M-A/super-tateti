@@ -7,7 +7,8 @@ const SetupLayout = ({
     onBack,
     onStart,
     isStartDisabled = false,
-    startLabel = "Comenzar Batalla"
+    startLabel = "Comenzar Batalla",
+    warning = null
 }) => {
     return (
         <div className="w-full max-w-5xl flex flex-col items-center min-h-[80vh] animate-in fade-in zoom-in duration-500">
@@ -35,8 +36,19 @@ const SetupLayout = ({
                 {children}
             </main>
 
-            {/* Footer con Botón de Acción */}
-            <footer className="w-full flex justify-center mt-12 pt-8 border-t border-board-border/30">
+            {/* Footer con Botón de Acción y Advertencia */}
+            <footer className="w-full flex flex-col items-center mt-12 pt-8 border-t border-board-border/30 gap-6">
+                {warning && (
+                    <div className="flex items-center gap-3 px-6 py-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-500 animate-pulse transition-all duration-700">
+                        <div className="p-2 rounded-lg bg-amber-500/20">
+                            <Swords size={20} className="text-amber-500" />
+                        </div>
+                        <p className="text-sm font-black uppercase tracking-wider italic">
+                            {warning}
+                        </p>
+                    </div>
+                )}
+
                 <button
                     onClick={onStart}
                     disabled={isStartDisabled}

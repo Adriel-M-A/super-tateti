@@ -18,8 +18,23 @@ export const ICON_OPTIONS = [
     { id: 'Hexagon', label: 'Hexágono' },
 ];
 
-const usePlayerSetup = (initialPlayersCount = 2, maxPlayers = 5) => {
+const usePlayerSetup = (initialPlayersCount = 2, maxPlayers = 5, initialPlayers = null) => {
     const [players, setPlayers] = useState(() => {
+        if (initialPlayers && Array.isArray(initialPlayers)) {
+            // Si vienen como objeto (P1, P2) los convertimos a array, si no los usamos tal cual
+            const baseArray = Array.isArray(initialPlayers) ? initialPlayers : Object.values(initialPlayers);
+
+            return Array.from({ length: maxPlayers }, (_, i) => {
+                if (baseArray[i]) return baseArray[i];
+                return {
+                    id: `P${i + 1}`,
+                    name: `Jugador ${i + 1}`,
+                    icon: ICON_OPTIONS[i % ICON_OPTIONS.length].id,
+                    color: COLOR_OPTIONS[i % COLOR_OPTIONS.length].hex
+                };
+            });
+        }
+
         return Array.from({ length: maxPlayers }, (_, i) => ({
             id: `P${i + 1}`,
             name: `Jugador ${i + 1}`,

@@ -2,8 +2,8 @@ import usePlayerSetup from '../../hooks/usePlayerSetup';
 import SetupLayout from '../layout/SetupLayout';
 import PlayerConfigRow from './PlayerConfigRow';
 
-const PlayerSetup = ({ title = "Ta-Te-Ti", onComplete }) => {
-    const { players, updatePlayer, getVisiblePlayers, getTakenResources } = usePlayerSetup(2);
+const PlayerSetup = ({ title = "Ta-Te-Ti", onComplete, initialPlayers = null }) => {
+    const { players, updatePlayer, getVisiblePlayers, getTakenResources } = usePlayerSetup(2, 2, initialPlayers);
 
     const activePlayers = getVisiblePlayers(2);
     const { takenIcons, takenColors } = getTakenResources(activePlayers);

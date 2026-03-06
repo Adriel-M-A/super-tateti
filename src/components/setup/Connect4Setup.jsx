@@ -2,10 +2,10 @@ import SetupLayout from '../layout/SetupLayout';
 import PlayerConfigRow from './PlayerConfigRow';
 import usePlayerSetup from '../../hooks/usePlayerSetup';
 
-const Connect4Setup = ({ onComplete }) => {
+const Connect4Setup = ({ onComplete, initialPlayers = null }) => {
     // Conecta 4 es estrictamente para 2 jugadores
     const numPlayers = 2;
-    const { players, updatePlayer, getVisiblePlayers, getTakenResources } = usePlayerSetup(2, 2);
+    const { players, updatePlayer, getVisiblePlayers, getTakenResources } = usePlayerSetup(2, 2, initialPlayers);
 
     const activePlayers = getVisiblePlayers(numPlayers);
     const { takenIcons, takenColors } = getTakenResources(activePlayers);

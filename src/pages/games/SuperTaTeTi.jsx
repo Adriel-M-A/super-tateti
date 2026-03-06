@@ -94,12 +94,17 @@ const SuperTaTeTi = ({ onExit }) => {
     return (
         <div className="w-full flex flex-col items-center animate-in fade-in duration-500">
             {setupMode ? (
-                <PlayerSetup title="Super Ta-Te-Ti" onComplete={handleSetupComplete} />
+                <PlayerSetup
+                    title="Super Ta-Te-Ti"
+                    onComplete={handleSetupComplete}
+                    initialPlayers={players}
+                />
             ) : (
                 <GameProvider value={contextValue}>
                     <GameLayout
                         onExit={onExit}
                         onReset={resetGame}
+                        onConfig={() => setSetupMode(true)}
                         tacticalHint={activeSubBoard === null ? "Libertad de movimiento" : `Casilla Requerida: ${activeSubBoard + 1}`}
                     >
                         {globalWinner ? (
@@ -123,8 +128,9 @@ const SuperTaTeTi = ({ onExit }) => {
                         )}
                     </GameLayout>
                 </GameProvider>
-            )}
-        </div>
+            )
+            }
+        </div >
     );
 };
 

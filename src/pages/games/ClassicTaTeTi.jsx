@@ -67,12 +67,17 @@ const ClassicTaTeTi = ({ onExit }) => {
     return (
         <div className="w-full flex flex-col items-center animate-in fade-in duration-500">
             {setupMode ? (
-                <PlayerSetup title="Ta-Te-Ti Clásico" onComplete={handleSetupComplete} />
+                <PlayerSetup
+                    title="Ta-Te-Ti Clásico"
+                    onComplete={handleSetupComplete}
+                    initialPlayers={players}
+                />
             ) : (
                 <GameProvider value={contextValue}>
                     <GameLayout
                         onExit={onExit}
                         onReset={resetGame}
+                        onConfig={() => setSetupMode(true)}
                         tacticalHint="Objetivo: 3 en línea"
                     >
                         {winner ? (
@@ -97,8 +102,9 @@ const ClassicTaTeTi = ({ onExit }) => {
                         )}
                     </GameLayout>
                 </GameProvider>
-            )}
-        </div>
+            )
+            }
+        </div >
     );
 };
 
