@@ -167,20 +167,16 @@ const ExtendedTaTeTi = ({ onExit }) => {
                     <GameLayout
                         onExit={onExit}
                         onReset={handleReset}
+                        tacticalHint={`Objetivo: ${config.winCondition} en línea • ${config.cols}x${config.rows}`}
                     >
                         {gameState === 'playing' ? (
-                            <div className="flex flex-col items-center gap-6">
-                                <div className="px-6 py-2 rounded-full bg-cell-hover border border-board-border text-[10px] font-black uppercase tracking-widest text-slate-500 italic">
-                                    Objetivo: {config.winCondition} en línea • {config.cols}x{config.rows}
-                                </div>
-                                <ExtendedTaTeTiBoard
-                                    rows={config.rows}
-                                    cols={config.cols}
-                                    board={board}
-                                    completedLines={completedLines}
-                                    onCellClick={handleCellClick}
-                                />
-                            </div>
+                            <ExtendedTaTeTiBoard
+                                rows={config.rows}
+                                cols={config.cols}
+                                board={board}
+                                completedLines={completedLines}
+                                onCellClick={handleCellClick}
+                            />
                         ) : (() => {
                             const { winners } = getWinner();
                             const isDraw = winners.length === players.length && winners.length > 1 &&

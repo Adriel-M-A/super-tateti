@@ -3,7 +3,7 @@ import Board from '../../components/game/Board';
 import PlayerSetup from '../../components/setup/PlayerSetup';
 import GameLayout from '../../components/layout/GameLayout';
 import GameResult from '../../components/game/GameResult';
-import { SUPER_RULES } from '../../constants/gameRules';
+import { CLASSIC_RULES, SUPER_RULES } from '../../constants/gameRules';
 import { GameProvider } from '../../contexts/GameContext';
 
 const SuperTaTeTi = ({ onExit }) => {
@@ -85,7 +85,7 @@ const SuperTaTeTi = ({ onExit }) => {
     const contextValue = {
         players: playersList,
         currentPlayerIndex,
-        scores: {}, // El clásico de momento no guarda scores acumulados entre partidas
+        scores: { P1: 0, P2: 0 }, // Estandarización para el panel de estado
         gameStatus: globalWinner ? 'finished' : 'playing',
         gameTitle: "Super Ta-Te-Ti",
         rules: SUPER_RULES
@@ -100,6 +100,7 @@ const SuperTaTeTi = ({ onExit }) => {
                     <GameLayout
                         onExit={onExit}
                         onReset={resetGame}
+                        tacticalHint={activeSubBoard === null ? "Libertad de movimiento" : `Casilla Requerida: ${activeSubBoard + 1}`}
                     >
                         {globalWinner ? (
                             <GameResult
@@ -111,16 +112,13 @@ const SuperTaTeTi = ({ onExit }) => {
                                 }}
                             />
                         ) : (
-                            <div className="w-full max-w-2xl mx-auto flex flex-col items-center gap-6">
+                            <div className="w-full max-w-2xl mx-auto flex flex-col items-center">
                                 <Board
                                     cells={board}
                                     onCellClick={handleCellClick}
                                     activeSubBoard={activeSubBoard}
                                     subBoardWinners={subBoardWinners}
                                 />
-                                <div className="mt-8 px-6 py-3 rounded-2xl bg-cell-hover border border-board-border text-slate-500 text-xs font-black uppercase tracking-[0.2em] shadow-inner italic">
-                                    {activeSubBoard === null ? "Libertad de movimiento" : `Casilla Requerida: ${activeSubBoard + 1}`}
-                                </div>
                             </div>
                         )}
                     </GameLayout>

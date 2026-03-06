@@ -58,7 +58,7 @@ const ClassicTaTeTi = ({ onExit }) => {
     const contextValue = {
         players: playersList,
         currentPlayerIndex,
-        scores: {}, // El clásico de momento no guarda scores acumulados entre partidas
+        scores: { P1: 0, P2: 0 }, // Inicialización para consistencia visual en el panel de estado
         gameStatus: winner ? 'finished' : 'playing',
         gameTitle: "Ta-Te-Ti Clásico",
         rules: CLASSIC_RULES
@@ -73,6 +73,7 @@ const ClassicTaTeTi = ({ onExit }) => {
                     <GameLayout
                         onExit={onExit}
                         onReset={resetGame}
+                        tacticalHint="Objetivo: 3 en línea"
                     >
                         {winner ? (
                             <GameResult
@@ -85,7 +86,7 @@ const ClassicTaTeTi = ({ onExit }) => {
                                 }}
                             />
                         ) : (
-                            <div className="w-full max-w-md mx-auto aspect-square">
+                            <div className="w-full aspect-square max-w-md mx-auto">
                                 <Board
                                     cells={board}
                                     onCellClick={handleCellClick}

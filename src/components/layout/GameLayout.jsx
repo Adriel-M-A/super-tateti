@@ -1,12 +1,14 @@
 import { ArrowLeft, RotateCcw } from 'lucide-react';
 import GameRules from '../game/GameRules';
 import PlayerStatus from '../game/PlayerStatus';
+import GameTacticalHint from '../game/GameTacticalHint';
 import { useGame } from '../../contexts/GameContext';
 
 const GameLayout = ({
     children,
     onExit,
-    onReset
+    onReset,
+    tacticalHint
 }) => {
     const { gameTitle } = useGame();
 
@@ -48,8 +50,13 @@ const GameLayout = ({
                 </aside>
 
                 {/* Columna 2: El Juego (Centro) */}
-                <section className="flex flex-col items-center justify-center w-full h-full animate-in fade-in zoom-in duration-500 overflow-visible py-4 relative">
-                    <div className="w-full flex justify-center items-center scale-90 md:scale-95 lg:scale-100 origin-center transition-transform">
+                <section className="flex flex-col items-center justify-center w-full h-full animate-in fade-in zoom-in duration-500 overflow-visible py-4 relative gap-6">
+                    {tacticalHint && (
+                        <div className="shrink-0">
+                            <GameTacticalHint>{tacticalHint}</GameTacticalHint>
+                        </div>
+                    )}
+                    <div className="w-full flex-1 flex justify-center items-center scale-90 md:scale-95 lg:scale-100 origin-center transition-transform overflow-hidden">
                         {children}
                     </div>
                 </section>

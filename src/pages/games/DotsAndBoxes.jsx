@@ -149,6 +149,7 @@ const DotsAndBoxes = ({ onExit }) => {
                     <GameLayout
                         onExit={onExit}
                         onReset={resetGame}
+                        tacticalHint="Duelo por puntos • Cierra cajas para sumar"
                     >
                         {gameState === 'playing' ? (
                             <DotsAndBoxesBoard

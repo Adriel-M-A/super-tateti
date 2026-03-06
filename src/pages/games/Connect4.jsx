@@ -107,7 +107,7 @@ const Connect4 = ({ onExit }) => {
     const contextValue = {
         players,
         currentPlayerIndex,
-        scores: {}, // En Conecta 4 usualmente no hay puntuación acumulativa por partida rápida
+        scores: { P1: 0, P2: 0 }, // Estandarización para el panel de estado
         gameStatus: gameState,
         gameTitle: "Conecta 4",
         rules: CONNECT4_RULES
@@ -124,6 +124,7 @@ const Connect4 = ({ onExit }) => {
                     <GameLayout
                         onExit={onExit}
                         onReset={resetGame}
+                        tacticalHint="Objetivo: 4 en línea • Gravedad activa"
                     >
                         {gameState === 'playing' ? (
                             <Connect4Board
