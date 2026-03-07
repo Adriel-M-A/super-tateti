@@ -3,7 +3,8 @@ import SetupLayout from '../layout/SetupLayout';
 import PlayerConfigRow from './PlayerConfigRow';
 import SetupSelector from './SetupSelector';
 import usePlayerSetup from '../../hooks/usePlayerSetup';
-import { Users, LayoutGrid, Timer } from 'lucide-react';
+import { Users, LayoutGrid } from 'lucide-react';
+import useCompetitiveSetup from '../../hooks/useCompetitiveSetup';
 
 const DotsAndBoxesSetup = ({
     onComplete,
@@ -11,10 +12,9 @@ const DotsAndBoxesSetup = ({
     initialBoardSize = 5,
     isGameInProgress = false,
     initialCompetitiveMode = false,
-    initialTurnTime = 10
+    initialTurnTime = 0
 }) => {
-    const [competitiveMode, setCompetitiveMode] = useState(initialCompetitiveMode);
-    const [turnTime, setTurnTime] = useState(initialTurnTime);
+    const { competitiveMode, turnTime, competitiveSelectorProps } = useCompetitiveSetup(initialCompetitiveMode, initialTurnTime);
     const [numPlayers, setNumPlayers] = useState(initialPlayers?.length || 2);
     const [boardSize, setBoardSize] = useState(initialBoardSize);
     const { players, updatePlayer, getVisiblePlayers, getTakenResources } = usePlayerSetup(2, 5, initialPlayers);
@@ -64,20 +64,7 @@ const DotsAndBoxesSetup = ({
                     />
 
                     <div className="md:col-span-2 lg:col-span-1">
-                        <SetupSelector
-                            icon={Timer}
-                            title="Modo Competitivo"
-                            options={["No", 5, 10, 20, 30]}
-                            value={competitiveMode ? turnTime : "No"}
-                            onChange={(val) => {
-                                if (val === "No") {
-                                    setCompetitiveMode(false);
-                                } else {
-                                    setCompetitiveMode(true);
-                                    setTurnTime(val);
-                                }
-                            }}
-                        />
+                        <SetupSelector {...competitiveSelectorProps} />
                     </div>
                 </div>
 

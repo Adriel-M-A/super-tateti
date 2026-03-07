@@ -3,16 +3,15 @@ import SetupLayout from '../layout/SetupLayout';
 import PlayerConfigRow from './PlayerConfigRow';
 import SetupSelector from './SetupSelector';
 import usePlayerSetup from '../../hooks/usePlayerSetup';
-import { Timer } from 'lucide-react';
+import useCompetitiveSetup from '../../hooks/useCompetitiveSetup';
 
 const Connect4Setup = ({
     onComplete,
     initialPlayers = null,
     initialCompetitiveMode = false,
-    initialTurnTime = 10
+    initialTurnTime = 0
 }) => {
-    const [competitiveMode, setCompetitiveMode] = useState(initialCompetitiveMode);
-    const [turnTime, setTurnTime] = useState(initialTurnTime);
+    const { competitiveMode, turnTime, competitiveSelectorProps } = useCompetitiveSetup(initialCompetitiveMode, initialTurnTime);
     // Conecta 4 es estrictamente para 2 jugadores
     const numPlayers = 2;
     const { players, updatePlayer, getVisiblePlayers, getTakenResources } = usePlayerSetup(2, 2, initialPlayers);
@@ -38,20 +37,7 @@ const Connect4Setup = ({
                 {/* Modo Competitivo */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="md:col-span-2">
-                        <SetupSelector
-                            icon={Timer}
-                            title="Modo Competitivo"
-                            options={["No", 5, 10, 20, 30]}
-                            value={competitiveMode ? turnTime : "No"}
-                            onChange={(val) => {
-                                if (val === "No") {
-                                    setCompetitiveMode(false);
-                                } else {
-                                    setCompetitiveMode(true);
-                                    setTurnTime(val);
-                                }
-                            }}
-                        />
+                        <SetupSelector {...competitiveSelectorProps} />
                     </div>
                 </div>
 
