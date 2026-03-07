@@ -8,6 +8,7 @@ export const GameProvider = ({ children, value }) => {
         competitiveMode: false,
         turnTime: 0,
         onTimeOut: null,
+        timerResetTrigger: 0,
         ...value
     };
 

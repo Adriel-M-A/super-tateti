@@ -116,6 +116,17 @@ const Connect4 = ({ onExit }) => {
         initializeGame({ players });
     };
 
+    // Elige una columna no llena al azar y deja caer la ficha por gravedad
+    const handleTimeOut = useCallback(() => {
+        const availableCols = [];
+        for (let col = 0; col < COLS; col++) {
+            if (grid[0][col] === null) availableCols.push(col);
+        }
+        if (availableCols.length === 0) return;
+        const randomCol = availableCols[Math.floor(Math.random() * availableCols.length)];
+        handleColumnClick(randomCol);
+    }, [grid, handleColumnClick]);
+
     const contextValue = {
         players,
         currentPlayerIndex,
@@ -124,7 +135,8 @@ const Connect4 = ({ onExit }) => {
         gameTitle: "Conecta 4",
         rules: CONNECT4_RULES,
         competitiveMode,
-        turnTime
+        turnTime,
+        onTimeOut: competitiveMode ? handleTimeOut : null
     };
 
     return (

@@ -154,6 +154,19 @@ const ExtendedTaTeTi = ({ onExit }) => {
         setGameState('playing');
     };
 
+    // Elige una celda vacía al azar y juega como si fuera el jugador activo
+    const handleTimeOut = useCallback(() => {
+        const emptyCells = [];
+        board.forEach((row, r) => {
+            row.forEach((cell, c) => {
+                if (cell === null) emptyCells.push({ r, c });
+            });
+        });
+        if (emptyCells.length === 0) return;
+        const { r, c } = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+        handleCellClick(r, c);
+    }, [board, handleCellClick]);
+
     const backToSetup = () => {
         setGameState('setup');
     };
@@ -173,7 +186,8 @@ const ExtendedTaTeTi = ({ onExit }) => {
         gameTitle: "Ta-Te-Ti Extendido",
         rules: EXTENDED_TATETI_RULES,
         competitiveMode,
-        turnTime
+        turnTime,
+        onTimeOut: competitiveMode ? handleTimeOut : null
     };
 
     return (

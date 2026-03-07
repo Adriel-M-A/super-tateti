@@ -3,18 +3,18 @@ import { Timer, AlertCircle } from 'lucide-react';
 import { useGame } from '../../contexts/GameContext';
 
 const GameTimer = () => {
-    const { competitiveMode, turnTime, currentPlayerIndex, gameStatus, onTimeOut } = useGame();
+    const { competitiveMode, turnTime, currentPlayerIndex, gameStatus, onTimeOut, timerResetTrigger } = useGame();
     const [timeLeft, setTimeLeft] = useState(turnTime);
     const timerRef = useRef(null);
     const timeoutFiredRef = useRef(false); // Evita disparar onTimeOut más de una vez por turno
 
-    // Reiniciar temporizador y flag cuando cambia el turno
+    // Reiniciar temporizador y flag cuando cambia el turno o el juego señala un reinicio
     useEffect(() => {
         if (competitiveMode && gameStatus === 'playing') {
             setTimeLeft(turnTime);
             timeoutFiredRef.current = false;
         }
-    }, [currentPlayerIndex, turnTime, competitiveMode, gameStatus]);
+    }, [currentPlayerIndex, timerResetTrigger, turnTime, competitiveMode, gameStatus]);
 
     // Lógica de cuenta regresiva
     useEffect(() => {

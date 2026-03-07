@@ -40,7 +40,7 @@ const PlayerSetup = ({
                         <SetupSelector
                             icon={Timer}
                             title="Modo Competitivo"
-                            options={["No", 5, 10, 20, 30]}
+                            options={["No", 2, 5, 10, 20, 30]}
                             value={competitiveMode ? turnTime : "No"}
                             onChange={(val) => {
                                 if (val === "No") {

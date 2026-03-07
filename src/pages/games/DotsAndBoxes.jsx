@@ -19,6 +19,7 @@ const DotsAndBoxes = ({ onExit }) => {
     const [boxes, setBoxes] = useState([]); // [r][c] almacena el playerIndex o null
     const [scores, setScores] = useState([]);
     const [winner, setWinner] = useState(null);
+    const [timerResetTrigger, setTimerResetTrigger] = useState(0);
 
     const initializeGame = (setupData) => {
         const { players: configPlayers, boardSize: size, competitiveMode: cm, turnTime: tt } = setupData;
@@ -124,6 +125,9 @@ const DotsAndBoxes = ({ onExit }) => {
         } else if (boxesCompleted === 0) {
             // Si no completó caja, cambio de turno
             setCurrentPlayerIndex((currentPlayerIndex + 1) % players.length);
+        } else {
+            // Completó una caja: conserva el turno pero reinicia el timer
+            setTimerResetTrigger(prev => prev + 1);
         }
 
         return true;
@@ -142,6 +146,29 @@ const DotsAndBoxes = ({ onExit }) => {
         initializeGame({ players, boardSize });
     };
 
+    // Elige una línea no marcada al azar y la juega como si fuera el jugador activo
+    const handleTimeOut = useCallback(() => {
+        const availableMoves = [];
+
+        // Recolectar líneas horizontales disponibles
+        lines.h.forEach((row, r) => {
+            row.forEach((cell, c) => {
+                if (cell === null) availableMoves.push({ type: 'h', r, c });
+            });
+        });
+
+        // Recolectar líneas verticales disponibles
+        lines.v.forEach((row, r) => {
+            row.forEach((cell, c) => {
+                if (cell === null) availableMoves.push({ type: 'v', r, c });
+            });
+        });
+
+        if (availableMoves.length === 0) return;
+        const { type, r, c } = availableMoves[Math.floor(Math.random() * availableMoves.length)];
+        handleMove(type, r, c);
+    }, [lines, handleMove]);
+
     // Convertir scores a objeto por ID para el contexto
     const scoresById = {};
     players.forEach((p, i) => scoresById[p.id] = scores[i]);
@@ -154,7 +181,9 @@ const DotsAndBoxes = ({ onExit }) => {
         gameTitle: "Puntos y Cajas",
         rules: DOTS_AND_BOXES_RULES,
         competitiveMode,
-        turnTime
+        turnTime,
+        timerResetTrigger,
+        onTimeOut: competitiveMode ? handleTimeOut : null
     };
 
     return (
