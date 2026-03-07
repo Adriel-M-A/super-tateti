@@ -1,40 +1,154 @@
-# Super Ta-Te-Ti
+# GamesHub
 
-¡Bienvenido al **Super Ta-Te-Ti** (también conocido como Ultimate Tic-Tac-Toe)! Esta es una versión estratégica y avanzada del clásico juego de tres en raya, construida con **React, Vite y Tailwind CSS v4**.
+Una colección de juegos de mesa y estrategia construida con **React + Vite + Tailwind CSS v4**.
 
-## ¿De qué trata el proyecto?
+## Descripción
 
-A diferencia del Ta-Te-Ti tradicional, el **Super Ta-Te-Ti** es un tablero de 3x3 donde cada una de sus 9 celdas contiene, a su vez, otro tablero completo de Ta-Te-Ti (un "sub-tateti").
-
-El objetivo principal es ganar el **tablero grande** consiguiendo tres celdas en línea (horizontal, vertical o diagonal). Para ganar una celda del tablero grande, debes ganar el sub-tateti que se encuentra dentro de ella.
-
-## Reglas del Juego
-
-### 1. Movimiento Forzado (La Regla de Oro)
-La posición de tu jugada en un sub-tateti determina en qué sub-tateti debe jugar tu oponente a continuación:
-- Si el Jugador 1 marca la celda **central** de cualquier sub-tateti, el Jugador 2 está obligado a realizar su próximo movimiento en el sub-tateti que ocupa la posición **central** del tablero grande.
-- Si un jugador marca una celda en la esquina superior derecha de un sub-tateti, el siguiente jugador debe jugar en el sub-tateti de la esquina superior derecha del tablero grande.
-
-### 2. Ganar Celdas y Turnos
-- Cuando un jugador consigue tres en raya en un sub-tateti, gana esa celda del tablero grande.
-- Tras ganar un sub-tateti, el turno pasa al oponente. Si el movimiento ganador obligaba al oponente a ir a un sub-tateti que ya ha sido ganado o está empatado (terminado), el oponente puede elegir **libremente** en qué sub-tateti disponible jugar (Movimiento Libre).
-
-### 3. Movimiento Libre
-- Si un jugador es enviado a un sub-tateti que ya está terminado (alguien ya lo ganó o hay un empate), ese jugador puede jugar en **cualquier otro sub-tateti disponible** del tablero.
-
-### 4. Empate como Comodín (Wildcard)
-- Si un sub-tateti termina en **empate** (todas las celdas llenas sin un ganador claro), esa posición en el tablero grande se convierte en un **Comodín**.
-- El comodín sirve para completar una línea de tres para **cualquiera de los dos jugadores**. Es una pieza compartida que añade una capa táctica extra: a veces empatar un tablero es mejor que perderlo, ¡pero también beneficia al rival!
-
-### 5. Fin del Juego
-- El juego termina cuando un jugador consigue ganar el tablero principal (tres celdas grandes en línea) o cuando todos los sub-tatetis están terminados.
-
-## Tecnologías Utilizadas
-
-- **React**: Biblioteca para la interfaz de usuario.
-- **Vite**: Herramienta de construcción ultrarrápida.
-- **Tailwind CSS v4**: Motor CSS de última generación para un diseño moderno y fluido.
-- **JavaScript**: Lógica del juego.
+**GamesHub** es una aplicación web que agrupa 5 juegos clásicos en una sola interfaz. Cada juego tiene su propia pantalla de configuración donde se pueden personalizar jugadores, tablero y reglas. Todos los juegos comparten una capa de ui común (temporizador, estado de jugadores, historial de jugadas), y soportan el **Modo Competitivo** con cuenta regresiva.
 
 ---
-*Desarrollado con pasión para llevar el Ta-Te-Ti al siguiente nivel.*
+
+## Juegos Disponibles
+
+### 🟩 Ta-Te-Ti Clásico
+El juego original de 3x3 para dos jugadores.
+
+- Tablero de 3×3. Los jugadores (X y O) se turnan para marcar una casilla vacía.
+- Gana quien alinee **3 símbolos** en horizontal, vertical o diagonal.
+- Si se llenan todas las casillas sin ganador: **empate**.
+
+---
+
+### 🔵 Super Ta-Te-Ti *(Ultimate Tic-Tac-Toe)*
+Estrategia recursiva en 9 dimensiones.
+
+- El tablero es una grilla 3×3 donde **cada celda contiene un sub-tablero** de 3×3.
+- **Regla de Oro:** tu movimiento dentro de un sub-tablero determina en qué sub-tablero debe jugar tu rival a continuación.
+- Si te envían a un sub-tablero ya terminado o lleno, tenés **libertad de movimiento** en cualquier celda libre del tablero global.
+- Ganar un sub-tablero equivale a reclamar esa celda en el tablero principal.
+- Gana quien alinee **3 sub-tableros ganados** en el tablero global.
+- Los empates en sub-tableros actúan como **comodín**: cuentan para completar una línea de cualquier jugador.
+
+---
+
+### 🟣 Puntos y Cajas *(Dots and Boxes)*
+Captura territorio en una grilla táctica. Soporta hasta **5 jugadores**.
+
+- El tablero es una grilla de puntos. En cada turno trazás una **línea horizontal o vertical** entre dos puntos adyacentes.
+- Al cerrar los **4 lados** de un cuadrado, ganás el cuadrado y **conservás el turno**.
+- El juego termina cuando ya no quedan líneas por trazar.
+- Gana el jugador con **más cuadrados capturados**.
+- Tamaño de tablero configurable (3×3 a 7×7).
+
+---
+
+### 🩷 Ta-Te-Ti Extendido
+Tableros grandes con puntuación acumulativa. Soporta hasta **5 jugadores**.
+
+- Tablero de tamaño personalizado (configurable en filas, columnas y condición de victoria: 3, 4 o 5 en línea).
+- Cada línea completada otorga **1 punto**. Una celda puede formar parte de varias líneas simultáneamente.
+- La partida **no termina** al formar una línea; se juega hasta que el tablero esté completo.
+- Gana el jugador con la **puntuación más alta** al agotarse las celdas.
+
+---
+
+### 🟡 Conecta 4
+Duelo vertical de estrategia para dos jugadores.
+
+- Tablero vertical de **7 columnas × 6 filas**. Las fichas caen hasta la posición libre más baja de la columna elegida (gravedad).
+- Solo se puede elegir columnas que **no estén completamente llenas**.
+- Gana el primero en alinear **4 fichas** en horizontal, vertical o diagonal.
+
+---
+
+## Modo Competitivo
+
+Todos los juegos incluyen **Modo Competitivo** activable desde la pantalla de configuración.
+
+- Tiempo por turno configurable: **5 / 10 / 20 / 30 segundos**.
+- El temporizador se muestra en la columna lateral durante la partida con una barra de progreso fluida.
+- Si el tiempo expira, se realiza automáticamente un **movimiento aleatorio válido** respetando las reglas de cada juego:
+  - *Clásico / Extendido*: selecciona una celda vacía al azar.
+  - *Super TaTeTi*: respeta la regla de movimiento forzado/libre (`activeSubBoard`).
+  - *Conecta 4*: elige una columna no llena al azar (la ficha cae por gravedad).
+  - *Puntos y Cajas*: elige una línea disponible al azar. Si completa una caja, el timer se reinicia (el jugador conserva el turno).
+
+---
+
+## Configuración de Jugadores
+
+Cada juego permite personalizar a los jugadores antes de comenzar:
+
+- **Nombre** editable.
+- **Ícono** (símbolo visual único): X, O, triángulo, estrella, etc.
+- **Color** personalizado con un selector visual.
+- Número de jugadores configurable según el juego (2 fijos en Clásico, Super y Conecta 4; 2–5 en Extendido y Puntos y Cajas).
+
+La configuración **persiste al volver al menú de setup** sin reiniciar la partida si no cambiaron los parámetros estructurales (tamaño de tablero, cantidad de jugadores).
+
+---
+
+## Características Generales
+
+- 🌙 **Modo oscuro / claro** con toggle global.
+- 📊 **Panel lateral** durante el juego: turno actual, puntuaciones y temporizador.
+- 🔄 **Reinicio** y **regreso al setup** accesibles en cualquier momento desde el header del juego.
+- 🏆 **Pantalla de resultado** al finalizar: muestra ganador/es o empate con opción de revancha.
+- 📜 **Reglas del juego** accesibles desde el panel lateral durante la partida.
+
+---
+
+## Stack Tecnológico
+
+| Tecnología | Rol |
+|---|---|
+| **React 19** | Biblioteca de UI y manejo de estado |
+| **Vite** | Bundler y servidor de desarrollo |
+| **Tailwind CSS v4** | Estilos utilitarios, temas y animaciones |
+| **Lucide React** | Iconografía |
+| **Context API** | Estado compartido entre layout y juego |
+
+### Estructura del Proyecto
+
+```
+src/
+├── pages/
+│   ├── Home.jsx                  # Pantalla principal con selección de juegos
+│   └── games/
+│       ├── ClassicTaTeTi.jsx
+│       ├── SuperTaTeTi.jsx
+│       ├── DotsAndBoxes.jsx
+│       ├── ExtendedTaTeTi.jsx
+│       └── Connect4.jsx
+├── components/
+│   ├── layout/                   # GameLayout, GameHeader, SetupLayout, GameTimer...
+│   ├── game/                     # Board, Connect4Board, DotsAndBoxesBoard, PlayerStatus...
+│   └── setup/                    # PlayerSetup, Connect4Setup, DotsAndBoxesSetup...
+├── contexts/
+│   └── GameContext.jsx           # Estado global compartido durante una partida
+├── hooks/
+│   ├── usePlayerSetup.js         # Lógica de configuración de jugadores
+│   └── useCompetitiveSetup.js    # Lógica del selector de Modo Competitivo
+└── constants/
+    ├── gameRules.js              # Reglas de cada juego (usadas en el panel lateral)
+    └── gameConfig.js             # Opciones compartidas (tiempos del modo competitivo)
+```
+
+---
+
+## Instalación y Desarrollo
+
+```bash
+# Instalar dependencias
+npm install
+
+# Servidor de desarrollo
+npm run dev
+
+# Build de producción
+npm run build
+```
+
+---
+
+*GamesHub v1.0.0*
