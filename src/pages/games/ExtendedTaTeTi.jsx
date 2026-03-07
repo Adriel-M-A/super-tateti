@@ -15,9 +15,15 @@ const ExtendedTaTeTi = ({ onExit }) => {
     const [completedLines, setCompletedLines] = useState([]);
     const [scores, setScores] = useState({});
     const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
+    const [competitiveMode, setCompetitiveMode] = useState(false);
+    const [turnTime, setTurnTime] = useState(0);
 
     const initializeGame = (setupData) => {
-        const { players: selectedPlayers, rows, cols, winCondition } = setupData;
+        const { players: selectedPlayers, rows, cols, winCondition, competitiveMode: cm, turnTime: tt } = setupData;
+
+        // Actualizar siempre los estados competitivos
+        setCompetitiveMode(cm ?? false);
+        setTurnTime(tt ?? 0);
 
         // Persistencia Inteligente
         const isSameStructure = rows === config.rows &&
@@ -165,7 +171,9 @@ const ExtendedTaTeTi = ({ onExit }) => {
         scores,
         gameStatus: gameState,
         gameTitle: "Ta-Te-Ti Extendido",
-        rules: EXTENDED_TATETI_RULES
+        rules: EXTENDED_TATETI_RULES,
+        competitiveMode,
+        turnTime
     };
 
     return (
@@ -175,6 +183,8 @@ const ExtendedTaTeTi = ({ onExit }) => {
                     onComplete={initializeGame}
                     initialPlayers={players}
                     initialConfig={config}
+                    initialCompetitiveMode={competitiveMode}
+                    initialTurnTime={turnTime}
                     isGameInProgress={board.some(r => r.some(c => c !== null))}
                 />
             )}

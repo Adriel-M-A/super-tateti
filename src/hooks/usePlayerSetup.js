@@ -20,7 +20,7 @@ export const ICON_OPTIONS = [
 
 const usePlayerSetup = (initialPlayersCount = 2, maxPlayers = 5, initialPlayers = null) => {
     const [players, setPlayers] = useState(() => {
-        if (initialPlayers && Array.isArray(initialPlayers)) {
+        if (initialPlayers) {
             // Si vienen como objeto (P1, P2) los convertimos a array, si no los usamos tal cual
             const baseArray = Array.isArray(initialPlayers) ? initialPlayers : Object.values(initialPlayers);
 

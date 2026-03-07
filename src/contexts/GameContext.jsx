@@ -3,8 +3,15 @@ import { createContext, useContext } from 'react';
 const GameContext = createContext();
 
 export const GameProvider = ({ children, value }) => {
+    // Aseguramos valores por defecto para el modo competitivo si no vienen en value
+    const contextValue = {
+        competitiveMode: false,
+        turnTime: 0,
+        ...value
+    };
+
     return (
-        <GameContext.Provider value={value}>
+        <GameContext.Provider value={contextValue}>
             {children}
         </GameContext.Provider>
     );

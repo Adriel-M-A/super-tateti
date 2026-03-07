@@ -3,14 +3,18 @@ import SetupLayout from '../layout/SetupLayout';
 import PlayerConfigRow from './PlayerConfigRow';
 import SetupSelector from './SetupSelector';
 import usePlayerSetup from '../../hooks/usePlayerSetup';
-import { Users, LayoutGrid, Hash, Swords } from 'lucide-react';
+import { Users, LayoutGrid, Hash, Swords, Timer } from 'lucide-react';
 
 const ExtendedTaTeTiSetup = ({
     onComplete,
     initialPlayers = null,
     initialConfig = null,
-    isGameInProgress = false
+    isGameInProgress = false,
+    initialCompetitiveMode = false,
+    initialTurnTime = 10
 }) => {
+    const [competitiveMode, setCompetitiveMode] = useState(initialCompetitiveMode);
+    const [turnTime, setTurnTime] = useState(initialTurnTime);
     const [numPlayers, setNumPlayers] = useState(initialPlayers?.length || 2);
     const [rows, setRows] = useState(initialConfig?.rows || 7);
     const [cols, setCols] = useState(initialConfig?.cols || 7);
@@ -34,7 +38,9 @@ const ExtendedTaTeTiSetup = ({
             players: activePlayers,
             rows,
             cols,
-            winCondition
+            winCondition,
+            competitiveMode,
+            turnTime: competitiveMode ? turnTime : 0
         });
     };
 
@@ -84,6 +90,23 @@ const ExtendedTaTeTiSetup = ({
                         value={winCondition}
                         onChange={setWinCondition}
                     />
+
+                    <div className="md:col-span-2 lg:col-span-4">
+                        <SetupSelector
+                            icon={Timer}
+                            title="Modo Competitivo"
+                            options={["No", 5, 10, 20, 30]}
+                            value={competitiveMode ? turnTime : "No"}
+                            onChange={(val) => {
+                                if (val === "No") {
+                                    setCompetitiveMode(false);
+                                } else {
+                                    setCompetitiveMode(true);
+                                    setTurnTime(val);
+                                }
+                            }}
+                        />
+                    </div>
                 </div>
 
                 {/* Jugadores */}

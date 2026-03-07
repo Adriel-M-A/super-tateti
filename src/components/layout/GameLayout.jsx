@@ -1,6 +1,7 @@
 import { Home, RotateCcw, Settings2 } from 'lucide-react';
 import GameRules from '../game/GameRules';
 import PlayerStatus from '../game/PlayerStatus';
+import GameTimer from '../game/GameTimer';
 import GameTacticalHint from '../game/GameTacticalHint';
 import { useGame } from '../../contexts/GameContext';
 
@@ -57,7 +58,10 @@ const GameLayout = ({
 
                 {/* Columna 1: Estatus de Jugadores (Desktop Only) */}
                 <aside className="hidden lg:flex h-full flex-col overflow-hidden">
-                    <div className="flex-1 overflow-y-auto px-4 custom-scrollbar py-4">
+                    <div className="flex-1 overflow-y-auto px-4 custom-scrollbar py-6 flex flex-col gap-8">
+                        <GameTimer />
+                        {/* Divisor entre el temporizador y los jugadores */}
+                        <div className="w-full h-px bg-page-text/10 rounded-full" />
                         <PlayerStatus />
                     </div>
                 </aside>

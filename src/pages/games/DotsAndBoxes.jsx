@@ -11,6 +11,8 @@ const DotsAndBoxes = ({ onExit }) => {
     const [players, setPlayers] = useState([]);
     const [boardSize, setBoardSize] = useState(5);
     const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
+    const [competitiveMode, setCompetitiveMode] = useState(false);
+    const [turnTime, setTurnTime] = useState(0);
 
     // Estado del tablero: líneas y cajas
     const [lines, setLines] = useState({ h: [], v: [] });
@@ -19,7 +21,11 @@ const DotsAndBoxes = ({ onExit }) => {
     const [winner, setWinner] = useState(null);
 
     const initializeGame = (setupData) => {
-        const { players: configPlayers, boardSize: size } = setupData;
+        const { players: configPlayers, boardSize: size, competitiveMode: cm, turnTime: tt } = setupData;
+
+        // Actualizar siempre los estados competitivos
+        setCompetitiveMode(cm ?? false);
+        setTurnTime(tt ?? 0);
 
         // Persistencia Inteligente: ¿Ha cambiado algo estructural?
         const isSameStructure = size === boardSize && configPlayers.length === players.length;
@@ -146,7 +152,9 @@ const DotsAndBoxes = ({ onExit }) => {
         scores: scoresById,
         gameStatus: gameState,
         gameTitle: "Puntos y Cajas",
-        rules: DOTS_AND_BOXES_RULES
+        rules: DOTS_AND_BOXES_RULES,
+        competitiveMode,
+        turnTime
     };
 
     return (
@@ -156,6 +164,8 @@ const DotsAndBoxes = ({ onExit }) => {
                     onComplete={initializeGame}
                     initialPlayers={players}
                     initialBoardSize={boardSize}
+                    initialCompetitiveMode={competitiveMode}
+                    initialTurnTime={turnTime}
                     isGameInProgress={lines.h.some(r => r.some(c => c !== null)) || lines.v.some(r => r.some(c => c !== null))}
                 />
             )}

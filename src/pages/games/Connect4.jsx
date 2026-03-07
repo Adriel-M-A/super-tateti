@@ -16,9 +16,13 @@ const Connect4 = ({ onExit }) => {
     const [grid, setGrid] = useState(Array.from({ length: ROWS }, () => new Array(COLS).fill(null)));
     const [winner, setWinner] = useState(null);
     const [winningCells, setWinningCells] = useState([]);
+    const [competitiveMode, setCompetitiveMode] = useState(false);
+    const [turnTime, setTurnTime] = useState(0);
 
     const handleSetupComplete = (setupData) => {
         setPlayers(setupData.players);
+        setCompetitiveMode(setupData.competitiveMode);
+        setTurnTime(setupData.turnTime);
         setGameState('playing');
         // No reiniciamos el grid ni el turno aquí para permitir persistencia
     };
@@ -31,6 +35,7 @@ const Connect4 = ({ onExit }) => {
         setGameState('playing');
         setWinner(null);
         setWinningCells([]);
+        // Los estados competitivos se mantienen entre resets
     };
 
     const checkVictory = (newGrid, r, c, playerIdx) => {
@@ -114,16 +119,23 @@ const Connect4 = ({ onExit }) => {
     const contextValue = {
         players,
         currentPlayerIndex,
-        scores: { P1: 0, P2: 0 }, // Estandarización para el panel de estado
+        scores: { P1: 0, P2: 0 },
         gameStatus: gameState,
         gameTitle: "Conecta 4",
-        rules: CONNECT4_RULES
+        rules: CONNECT4_RULES,
+        competitiveMode,
+        turnTime
     };
 
     return (
         <div className="w-full flex flex-col items-center">
             {gameState === 'setup' && (
-                <Connect4Setup onComplete={handleSetupComplete} initialPlayers={players} />
+                <Connect4Setup
+                    onComplete={handleSetupComplete}
+                    initialPlayers={players}
+                    initialCompetitiveMode={competitiveMode}
+                    initialTurnTime={turnTime}
+                />
             )}
 
             {(gameState === 'playing' || gameState === 'finished') && (

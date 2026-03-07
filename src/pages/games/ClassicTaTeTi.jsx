@@ -12,13 +12,17 @@ const ClassicTaTeTi = ({ onExit }) => {
         P1: { id: 'P1', name: 'Jugador 1', icon: 'X', color: '#3b82f6' },
         P2: { id: 'P2', name: 'Jugador 2', icon: 'Circle', color: '#ef4444' }
     });
+    const [competitiveMode, setCompetitiveMode] = useState(false);
+    const [turnTime, setTurnTime] = useState(0);
 
     const [board, setBoard] = useState(Array(9).fill(null));
     const [isXNext, setIsXNext] = useState(true);
     const [winner, setWinner] = useState(null);
 
-    const handleSetupComplete = (selectedPlayers) => {
-        setPlayers(selectedPlayers);
+    const handleSetupComplete = (setupData) => {
+        setPlayers(setupData.players);
+        setCompetitiveMode(setupData.competitiveMode);
+        setTurnTime(setupData.turnTime);
         setSetupMode(false);
     };
 
@@ -58,10 +62,12 @@ const ClassicTaTeTi = ({ onExit }) => {
     const contextValue = {
         players: playersList,
         currentPlayerIndex,
-        scores: { P1: 0, P2: 0 }, // Inicialización para consistencia visual en el panel de estado
+        scores: { P1: 0, P2: 0 },
         gameStatus: winner ? 'finished' : 'playing',
         gameTitle: "Ta-Te-Ti Clásico",
-        rules: CLASSIC_RULES
+        rules: CLASSIC_RULES,
+        competitiveMode,
+        turnTime
     };
 
     return (
@@ -71,6 +77,8 @@ const ClassicTaTeTi = ({ onExit }) => {
                     title="Ta-Te-Ti Clásico"
                     onComplete={handleSetupComplete}
                     initialPlayers={players}
+                    initialCompetitiveMode={competitiveMode}
+                    initialTurnTime={turnTime}
                 />
             ) : (
                 <GameProvider value={contextValue}>

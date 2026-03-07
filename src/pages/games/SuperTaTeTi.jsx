@@ -12,6 +12,8 @@ const SuperTaTeTi = ({ onExit }) => {
         P1: { id: 'P1', name: 'Jugador 1', icon: 'X', color: '#3b82f6' },
         P2: { id: 'P2', name: 'Jugador 2', icon: 'Circle', color: '#ef4444' }
     });
+    const [competitiveMode, setCompetitiveMode] = useState(false);
+    const [turnTime, setTurnTime] = useState(0);
 
     const [board, setBoard] = useState(Array(9).fill(null).map(() => Array(9).fill(null)));
     const [isXNext, setIsXNext] = useState(true);
@@ -19,8 +21,10 @@ const SuperTaTeTi = ({ onExit }) => {
     const [subBoardWinners, setSubBoardWinners] = useState(Array(9).fill(null));
     const [globalWinner, setGlobalWinner] = useState(null);
 
-    const handleSetupComplete = (selectedPlayers) => {
-        setPlayers(selectedPlayers);
+    const handleSetupComplete = (setupData) => {
+        setPlayers(setupData.players);
+        setCompetitiveMode(setupData.competitiveMode);
+        setTurnTime(setupData.turnTime);
         setSetupMode(false);
     };
 
@@ -85,10 +89,12 @@ const SuperTaTeTi = ({ onExit }) => {
     const contextValue = {
         players: playersList,
         currentPlayerIndex,
-        scores: { P1: 0, P2: 0 }, // Estandarización para el panel de estado
+        scores: { P1: 0, P2: 0 },
         gameStatus: globalWinner ? 'finished' : 'playing',
         gameTitle: "Super Ta-Te-Ti",
-        rules: SUPER_RULES
+        rules: SUPER_RULES,
+        competitiveMode,
+        turnTime
     };
 
     return (
@@ -98,6 +104,8 @@ const SuperTaTeTi = ({ onExit }) => {
                     title="Super Ta-Te-Ti"
                     onComplete={handleSetupComplete}
                     initialPlayers={players}
+                    initialCompetitiveMode={competitiveMode}
+                    initialTurnTime={turnTime}
                 />
             ) : (
                 <GameProvider value={contextValue}>
