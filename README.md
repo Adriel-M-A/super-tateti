@@ -61,6 +61,17 @@ Duelo vertical de estrategia para dos jugadores.
 
 ---
 
+### 🩵 Gobblet
+Estrategia de piezas jerarquizadas para dos jugadores.
+
+- El tablero es cuadrado y configurable: **3×3**, **4×4** (versión original) o **5×5**. El objetivo es alinear N piezas visibles propias (igual al tamaño del tablero) en horizontal, vertical o diagonal.
+- Cada jugador tiene piezas de **distintos tamaños** (S, M, L en 3×3/4×4; XS, S, M, L en 5×5) organizadas en **pilas externas**. Solo está disponible la pieza de la cima de cada pila.
+- Una pieza puede **cubrir a otra más pequeña** (propia o del rival), ocultándola bajo la pila. Solo las piezas **visibles** (tope de cada celda) cuentan para ganar.
+- En cada turno se puede: colocar una pieza nueva desde las pilas externas, o mover una pieza ya visible en el tablero hacia otra celda válida.
+- Al mover una pieza, la que estaba debajo **vuelve a ser visible**, lo que puede revelar sorpresas estratégicas inesperadas.
+
+---
+
 ## Modo Competitivo
 
 Todos los juegos incluyen **Modo Competitivo** activable desde la pantalla de configuración.
@@ -72,6 +83,7 @@ Todos los juegos incluyen **Modo Competitivo** activable desde la pantalla de co
   - *Super TaTeTi*: respeta la regla de movimiento forzado/libre (`activeSubBoard`).
   - *Conecta 4*: elige una columna no llena al azar (la ficha cae por gravedad).
   - *Puntos y Cajas*: elige una línea disponible al azar. Si completa una caja, el timer se reinicia (el jugador conserva el turno).
+  - *Gobblet*: elige un movimiento válido al azar respetando la jerarquía de tamaños (nueva pieza externa o movimiento de pieza visible en el tablero).
 
 ---
 
@@ -82,7 +94,7 @@ Cada juego permite personalizar a los jugadores antes de comenzar:
 - **Nombre** editable.
 - **Ícono** (símbolo visual único): X, O, triángulo, estrella, etc.
 - **Color** personalizado con un selector visual.
-- Número de jugadores configurable según el juego (2 fijos en Clásico, Super y Conecta 4; 2–5 en Extendido y Puntos y Cajas).
+- Número de jugadores configurable según el juego (2 fijos en Clásico, Super, Conecta 4 y Gobblet; 2–5 en Extendido y Puntos y Cajas).
 
 La configuración **persiste al volver al menú de setup** sin reiniciar la partida si no cambiaron los parámetros estructurales (tamaño de tablero, cantidad de jugadores).
 
@@ -119,11 +131,12 @@ src/
 │       ├── SuperTaTeTi.jsx
 │       ├── DotsAndBoxes.jsx
 │       ├── ExtendedTaTeTi.jsx
-│       └── Connect4.jsx
+│       ├── Connect4.jsx
+│       └── Gobblet.jsx
 ├── components/
 │   ├── layout/                   # GameLayout, GameHeader, SetupLayout, GameTimer...
-│   ├── game/                     # Board, Connect4Board, DotsAndBoxesBoard, PlayerStatus...
-│   └── setup/                    # PlayerSetup, Connect4Setup, DotsAndBoxesSetup...
+│   ├── game/                     # Board, Connect4Board, GobbletBoard, GobbletExternalPiles...
+│   └── setup/                    # PlayerSetup, Connect4Setup, GobbletSetup...
 ├── contexts/
 │   └── GameContext.jsx           # Estado global compartido durante una partida
 ├── hooks/

@@ -5,6 +5,7 @@ import ClassicTaTeTi from './pages/games/ClassicTaTeTi';
 import SuperTaTeTi from './pages/games/SuperTaTeTi';
 import DotsAndBoxes from './pages/games/DotsAndBoxes';
 import ExtendedTaTeTi from './pages/games/ExtendedTaTeTi';
+import Gobblet from './pages/games/Gobblet';
 
 import ThemeToggle from './components/layout/ThemeToggle'
 
@@ -55,6 +56,9 @@ function App() {
             )}
             {view === 'connect4' && (
               <Connect4 onExit={handleReturnHome} />
+            )}
+            {view === 'gobblet' && (
+              <Gobblet onExit={handleReturnHome} />
             )}
           </div>
         )}

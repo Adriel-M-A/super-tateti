@@ -30,6 +30,14 @@ export const EXTENDED_TATETI_RULES = [
     "Gana el jugador con la puntuación más alta al agotarse las celdas vacías."
 ];
 
+export const GOBBLET_RULES = [
+    "Alineá N piezas visibles propias en línea (N = tamaño del tablero).",
+    "Solo las piezas en la cima de cada pila son visibles y cuentan para ganar.",
+    "Una pieza puede cubrir otra más pequeña (propia o del rival).",
+    "En tu turno: colocá una pieza nueva desde tus pilas externas, o mové una pieza ya en el tablero.",
+    "Al mover una pieza, la que estaba debajo queda visible de nuevo."
+];
+
 export const CONNECT4_RULES = [
     "Tablero vertical de 7 columnas y 6 filas.",
     "Las fichas caen hasta la posición libre más baja de la columna elegida.",

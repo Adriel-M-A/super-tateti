@@ -1,4 +1,4 @@
-import { LayoutGrid, Play, Info, Trophy, Square, Hash } from 'lucide-react';
+import { LayoutGrid, Play, Info, Trophy, Square, Hash, Layers } from 'lucide-react';
 
 const GameCard = ({ title, description, icon: Icon, onClick, color }) => (
   <button
@@ -63,8 +63,15 @@ const Home = ({ onSelectGame }) => {
       id: 'connect4',
       title: 'Conecta 4',
       description: 'Duelo vertical de estrategia. Alinea cuatro fichas antes que tu rival.',
-      icon: LayoutGrid, // Usamos LayoutGrid por ahora o Columns si prefieres
+      icon: LayoutGrid,
       color: '#f59e0b'
+    },
+    {
+      id: 'gobblet',
+      title: 'Gobblet',
+      description: 'Piezas que se cubren entre sí. Alineá las tuyas visibles para ganar.',
+      icon: Layers,
+      color: '#14b8a6'
     }
   ];
 
