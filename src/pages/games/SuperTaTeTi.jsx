@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import Board from '../../components/game/Board';
 import PlayerSetup from '../../components/setup/PlayerSetup';
 import GameLayout from '../../components/layout/GameLayout';
@@ -83,6 +83,30 @@ const SuperTaTeTi = ({ onExit }) => {
         setActiveSubBoard(nextActiveSubBoard);
     };
 
+    // Selecciona un movimiento válido al azar respetando las reglas de movimiento forzado/libre
+    const handleTimeOut = useCallback(() => {
+        const validMoves = [];
+
+        if (activeSubBoard !== null) {
+            // Movimiento forzado: solo celdas vacías en el subtablero activo
+            board[activeSubBoard].forEach((cell, cellIdx) => {
+                if (cell === null) validMoves.push({ boardIdx: activeSubBoard, cellIdx });
+            });
+        } else {
+            // Movimiento libre: cualquier celda vacía en subtableros no terminados
+            board.forEach((subBoard, boardIdx) => {
+                if (subBoardWinners[boardIdx]) return;
+                subBoard.forEach((cell, cellIdx) => {
+                    if (cell === null) validMoves.push({ boardIdx, cellIdx });
+                });
+            });
+        }
+
+        if (validMoves.length === 0) return;
+        const { boardIdx, cellIdx } = validMoves[Math.floor(Math.random() * validMoves.length)];
+        handleCellClick(boardIdx, cellIdx);
+    }, [board, activeSubBoard, subBoardWinners, handleCellClick]);
+
     const playersList = [players.P1, players.P2];
     const currentPlayerIndex = isXNext ? 0 : 1;
 
@@ -94,7 +118,8 @@ const SuperTaTeTi = ({ onExit }) => {
         gameTitle: "Super Ta-Te-Ti",
         rules: SUPER_RULES,
         competitiveMode,
-        turnTime
+        turnTime,
+        onTimeOut: competitiveMode ? handleTimeOut : null
     };
 
     return (

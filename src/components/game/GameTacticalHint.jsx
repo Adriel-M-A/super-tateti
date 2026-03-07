@@ -1,5 +1,3 @@
-import React from 'react';
-
 const GameTacticalHint = ({ children, className = "" }) => {
     if (!children) return null;
 

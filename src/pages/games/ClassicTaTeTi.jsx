@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import Board from '../../components/game/Board';
 import PlayerSetup from '../../components/setup/PlayerSetup';
 import GameLayout from '../../components/layout/GameLayout';
@@ -56,6 +56,17 @@ const ClassicTaTeTi = ({ onExit }) => {
         setIsXNext(!isXNext);
     };
 
+    // Selecciona una celda vacía al azar y juega como si fuera el jugador activo
+    const handleTimeOut = useCallback(() => {
+        const emptyCells = board.reduce((acc, cell, idx) => {
+            if (cell === null) acc.push(idx);
+            return acc;
+        }, []);
+        if (emptyCells.length === 0) return;
+        const randomIdx = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+        handleCellClick(randomIdx);
+    }, [board, handleCellClick]);
+
     const playersList = [players.P1, players.P2];
     const currentPlayerIndex = isXNext ? 0 : 1;
 
@@ -67,7 +78,8 @@ const ClassicTaTeTi = ({ onExit }) => {
         gameTitle: "Ta-Te-Ti Clásico",
         rules: CLASSIC_RULES,
         competitiveMode,
-        turnTime
+        turnTime,
+        onTimeOut: competitiveMode ? handleTimeOut : null
     };
 
     return (

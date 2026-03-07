@@ -7,6 +7,7 @@ export const GameProvider = ({ children, value }) => {
     const contextValue = {
         competitiveMode: false,
         turnTime: 0,
+        onTimeOut: null,
         ...value
     };
 

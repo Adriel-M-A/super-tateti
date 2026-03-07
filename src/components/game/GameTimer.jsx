@@ -3,14 +3,16 @@ import { Timer, AlertCircle } from 'lucide-react';
 import { useGame } from '../../contexts/GameContext';
 
 const GameTimer = () => {
-    const { competitiveMode, turnTime, currentPlayerIndex, gameStatus } = useGame();
+    const { competitiveMode, turnTime, currentPlayerIndex, gameStatus, onTimeOut } = useGame();
     const [timeLeft, setTimeLeft] = useState(turnTime);
     const timerRef = useRef(null);
+    const timeoutFiredRef = useRef(false); // Evita disparar onTimeOut más de una vez por turno
 
-    // Reiniciar temporizador cuando cambia el turno o el juego se reinicia
+    // Reiniciar temporizador y flag cuando cambia el turno
     useEffect(() => {
         if (competitiveMode && gameStatus === 'playing') {
             setTimeLeft(turnTime);
+            timeoutFiredRef.current = false;
         }
     }, [currentPlayerIndex, turnTime, competitiveMode, gameStatus]);
 
@@ -20,13 +22,19 @@ const GameTimer = () => {
 
         timerRef.current = setInterval(() => {
             setTimeLeft((prev) => {
-                if (prev <= 0) return 0;
-                return prev - 1;
+                if (prev <= 1 && !timeoutFiredRef.current) {
+                    // Marcar como disparado antes de llamar para evitar doble ejecución
+                    timeoutFiredRef.current = true;
+                    // Diferir al siguiente tick para no llamar setState dentro de setState
+                    if (onTimeOut) setTimeout(onTimeOut, 0);
+                    return 0;
+                }
+                return prev <= 0 ? 0 : prev - 1;
             });
         }, 1000);
 
         return () => clearInterval(timerRef.current);
-    }, [competitiveMode, gameStatus, currentPlayerIndex]); // Se reinicia el efecto al cambiar de turno
+    }, [competitiveMode, gameStatus, currentPlayerIndex, onTimeOut]); // Se reinicia el efecto al cambiar de turno
 
     if (!competitiveMode) return null;
 
