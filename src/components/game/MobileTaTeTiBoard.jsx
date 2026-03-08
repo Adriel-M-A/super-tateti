@@ -41,8 +41,8 @@ const MobileTaTeTiBoard = ({
                             className={`
                                 w-full h-full flex items-center justify-center relative
                                 transition-all duration-300
-                                ${isEmpty && (phase === 'placement' || isValidTarget) ? 'cursor-pointer' : 'cursor-default'}
-                                ${isSelected ? '' : 'hover:bg-cell-hover'}
+                                ${isEmpty && !isSelected && (phase === 'placement' || isValidTarget) ? 'cursor-pointer' : isEmpty ? 'cursor-pointer' : 'cursor-default'}
+                                ${isEmpty && !isSelected ? 'hover:bg-cell-hover' : ''}
                                 ${isSelected ? 'bg-cell-hover' : ''}
                             `}
                         >
@@ -50,7 +50,8 @@ const MobileTaTeTiBoard = ({
                             {owner && (
                                 <div
                                     className={`
-                                        flex items-center justify-center transition-all duration-300
+                                        animate-in zoom-in duration-300
+                                        flex items-center justify-center
                                         ${isSelected ? 'scale-110' : 'scale-90'}
                                         ${isWinning ? 'scale-105' : ''}
                                     `}
@@ -60,7 +61,11 @@ const MobileTaTeTiBoard = ({
                                             ? `drop-shadow(0 0 12px ${owner.color})`
                                             : isWinning
                                                 ? `drop-shadow(0 0 20px ${owner.color}) brightness(1.3)`
-                                                : 'none',
+                                                : isOwn
+                                                    ? `drop-shadow(0 0 8px ${owner.color}) brightness(1.15)`
+                                                    : 'none',
+                                        opacity: isWinning ? 1 : (isOwn ? 1 : 0.55),
+                                        transition: 'filter 0.3s, opacity 0.3s'
                                     }}
                                 >
                                     <IconRenderer iconName={owner.icon} size={48} strokeWidth={3} />

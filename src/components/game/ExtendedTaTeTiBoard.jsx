@@ -3,7 +3,7 @@ import IconRenderer from './IconRenderer';
 import { useGame } from '../../contexts/GameContext';
 
 const ExtendedTaTeTiBoard = ({ rows, cols, board, completedLines, players: propsPlayers, onCellClick }) => {
-    const { players: contextPlayers } = useGame();
+    const { players: contextPlayers, currentPlayerIndex } = useGame();
     const players = propsPlayers || contextPlayers;
     // Calcular tamaño de celda adaptable
     const cellSize = useMemo(() => {
@@ -78,13 +78,20 @@ const ExtendedTaTeTiBoard = ({ rows, cols, board, completedLines, players: props
                                         ${cellSize} flex items-center justify-center transition-all duration-300
                                         ${!isLastRow ? 'border-b-2 border-board-border' : ''}
                                         ${!isLastCol ? 'border-r-2 border-board-border' : ''}
-                                        ${!cell ? 'hover:bg-page-text/5 cursor-pointer' : 'cursor-default'}
+                                        ${!cell ? 'hover:bg-cell-hover cursor-pointer' : 'cursor-default'}
                                     `}
                                 >
                                     {player && (
                                         <div
                                             className={`animate-in zoom-in duration-300 ${fontSize}`}
-                                            style={{ color: player.color }}
+                                            style={{
+                                                color: player.color,
+                                                filter: players[currentPlayerIndex]?.id === player.id
+                                                    ? `drop-shadow(0 0 8px ${player.color}) brightness(1.15)`
+                                                    : 'none',
+                                                opacity: players[currentPlayerIndex]?.id === player.id ? 1 : 0.55,
+                                                transition: 'filter 0.3s, opacity 0.3s'
+                                            }}
                                         >
                                             <IconRenderer
                                                 iconName={player.icon}

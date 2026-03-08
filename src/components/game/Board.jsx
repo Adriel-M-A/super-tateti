@@ -23,45 +23,48 @@ const Cell = ({ index, value, onClick, isSelectable, level, winner = null, playe
 
     const borderColorClass = isSuper ? 'border-board-border' : (isSubHighlight ? 'border-border-highlight' : 'border-cell-border');
 
-    // Si hay un ganador en este sub-tablero (y estamos renderizándolo como una celda del super-tablero)
-    if (isSuper && winner) {
-        if (winner === 'DRAW') {
-            const color1 = activeConfig?.P1?.color || '#3b82f6';
-            const color2 = activeConfig?.P2?.color || '#ef4444';
-            return (
-                <div className={`relative ${borderClasses} ${borderColorClass} aspect-square`}>
-                    <div className="absolute inset-0 flex items-center justify-center rounded-lg transition-all duration-500 bg-cell-hover border border-board-border overflow-hidden group">
-                        <span
-                            className="text-6xl font-black absolute top-1/2 left-1/2 -translate-x-3/4 -translate-y-3/4 -rotate-12 group-hover:scale-110 transition-transform opacity-40"
-                            style={{ color: color1 }}
-                        >
-                            {activeConfig?.P1 ? <IconRenderer iconName={activeConfig.P1.icon} size={64} strokeWidth={3} /> : 'X'}
-                        </span>
-                        <span
-                            className="text-6xl font-black absolute top-1/2 left-1/2 -translate-x-1/4 -translate-y-1/4 rotate-12 group-hover:scale-110 transition-transform opacity-40"
-                            style={{ color: color2 }}
-                        >
-                            {activeConfig?.P2 ? <IconRenderer iconName={activeConfig.P2.icon} size={64} strokeWidth={3} /> : 'O'}
-                        </span>
-                        <div
-                            className="absolute inset-0 animate-pulse opacity-20"
-                            style={{ background: `linear-gradient(to bottom right, ${color1}, ${color2})` }}
-                        ></div>
-                    </div>
+    // Celda ganadora del super-tablero (empate)
+    if (isSuper && winner === 'DRAW') {
+        const color1 = activeConfig?.P1?.color || '#3b82f6';
+        const color2 = activeConfig?.P2?.color || '#ef4444';
+        return (
+            <div className={`relative ${borderClasses} ${borderColorClass} h-full w-full overflow-hidden`}>
+                <div className="absolute inset-0 flex items-center justify-center rounded-lg transition-all duration-500 bg-cell-hover border border-board-border overflow-hidden group">
+                    <span
+                        className="text-6xl font-black absolute top-1/2 left-1/2 -translate-x-3/4 -translate-y-3/4 -rotate-12 group-hover:scale-110 transition-transform opacity-40"
+                        style={{ color: color1 }}
+                    >
+                        {activeConfig?.P1 ? <IconRenderer iconName={activeConfig.P1.icon} size={64} strokeWidth={3} /> : 'X'}
+                    </span>
+                    <span
+                        className="text-6xl font-black absolute top-1/2 left-1/2 -translate-x-1/4 -translate-y-1/4 rotate-12 group-hover:scale-110 transition-transform opacity-40"
+                        style={{ color: color2 }}
+                    >
+                        {activeConfig?.P2 ? <IconRenderer iconName={activeConfig.P2.icon} size={64} strokeWidth={3} /> : 'O'}
+                    </span>
+                    <div
+                        className="absolute inset-0 animate-pulse opacity-20"
+                        style={{ background: `linear-gradient(to bottom right, ${color1}, ${color2})` }}
+                    ></div>
                 </div>
-            );
-        }
+            </div>
+        );
+    }
 
+    // Celda ganadora del super-tablero (ganador único)
+    if (isSuper && winner) {
         const winnerConfig = activeConfig ? (winner === 'X' ? activeConfig.P1 : activeConfig.P2) : null;
         const isWinnerPlayer = winner === activeSymbol;
 
         return (
-            <div className={`relative ${borderClasses} ${borderColorClass} aspect-square`}>
+            <div className={`relative ${borderClasses} ${borderColorClass} h-full w-full overflow-hidden`}>
                 <div
-                    className={`aspect-square flex items-center justify-center transition-all duration-500 bg-cell-hover shadow-lg`}
+                    className="absolute inset-0 flex items-center justify-center transition-all duration-500 bg-cell-hover shadow-lg"
                     style={{
                         color: winnerConfig ? winnerConfig.color : (winner === 'X' ? '#3b82f6' : '#ef4444'),
-                        filter: isWinnerPlayer ? `drop-shadow(0 0 20px ${winnerConfig?.color || 'currentColor'}) brightness(1.2)` : 'none',
+                        filter: isWinnerPlayer
+                            ? `drop-shadow(0 0 20px ${winnerConfig?.color || 'currentColor'}) brightness(1.2)`
+                            : 'none',
                         opacity: isWinnerPlayer ? 1 : 0.8
                     }}
                 >
@@ -74,10 +77,11 @@ const Cell = ({ index, value, onClick, isSelectable, level, winner = null, playe
         );
     }
 
+    // Celda del super-tablero que contiene un sub-tablero
     if (Array.isArray(value)) {
         return (
             <div className={`relative ${borderClasses} ${borderColorClass} h-full w-full`}>
-                <div className={`p-4 w-full h-full transition-all duration-500 ${isSelectable ? 'z-10 opacity-100' : 'opacity-40 grayscale-[0.5]'}`}>
+                <div className={`p-4 w-full h-full transition-all duration-500 ${isSelectable ? 'z-10 opacity-100' : 'opacity-40'}`}>
                     <Board
                         cells={value}
                         onCellClick={onClick}
@@ -92,32 +96,40 @@ const Cell = ({ index, value, onClick, isSelectable, level, winner = null, playe
         );
     }
 
+    // Celda normal (con pieza o vacía)
     const cellOwnerConfig = (activeConfig && value) ? (value === 'X' ? activeConfig.P1 : activeConfig.P2) : null;
     const isCurrentPlayer = value === activeSymbol;
 
     return (
-        <div className={`relative ${borderClasses} ${borderColorClass} aspect-square`}>
+        <div className={`relative ${borderClasses} ${borderColorClass} h-full w-full`}>
             <button
                 onClick={isSelectable ? onClick : undefined}
                 className={`
                     w-full h-full flex items-center justify-center transition-all duration-300
                     ${!value && isSelectable ? 'hover:bg-cell-hover cursor-pointer' : 'cursor-default'}
                     bg-transparent
-                    ${isCurrentPlayer ? 'z-10' : ''}
                     ${isSuper ? 'p-6' : 'p-2'}
                 `}
                 style={{
                     color: cellOwnerConfig ? cellOwnerConfig.color : (value === 'X' ? '#3b82f6' : (value === 'O' ? '#ef4444' : 'currentColor')),
-                    filter: isCurrentPlayer ? 'brightness(1.5)' : 'none',
-                    opacity: isCurrentPlayer ? 1 : 0.7
+                    filter: value
+                        ? (isCurrentPlayer
+                            ? `drop-shadow(0 0 8px ${cellOwnerConfig?.color || 'currentColor'}) brightness(1.15)`
+                            : 'none')
+                        : 'none',
+                    opacity: value ? (isCurrentPlayer ? 1 : 0.55) : 1
                 }}
             >
                 {cellOwnerConfig
-                    ? <IconRenderer
-                        iconName={cellOwnerConfig.icon}
-                        size={isSuper ? 56 : 24}
-                        strokeWidth={3}
-                    />
+                    ? (
+                        <div className="animate-in zoom-in duration-300">
+                            <IconRenderer
+                                iconName={cellOwnerConfig.icon}
+                                size={isSuper ? 56 : 24}
+                                strokeWidth={3}
+                            />
+                        </div>
+                    )
                     : <span className={`font-bold ${isSuper ? 'text-6xl' : 'text-2xl'}`}>{value}</span>
                 }
             </button>
@@ -127,7 +139,8 @@ const Cell = ({ index, value, onClick, isSelectable, level, winner = null, playe
 
 const Board = ({ cells, onCellClick, level = 'super', isSelectable = true, isHighlighted = false, activeSubBoard = null, subBoardWinners = [], playersConfig = null, currentPlayerSymbol = null }) => {
     return (
-        <div className={`grid grid-cols-3 w-full aspect-square ${level === 'super' ? 'max-w-lg mx-auto p-4 bg-transparent' : ''}`}>
+        // grid-rows-3: fuerza filas de altura exacta para evitar desplazamiento de bordes
+        <div className={`grid grid-cols-3 grid-rows-3 w-full aspect-square ${level === 'super' ? 'max-w-lg mx-auto p-4 bg-transparent' : ''}`}>
             {cells.map((cell, index) => {
                 const canPlayInThisCell = level === 'super' ? (activeSubBoard === null || activeSubBoard === index) : isSelectable;
 

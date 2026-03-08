@@ -72,19 +72,32 @@ const GobbletBoard = ({ board, boardSize, selected, players, currentPlayerIndex,
                                     ? 'bg-slate-200/10 dark:bg-slate-800/20 border-slate-300/20 dark:border-slate-700/20'
                                     : 'border-transparent'
                                 }
-                                ${valid ? 'ring-2 ring-blue-400/60 bg-blue-500/10 hover:bg-blue-500/20' : 'hover:bg-page-text/5'}
+                                ${valid ? 'ring-2 ring-blue-400/60 bg-blue-500/10 hover:bg-blue-500/20' : (isEmpty ? 'hover:bg-cell-hover' : '')}
                                 ${isBoardSelected ? 'ring-2 ring-white/60 bg-page-text/10' : ''}
                             `}
                         >
-                            {topPiece && (
-                                <div className="w-full h-full flex items-center justify-center animate-in zoom-in duration-300">
-                                    <Piece
-                                        size={topPiece.size}
-                                        player={playerMap[topPiece.playerId]}
-                                        selected={isBoardSelected}
-                                    />
-                                </div>
-                            )}
+                            {topPiece && (() => {
+                                const piecePlayer = playerMap[topPiece.playerId];
+                                const isOwn = topPiece.playerId === currentPlayerId;
+                                return (
+                                    <div
+                                        className="w-full h-full flex items-center justify-center animate-in zoom-in duration-300"
+                                        style={{
+                                            filter: isOwn
+                                                ? `drop-shadow(0 0 6px ${piecePlayer?.color}) brightness(1.1)`
+                                                : 'none',
+                                            opacity: isOwn ? 1 : 0.6,
+                                            transition: 'filter 0.3s, opacity 0.3s'
+                                        }}
+                                    >
+                                        <Piece
+                                            size={topPiece.size}
+                                            player={piecePlayer}
+                                            selected={isBoardSelected}
+                                        />
+                                    </div>
+                                );
+                            })()}
 
                             {/* Indicador de profundidad de pila */}
                             {depth > 1 && (
