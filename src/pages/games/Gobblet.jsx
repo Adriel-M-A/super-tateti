@@ -226,6 +226,7 @@ const Gobblet = ({ onExit }) => {
             {gameState === 'setup' && (
                 <GobbletSetup
                     onComplete={initializeGame}
+                    onBack={onExit}
                     initialPlayers={players.length ? players : null}
                     initialBoardSize={boardSize}
                     initialCompetitiveMode={competitiveMode}

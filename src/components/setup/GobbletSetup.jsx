@@ -8,6 +8,7 @@ import useCompetitiveSetup from '../../hooks/useCompetitiveSetup';
 
 const GobbletSetup = ({
     onComplete,
+    onBack,
     initialPlayers = null,
     initialBoardSize = 4,
     initialCompetitiveMode = false,
@@ -27,7 +28,7 @@ const GobbletSetup = ({
     return (
         <SetupLayout
             gameTitle="Gobblet"
-            onBack={() => window.location.reload()}
+            onBack={onBack ?? (() => window.location.reload())}
             onStart={handleStart}
         >
             <div className="space-y-8 w-full max-w-4xl mx-auto pb-10">

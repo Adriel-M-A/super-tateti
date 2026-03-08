@@ -128,6 +128,7 @@ const SuperTaTeTi = ({ onExit }) => {
                 <PlayerSetup
                     title="Super Ta-Te-Ti"
                     onComplete={handleSetupComplete}
+                    onBack={onExit}
                     initialPlayers={players}
                     initialCompetitiveMode={competitiveMode}
                     initialTurnTime={turnTime}

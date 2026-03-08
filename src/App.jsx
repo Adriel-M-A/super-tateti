@@ -11,7 +11,11 @@ import ThemeToggle from './components/layout/ThemeToggle'
 
 function App() {
   const [view, setView] = useState('home');
-  const [isDarkMode, setIsDarkMode] = useState(true);
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    // Lee la preferencia guardada; si no existe, usa modo oscuro por defecto
+    const saved = localStorage.getItem('darkMode');
+    return saved === null ? true : saved === 'true';
+  });
 
   // Aplicar modo oscuro
   useEffect(() => {
@@ -22,7 +26,12 @@ function App() {
     }
   }, [isDarkMode]);
 
-  const toggleTheme = () => setIsDarkMode(!isDarkMode);
+  const toggleTheme = () => {
+    setIsDarkMode(prev => {
+      localStorage.setItem('darkMode', String(!prev));
+      return !prev;
+    });
+  };
 
   const handleSelectGame = (gameId) => {
     setView(gameId);

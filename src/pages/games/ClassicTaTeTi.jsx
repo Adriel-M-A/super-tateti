@@ -88,6 +88,7 @@ const ClassicTaTeTi = ({ onExit }) => {
                 <PlayerSetup
                     title="Ta-Te-Ti Clásico"
                     onComplete={handleSetupComplete}
+                    onBack={onExit}
                     initialPlayers={players}
                     initialCompetitiveMode={competitiveMode}
                     initialTurnTime={turnTime}

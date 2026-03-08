@@ -144,6 +144,7 @@ const Connect4 = ({ onExit }) => {
             {gameState === 'setup' && (
                 <Connect4Setup
                     onComplete={handleSetupComplete}
+                    onBack={onExit}
                     initialPlayers={players}
                     initialCompetitiveMode={competitiveMode}
                     initialTurnTime={turnTime}

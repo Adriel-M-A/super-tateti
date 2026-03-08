@@ -8,6 +8,7 @@ import useCompetitiveSetup from '../../hooks/useCompetitiveSetup';
 
 const ExtendedTaTeTiSetup = ({
     onComplete,
+    onBack,
     initialPlayers = null,
     initialConfig = null,
     isGameInProgress = false,
@@ -47,7 +48,7 @@ const ExtendedTaTeTiSetup = ({
     return (
         <SetupLayout
             gameTitle="Ta-Te-Ti Extendido"
-            onBack={() => window.location.reload()}
+            onBack={onBack ?? (() => window.location.reload())}
             onStart={handleStart}
             warning={isRestartRequired ? "¡Atención! Cambiar el tamaño o cantidad de jugadores reiniciará la partida" : null}
         >

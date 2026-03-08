@@ -191,6 +191,7 @@ const DotsAndBoxes = ({ onExit }) => {
             {gameState === 'setup' && (
                 <DotsAndBoxesSetup
                     onComplete={initializeGame}
+                    onBack={onExit}
                     initialPlayers={players}
                     initialBoardSize={boardSize}
                     initialCompetitiveMode={competitiveMode}

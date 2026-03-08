@@ -7,6 +7,7 @@ import useCompetitiveSetup from '../../hooks/useCompetitiveSetup';
 
 const Connect4Setup = ({
     onComplete,
+    onBack,
     initialPlayers = null,
     initialCompetitiveMode = false,
     initialTurnTime = 0
@@ -30,7 +31,7 @@ const Connect4Setup = ({
     return (
         <SetupLayout
             gameTitle="Conecta 4"
-            onBack={() => window.location.reload()}
+            onBack={onBack ?? (() => window.location.reload())}
             onStart={handleStart}
         >
             <div className="space-y-8 w-full max-w-4xl mx-auto pb-10">

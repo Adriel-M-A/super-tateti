@@ -195,6 +195,7 @@ const ExtendedTaTeTi = ({ onExit }) => {
             {gameState === 'setup' && (
                 <ExtendedTaTeTiSetup
                     onComplete={initializeGame}
+                    onBack={onExit}
                     initialPlayers={players}
                     initialConfig={config}
                     initialCompetitiveMode={competitiveMode}

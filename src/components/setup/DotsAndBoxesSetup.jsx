@@ -8,6 +8,7 @@ import useCompetitiveSetup from '../../hooks/useCompetitiveSetup';
 
 const DotsAndBoxesSetup = ({
     onComplete,
+    onBack,
     initialPlayers = null,
     initialBoardSize = 5,
     isGameInProgress = false,
@@ -40,7 +41,7 @@ const DotsAndBoxesSetup = ({
     return (
         <SetupLayout
             gameTitle="Puntos y Cajas"
-            onBack={() => window.location.reload()}
+            onBack={onBack ?? (() => window.location.reload())}
             onStart={handleStart}
             warning={isRestartRequired ? "¡Atención! Cambiar el tamaño o cantidad de jugadores reiniciará la partida" : null}
         >

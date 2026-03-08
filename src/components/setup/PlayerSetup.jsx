@@ -8,6 +8,7 @@ import useCompetitiveSetup from '../../hooks/useCompetitiveSetup';
 const PlayerSetup = ({
     title = "Ta-Te-Ti",
     onComplete,
+    onBack,
     initialPlayers = null,
     initialCompetitiveMode = false,
     initialTurnTime = 0
@@ -29,7 +30,7 @@ const PlayerSetup = ({
     return (
         <SetupLayout
             gameTitle={title}
-            onBack={() => window.location.reload()}
+            onBack={onBack ?? (() => window.location.reload())}
             onStart={handleStart}
         >
             <div className="flex flex-col gap-8 w-full max-w-3xl mx-auto pb-10">
