@@ -72,7 +72,12 @@ const SuperTaTeTi = ({ onExit }) => {
         else if (newBoard[boardIndex].every(cell => cell !== null)) newSubBoardWinners[boardIndex] = 'DRAW';
 
         const finalWinner = checkWinner(newSubBoardWinners);
-        if (finalWinner) setGlobalWinner(finalWinner);
+        if (finalWinner) {
+            setGlobalWinner(finalWinner);
+        } else if (newSubBoardWinners.every(w => w !== null)) {
+            // Todos los sub-tableros resueltos sin ganador global → empate
+            setGlobalWinner('DRAW');
+        }
 
         let nextActiveSubBoard = cellIndex;
         if (newSubBoardWinners[nextActiveSubBoard]) nextActiveSubBoard = null;
@@ -143,7 +148,8 @@ const SuperTaTeTi = ({ onExit }) => {
                     >
                         {globalWinner ? (
                             <GameResult
-                                winners={[globalWinner === 'X' ? players.P1 : players.P2]}
+                                winners={globalWinner === 'DRAW' ? [] : [globalWinner === 'X' ? players.P1 : players.P2]}
+                                isDraw={globalWinner === 'DRAW'}
                                 onReplay={resetGame}
                                 onSetup={() => {
                                     resetGame();
