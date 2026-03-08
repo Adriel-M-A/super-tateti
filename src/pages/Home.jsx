@@ -1,4 +1,4 @@
-import { LayoutGrid, Play, Info, Trophy, Square, Hash, Layers } from 'lucide-react';
+import { LayoutGrid, Play, Info, Trophy, Square, Hash, Layers, Move } from 'lucide-react';
 
 const GameCard = ({ title, description, icon: Icon, onClick, color }) => (
   <button
@@ -72,6 +72,13 @@ const Home = ({ onSelectGame }) => {
       description: 'Piezas que se cubren entre sí. Alineá las tuyas visibles para ganar.',
       icon: Layers,
       color: '#14b8a6'
+    },
+    {
+      id: 'mobile-tateti',
+      title: 'Tatetí Móvil',
+      description: 'Ta-Te-Ti con piezas que se mueven. Colocá y reposicioná tus 3 piezas para alinearlas.',
+      icon: Move,
+      color: '#f97316'
     }
   ];
 

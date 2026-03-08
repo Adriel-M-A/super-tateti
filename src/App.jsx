@@ -6,6 +6,7 @@ import SuperTaTeTi from './pages/games/SuperTaTeTi';
 import DotsAndBoxes from './pages/games/DotsAndBoxes';
 import ExtendedTaTeTi from './pages/games/ExtendedTaTeTi';
 import Gobblet from './pages/games/Gobblet';
+import MobileTaTeTi from './pages/games/MobileTaTeTi';
 
 import ThemeToggle from './components/layout/ThemeToggle'
 
@@ -68,6 +69,9 @@ function App() {
             )}
             {view === 'gobblet' && (
               <Gobblet onExit={handleReturnHome} />
+            )}
+            {view === 'mobile-tateti' && (
+              <MobileTaTeTi onExit={handleReturnHome} />
             )}
           </div>
         )}

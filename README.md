@@ -72,6 +72,17 @@ Estrategia de piezas jerarquizadas para dos jugadores.
 
 ---
 
+---
+
+### 🟠 Tatetí Móvil
+Evolución del Ta-Te-Ti clásico con piezas móviles para dos jugadores.
+
+- Tablero de **3×3**, misma grilla que el Ta-Te-Ti clásico. Objetivo: alinear las 3 piezas propias en horizontal, vertical o diagonal.
+- Cada jugador tiene exactamente **3 piezas** (6 en total). El tablero nunca se llena por completo — siempre quedan 3 celdas libres.
+- **Fase 1 — Colocación:** los jugadores se alternan depositando una pieza en cualquier celda vacía hasta agotar las 6. Victoria posible en esta fase.
+- **Fase 2 — Movimiento:** una vez colocadas todas, en cada turno se debe **mover una pieza propia a una celda adyacente vacía** (hasta 8 direcciones). Las piezas se reposicionan indefinidamente hasta que alguien alinea sus tres.
+- No existe el empate: el juego continúa hasta que un jugador gana.
+
 ## Modo Competitivo
 
 Todos los juegos incluyen **Modo Competitivo** activable desde la pantalla de configuración.
@@ -84,6 +95,7 @@ Todos los juegos incluyen **Modo Competitivo** activable desde la pantalla de co
   - *Conecta 4*: elige una columna no llena al azar (la ficha cae por gravedad).
   - *Puntos y Cajas*: elige una línea disponible al azar. Si completa una caja, el timer se reinicia (el jugador conserva el turno).
   - *Gobblet*: elige un movimiento válido al azar respetando la jerarquía de tamaños (nueva pieza externa o movimiento de pieza visible en el tablero).
+  - *Tatetí Móvil*: en fase de colocación elige una celda vacía al azar; en fase de movimiento elige un par (pieza propia, celda adyacente vacía) al azar.
 
 ---
 
@@ -94,7 +106,7 @@ Cada juego permite personalizar a los jugadores antes de comenzar:
 - **Nombre** editable.
 - **Ícono** (símbolo visual único): X, O, triángulo, estrella, etc.
 - **Color** personalizado con un selector visual.
-- Número de jugadores configurable según el juego (2 fijos en Clásico, Super, Conecta 4 y Gobblet; 2–5 en Extendido y Puntos y Cajas).
+- Número de jugadores configurable según el juego (2 fijos en Clásico, Super, Conecta 4, Gobblet y Tatetí Móvil; 2–5 en Extendido y Puntos y Cajas).
 
 La configuración **persiste al volver al menú de setup** sin reiniciar la partida si no cambiaron los parámetros estructurales (tamaño de tablero, cantidad de jugadores).
 
