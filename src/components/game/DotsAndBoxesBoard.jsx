@@ -115,13 +115,13 @@ const DotsAndBoxesBoard = ({ size, lines, boxes, currentPlayer: propsCurrentPlay
                         row.map((owner, c) => owner !== null && (
                             <div
                                 key={`line-h-${r}-${c}`}
-                                className="absolute h-1.5 rounded-full transition-colors duration-300"
+                                className="absolute h-1.5 rounded-full"
                                 style={{
                                     width: `${100 / size}%`,
                                     top: `${(r / size) * 100}%`,
                                     left: `${(c / size) * 100}%`,
-                                    backgroundColor: players[owner]?.color || 'var(--page-text)',
-                                    opacity: 0.8,
+                                    backgroundColor: 'var(--page-text)',
+                                    opacity: 0.6,
                                     transform: 'translateY(-50%)'
                                 }}
                             />
@@ -132,13 +132,13 @@ const DotsAndBoxesBoard = ({ size, lines, boxes, currentPlayer: propsCurrentPlay
                         row.map((owner, c) => owner !== null && (
                             <div
                                 key={`line-v-${r}-${c}`}
-                                className="absolute w-1.5 rounded-full transition-colors duration-300"
+                                className="absolute w-1.5 rounded-full"
                                 style={{
                                     height: `${100 / size}%`,
                                     top: `${(r / size) * 100}%`,
                                     left: `${(c / size) * 100}%`,
-                                    backgroundColor: players[owner]?.color || 'var(--page-text)',
-                                    opacity: 0.8,
+                                    backgroundColor: 'var(--page-text)',
+                                    opacity: 0.6,
                                     transform: 'translateX(-50%)'
                                 }}
                             />
