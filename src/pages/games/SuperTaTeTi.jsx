@@ -5,12 +5,13 @@ import GameLayout from '../../components/layout/GameLayout';
 import GameResult from '../../components/game/GameResult';
 import { CLASSIC_RULES, SUPER_RULES } from '../../constants/gameRules';
 import { GameProvider } from '../../contexts/GameContext';
+import { DEFAULT_PLAYERS } from '../../constants/playerConfig';
 
 const SuperTaTeTi = ({ onExit }) => {
     const [setupMode, setSetupMode] = useState(true);
     const [players, setPlayers] = useState({
-        P1: { id: 'P1', name: 'Jugador 1', icon: 'X', color: '#3b82f6' },
-        P2: { id: 'P2', name: 'Jugador 2', icon: 'Circle', color: '#ef4444' }
+        P1: DEFAULT_PLAYERS[0],
+        P2: DEFAULT_PLAYERS[1]
     });
     const [competitiveMode, setCompetitiveMode] = useState(false);
     const [turnTime, setTurnTime] = useState(0);

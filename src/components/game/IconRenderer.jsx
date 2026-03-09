@@ -1,6 +1,6 @@
-import { X, Circle, Triangle, Square, Hexagon } from 'lucide-react';
+import { X, Circle, Triangle, Square, Hexagon, Star } from 'lucide-react';
 
-const icons = { X, Circle, Triangle, Square, Hexagon };
+const icons = { X, Circle, Triangle, Square, Hexagon, Star };
 
 const IconRenderer = ({ iconName, ...props }) => {
     const Icon = icons[iconName];

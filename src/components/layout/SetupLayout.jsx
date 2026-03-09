@@ -11,9 +11,9 @@ const SetupLayout = ({
     warning = null
 }) => {
     return (
-        <div className="w-full max-w-5xl flex flex-col items-center min-h-[80vh] animate-in fade-in zoom-in duration-500">
-            {/* Header de Configuración */}
-            <header className="w-full flex justify-between items-center mb-12 border-b border-board-border pb-6">
+        <div className="w-full max-w-5xl flex flex-col h-full animate-in fade-in zoom-in duration-500">
+            {/* Header de Configuración — altura fija */}
+            <header className="w-full flex justify-between items-center mb-8 border-b border-board-border pb-6 shrink-0">
                 <button
                     onClick={onBack}
                     className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-slate-500 hover:text-white transition-all hover:-translate-x-1"
@@ -31,13 +31,13 @@ const SetupLayout = ({
                 </div>
             </header>
 
-            {/* Contenido Principal (Selectores) */}
-            <main className="w-full flex-1">
+            {/* Contenido Principal — crece para llenar el espacio, sin scroll propio */}
+            <main className="w-full flex-1 min-h-0 overflow-hidden">
                 {children}
             </main>
 
-            {/* Footer con Botón de Acción y Advertencia */}
-            <footer className="w-full flex flex-col items-center mt-12 pt-8 border-t border-board-border/30 gap-6">
+            {/* Footer con Botón de Acción — altura fija */}
+            <footer className="w-full flex flex-col items-center mt-6 pt-6 border-t border-board-border/30 gap-4 shrink-0">
                 {warning && (
                     <div className="flex items-center gap-3 px-6 py-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-500 animate-pulse transition-all duration-700">
                         <div className="p-2 rounded-lg bg-amber-500/20">

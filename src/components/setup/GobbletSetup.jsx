@@ -31,9 +31,9 @@ const GobbletSetup = ({
             onBack={onBack ?? (() => window.location.reload())}
             onStart={handleStart}
         >
-            <div className="space-y-8 w-full max-w-4xl mx-auto pb-10">
+            <div className="flex flex-col gap-6 w-full max-w-4xl mx-auto h-full">
                 {/* Tamaño de Tablero y Modo Competitivo */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 shrink-0">
                     <SetupSelector
                         icon={LayoutGrid}
                         title="Tamaño de Tablero"
@@ -44,8 +44,8 @@ const GobbletSetup = ({
                     <SetupSelector {...competitiveSelectorProps} />
                 </div>
 
-                {/* Siempre 2 jugadores */}
-                <div className="flex flex-col gap-4">
+                {/* Siempre 2 jugadores — con scroll propio */}
+                <div className="flex flex-col gap-4 overflow-y-auto min-h-0 pr-1">
                     {activePlayers.map((player, idx) => (
                         <PlayerConfigRow
                             key={player.id}

@@ -1,7 +1,6 @@
 import React from 'react';
-import { User } from 'lucide-react';
 import IconRenderer from '../game/IconRenderer';
-import { ICON_OPTIONS, COLOR_OPTIONS } from '../../hooks/usePlayerSetup';
+import { ICON_OPTIONS, COLOR_OPTIONS } from '../../constants/playerConfig';
 
 const PlayerConfigRow = ({
     index,
@@ -13,21 +12,26 @@ const PlayerConfigRow = ({
     return (
         <div className="w-full flex flex-col md:flex-row items-center gap-4 md:gap-8 p-4 md:p-6 bg-cell-hover border border-board-border rounded-2xl md:rounded-3xl hover:bg-page-text/5 transition-all group animate-in slide-in-from-right duration-300" style={{ animationDelay: `${index * 50}ms` }}>
 
-            {/* Cabecera del Jugador (Icono actual + Nombre) */}
-            <div className="flex items-center gap-4 w-full md:w-32 shrink-0">
+            {/* Cabecera del Jugador (Icono actual + Nombre editable) */}
+            <div className="flex items-center gap-3 w-full md:w-44 shrink-0">
                 <div
-                    className="w-12 h-12 flex items-center justify-center transition-all"
+                    className="w-10 h-10 flex items-center justify-center shrink-0 transition-all"
                     style={{ color: player.color }}
                 >
-                    <IconRenderer iconName={player.icon} size={40} strokeWidth={3} />
+                    <IconRenderer iconName={player.icon} size={36} strokeWidth={3} />
                 </div>
-                <h4 className="font-black uppercase italic tracking-tighter text-sm md:text-base whitespace-nowrap" style={{ color: player.color }}>
-                    {player.name || `Jugador ${index + 1}`}
-                </h4>
+                <input
+                    value={player.name}
+                    onChange={e => onUpdate({ name: e.target.value })}
+                    placeholder={`Jugador ${index + 1}`}
+                    maxLength={16}
+                    className="font-black uppercase italic tracking-tighter text-sm md:text-base bg-transparent border-b border-transparent focus:border-current outline-none w-full text-left transition-colors duration-200 cursor-text min-w-0"
+                    style={{ color: player.color }}
+                />
             </div>
 
             {/* Separador vertical (solo desktop) */}
-            <div className="hidden md:block w-px h-12 bg-board-border"></div>
+            <div className="hidden md:block w-px h-12 bg-board-border shrink-0"></div>
 
             {/* Selector de Iconos */}
             <div className="flex-1 flex flex-col items-center md:items-start gap-2 w-full">
@@ -82,4 +86,5 @@ const PlayerConfigRow = ({
 };
 
 export default PlayerConfigRow;
+// Re-exportar constantes para compatibilidad con imports existentes
 export { ICON_OPTIONS, COLOR_OPTIONS };

@@ -5,6 +5,7 @@ import SetupSelector from './SetupSelector';
 import usePlayerSetup from '../../hooks/usePlayerSetup';
 import { Users, LayoutGrid, Hash, Swords } from 'lucide-react';
 import useCompetitiveSetup from '../../hooks/useCompetitiveSetup';
+import { ICON_OPTIONS, COLOR_OPTIONS } from '../../constants/playerConfig';
 
 const ExtendedTaTeTiSetup = ({
     onComplete,
@@ -25,6 +26,26 @@ const ExtendedTaTeTiSetup = ({
 
     const activePlayers = getVisiblePlayers(numPlayers);
     const { takenIcons, takenColors } = getTakenResources(activePlayers);
+
+    // Al agregar un jugador nuevo, garantizar que no comparta icono ni color
+    const handleNumPlayersChange = (n) => {
+        if (n > numPlayers) {
+            const currentActive = getVisiblePlayers(numPlayers);
+            const taken = getTakenResources(currentActive);
+            const newPlayer = players[n - 1];
+            const updates = {};
+            if (taken.takenIcons.includes(newPlayer.icon)) {
+                const free = ICON_OPTIONS.find(o => !taken.takenIcons.includes(o.id));
+                if (free) updates.icon = free.id;
+            }
+            if (taken.takenColors.includes(newPlayer.color)) {
+                const free = COLOR_OPTIONS.find(o => !taken.takenColors.includes(o.hex));
+                if (free) updates.color = free.hex;
+            }
+            if (Object.keys(updates).length > 0) updatePlayer(n - 1, updates);
+        }
+        setNumPlayers(n);
+    };
 
     // Detección de cambios que Borran Partida
     const isRestartRequired = isGameInProgress && (
@@ -52,15 +73,15 @@ const ExtendedTaTeTiSetup = ({
             onStart={handleStart}
             warning={isRestartRequired ? "¡Atención! Cambiar el tamaño o cantidad de jugadores reiniciará la partida" : null}
         >
-            <div className="space-y-8 w-full max-w-4xl mx-auto pb-10">
+            <div className="flex flex-col gap-6 w-full max-w-4xl mx-auto h-full">
                 {/* Configuración del Tablero y Reglas */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 shrink-0">
                     <SetupSelector
                         icon={Users}
                         title="Jugadores"
                         options={[2, 3, 4, 5]}
                         value={numPlayers}
-                        onChange={setNumPlayers}
+                        onChange={handleNumPlayersChange}
                     />
 
                     <SetupSelector
@@ -97,8 +118,8 @@ const ExtendedTaTeTiSetup = ({
                     </div>
                 </div>
 
-                {/* Jugadores */}
-                <div className="flex flex-col gap-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                {/* Jugadores — con scroll propio */}
+                <div className="flex flex-col gap-4 overflow-y-auto min-h-0 pr-1">
                     {activePlayers.map((player, idx) => (
                         <PlayerConfigRow
                             key={player.id}
