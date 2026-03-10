@@ -1,4 +1,4 @@
-import { Home, RotateCcw, Settings2 } from 'lucide-react';
+import { Home, RotateCcw, Settings2, Trophy } from 'lucide-react';
 import GameRules from '../game/GameRules';
 import PlayerStatus from '../game/PlayerStatus';
 import GameTimer from '../game/GameTimer';
@@ -10,6 +10,7 @@ const GameLayout = ({
     onExit,
     onReset,
     onConfig,
+    onShowTournament,
     tacticalHint
 }) => {
     const { gameTitle } = useGame();
@@ -33,6 +34,15 @@ const GameLayout = ({
                 </div>
 
                 <div className="flex items-center gap-2 md:gap-3 shrink-0">
+                    {onShowTournament && (
+                        <button
+                            onClick={onShowTournament}
+                            className="p-3 rounded-2xl bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 hover:text-yellow-300 hover:scale-110 active:scale-95 transition-all backdrop-blur-md shadow-lg"
+                            title="Ver estado del torneo"
+                        >
+                            <Trophy size={20} />
+                        </button>
+                    )}
                     {onConfig && (
                         <button
                             onClick={onConfig}

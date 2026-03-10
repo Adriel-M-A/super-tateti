@@ -1,25 +1,25 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import GobbletSetup from '../../components/setup/GobbletSetup';
 import GobbletBoard from '../../components/game/GobbletBoard';
 import GobbletExternalPiles from '../../components/game/GobbletExternalPiles';
 import GameLayout from '../../components/layout/GameLayout';
 import GameResult from '../../components/game/GameResult';
+import TournamentBracket from '../../components/tournament/TournamentBracket';
 import { GOBBLET_RULES } from '../../constants/gameRules';
 import { GameProvider } from '../../contexts/GameContext';
+import { useTournament, getFirstTournamentMatch } from '../../contexts/TournamentContext';
 
 // Configuración de piezas según tamaño de tablero
 const BOARD_CONFIGS = {
-    3: { sizes: [2, 3, 4], piecesPerSize: 3 },  // S, M, L — 9 piezas/jugador
-    4: { sizes: [2, 3, 4], piecesPerSize: 4 },  // S, M, L — 12 piezas/jugador
-    5: { sizes: [1, 2, 3, 4], piecesPerSize: 5 } // XS, S, M, L — 20 piezas/jugador
+    3: { sizes: [2, 3, 4], piecesPerSize: 3 },
+    4: { sizes: [2, 3, 4], piecesPerSize: 4 },
+    5: { sizes: [1, 2, 3, 4], piecesPerSize: 5 }
 };
 
-// Crea las pilas externas iniciales: [L-stack, M-stack, S-stack(, XS-stack)]
 const buildExternalPiles = (players, boardSize) => {
     const { sizes, piecesPerSize } = BOARD_CONFIGS[boardSize];
     const piles = {};
     players.forEach(player => {
-        // Ordenado de mayor a menor para mostrar L primero en la UI
         piles[player.id] = [...sizes].reverse().map(size =>
             Array.from({ length: piecesPerSize }, () => ({ playerId: player.id, size }))
         );
@@ -30,7 +30,6 @@ const buildExternalPiles = (players, boardSize) => {
 const buildBoard = (size) =>
     Array.from({ length: size }, () => Array.from({ length: size }, () => []));
 
-// Verifica si playerId tiene N piezas visibles en línea en el tablero actualizado
 const checkVictory = (board, size, playerId) => {
     const top = (r, c) => { const s = board[r][c]; return s.length ? s[s.length - 1] : null; };
     const ok = (r, c) => { const t = top(r, c); return t && t.playerId === playerId; };
@@ -55,31 +54,52 @@ const Gobblet = ({ onExit }) => {
     const [winner, setWinner] = useState(null);
     const [competitiveMode, setCompetitiveMode] = useState(false);
     const [turnTime, setTurnTime] = useState(0);
+    const [showBracket, setShowBracket] = useState(false);
+
+    const { tournament, startTournament, recordTournamentResult, endTournament, getCurrentMatch } = useTournament();
+
+    const resetBoard = (ps, sz) => {
+        const safePs = ps || players;
+        const safeSz = sz || boardSize;
+        setBoard(buildBoard(safeSz));
+        setExternalPiles(buildExternalPiles(safePs, safeSz));
+        setCurrentPlayerIndex(0);
+        setSelected(null);
+        setWinner(null);
+        setGameState('playing');
+    };
+
+    // Al avanzar de match, actualizar jugadores y resetear el tablero
+    useEffect(() => {
+        if (!tournament?.isActive || tournament?.isComplete) return;
+        const match = getCurrentMatch();
+        if (!match || match.isBye) return;
+        const newPlayers = [match.p1, match.p2];
+        setPlayers(newPlayers);
+        resetBoard(newPlayers, boardSize);
+    }, [tournament?.currentRound, tournament?.currentMatchInRound]);
 
     const initializeGame = (setupData) => {
-        const { players: ps, boardSize: size, competitiveMode: cm, turnTime: tt } = setupData;
-        setCompetitiveMode(cm ?? false);
-        setTurnTime(tt ?? 0);
-        setPlayers(ps);
-        setBoardSize(size);
-        setBoard(buildBoard(size));
-        setExternalPiles(buildExternalPiles(ps, size));
-        setCurrentPlayerIndex(0);
-        setSelected(null);
-        setWinner(null);
-        setGameState('playing');
+        const { players: ps, boardSize: size, competitiveMode: cm, turnTime: tt, tournament: tournamentCfg } = setupData;
+        const sz = size ?? boardSize;
+        if (tournamentCfg) {
+            const firstMatch = getFirstTournamentMatch(tournamentCfg);
+            const initialPlayers = firstMatch ? [firstMatch.p1, firstMatch.p2] : ps;
+            setPlayers(initialPlayers);
+            setBoardSize(sz);
+            startTournament(tournamentCfg);
+            resetBoard(initialPlayers, sz);
+        } else {
+            setCompetitiveMode(cm ?? false);
+            setTurnTime(tt ?? 0);
+            setPlayers(ps);
+            setBoardSize(sz);
+            resetBoard(ps, sz);
+        }
     };
 
-    const resetGame = () => {
-        setBoard(buildBoard(boardSize));
-        setExternalPiles(buildExternalPiles(players, boardSize));
-        setCurrentPlayerIndex(0);
-        setSelected(null);
-        setWinner(null);
-        setGameState('playing');
-    };
+    const resetGame = () => resetBoard(players, boardSize);
 
-    // Verifica si la celda destino admite la pieza seleccionada
     const isValidTarget = useCallback((r, c) => {
         if (!selected) return false;
         if (selected.source === 'board' && selected.r === r && selected.c === c) return false;
@@ -87,17 +107,11 @@ const Gobblet = ({ onExit }) => {
         return stack.length === 0 || selected.piece.size > stack[stack.length - 1].size;
     }, [selected, board]);
 
-    // Ejecuta el movimiento y devuelve el nuevo estado del tablero y pilas
     const applyMove = (sel, r, c, brd, piles) => {
         const newBoard = brd.map(row => row.map(s => [...s]));
         let newPiles = piles;
         if (sel.source === 'external') {
-            newPiles = {
-                ...piles,
-                [sel.playerId]: piles[sel.playerId].map(
-                    (pile, idx) => idx === sel.pileIdx ? pile.slice(0, -1) : pile
-                )
-            };
+            newPiles = { ...piles, [sel.playerId]: piles[sel.playerId].map((pile, idx) => idx === sel.pileIdx ? pile.slice(0, -1) : pile) };
         } else {
             newBoard[sel.r][sel.c] = newBoard[sel.r][sel.c].slice(0, -1);
         }
@@ -105,7 +119,6 @@ const Gobblet = ({ onExit }) => {
         return { newBoard, newPiles };
     };
 
-    // Finaliza el movimiento: actualiza estado, verifica victoria y cambia turno
     const commitMove = (sel, r, c) => {
         const { newBoard, newPiles } = applyMove(sel, r, c, board, externalPiles);
         setBoard(newBoard);
@@ -124,59 +137,34 @@ const Gobblet = ({ onExit }) => {
         const stack = board[r][c];
         const topPiece = stack.length ? stack[stack.length - 1] : null;
         const currentPlayerId = players[currentPlayerIndex].id;
-
         if (!selected) {
-            // Seleccionar pieza propia del tablero
-            if (topPiece?.playerId === currentPlayerId) {
-                setSelected({ source: 'board', r, c, piece: topPiece, playerId: currentPlayerId });
-            }
+            if (topPiece?.playerId === currentPlayerId) setSelected({ source: 'board', r, c, piece: topPiece, playerId: currentPlayerId });
             return;
         }
-        // Deseleccionar si se hace click en la misma celda seleccionada
-        if (selected.source === 'board' && selected.r === r && selected.c === c) {
-            setSelected(null);
-            return;
-        }
-        if (isValidTarget(r, c)) {
-            commitMove(selected, r, c);
-            return;
-        }
-        // Cambiar selección a otra pieza propia
-        if (topPiece?.playerId === currentPlayerId) {
-            setSelected({ source: 'board', r, c, piece: topPiece, playerId: currentPlayerId });
-        }
+        if (selected.source === 'board' && selected.r === r && selected.c === c) { setSelected(null); return; }
+        if (isValidTarget(r, c)) { commitMove(selected, r, c); return; }
+        if (topPiece?.playerId === currentPlayerId) setSelected({ source: 'board', r, c, piece: topPiece, playerId: currentPlayerId });
     };
 
     const handleSelectExternal = (playerId, pileIdx) => {
         if (playerId !== players[currentPlayerIndex].id) return;
         const pile = externalPiles[playerId]?.[pileIdx] ?? [];
         if (!pile.length) return;
-        // Deseleccionar si es la misma pila
-        if (selected?.source === 'external' && selected.pileIdx === pileIdx && selected.playerId === playerId) {
-            setSelected(null);
-            return;
-        }
+        if (selected?.source === 'external' && selected.pileIdx === pileIdx && selected.playerId === playerId) { setSelected(null); return; }
         setSelected({ source: 'external', playerId, pileIdx, piece: pile[pile.length - 1] });
     };
 
-    // Timeout: elige un movimiento válido al azar y lo ejecuta
     const handleTimeOut = useCallback(() => {
         const currentPlayerId = players[currentPlayerIndex].id;
-        const canPlace = (piece, r, c) => {
-            const s = board[r][c];
-            return s.length === 0 || piece.size > s[s.length - 1].size;
-        };
+        const canPlace = (piece, r, c) => { const s = board[r][c]; return s.length === 0 || piece.size > s[s.length - 1].size; };
         const moves = [];
-        // Desde pilas externas
         (externalPiles[currentPlayerId] ?? []).forEach((pile, pileIdx) => {
             if (!pile.length) return;
             const piece = pile[pile.length - 1];
             for (let r = 0; r < boardSize; r++)
                 for (let c = 0; c < boardSize; c++)
-                    if (canPlace(piece, r, c))
-                        moves.push({ source: 'external', playerId: currentPlayerId, pileIdx, piece, r, c });
+                    if (canPlace(piece, r, c)) moves.push({ source: 'external', playerId: currentPlayerId, pileIdx, piece, r, c });
         });
-        // Desde tablero
         for (let fr = 0; fr < boardSize; fr++)
             for (let fc = 0; fc < boardSize; fc++) {
                 const s = board[fr][fc];
@@ -184,27 +172,28 @@ const Gobblet = ({ onExit }) => {
                 const piece = s[s.length - 1];
                 for (let r = 0; r < boardSize; r++)
                     for (let c = 0; c < boardSize; c++)
-                        if ((fr !== r || fc !== c) && canPlace(piece, r, c))
-                            moves.push({ source: 'board', r: fr, c: fc, piece, destR: r, destC: c });
+                        if ((fr !== r || fc !== c) && canPlace(piece, r, c)) moves.push({ source: 'board', r: fr, c: fc, piece, destR: r, destC: c });
             }
         if (!moves.length) return;
         const mv = moves[Math.floor(Math.random() * moves.length)];
-        const sel = mv.source === 'external'
-            ? { source: 'external', playerId: mv.playerId, pileIdx: mv.pileIdx, piece: mv.piece }
-            : { source: 'board', r: mv.r, c: mv.c, piece: mv.piece };
+        const sel = mv.source === 'external' ? { source: 'external', playerId: mv.playerId, pileIdx: mv.pileIdx, piece: mv.piece } : { source: 'board', r: mv.r, c: mv.c, piece: mv.piece };
         const destR = mv.source === 'external' ? mv.r : mv.destR;
         const destC = mv.source === 'external' ? mv.c : mv.destC;
         const { newBoard, newPiles } = applyMove(sel, destR, destC, board, externalPiles);
         setBoard(newBoard);
         setExternalPiles(newPiles);
         setSelected(null);
-        if (checkVictory(newBoard, boardSize, currentPlayerId)) {
-            setWinner(players.find(p => p.id === currentPlayerId));
-            setGameState('finished');
-        } else {
-            setCurrentPlayerIndex(1 - currentPlayerIndex);
-        }
+        if (checkVictory(newBoard, boardSize, currentPlayerId)) { setWinner(players.find(p => p.id === currentPlayerId)); setGameState('finished'); }
+        else setCurrentPlayerIndex(1 - currentPlayerIndex);
     }, [board, externalPiles, players, currentPlayerIndex, boardSize]);
+
+    // Sin resetGame() — lo maneja el useEffect al detectar cambio de match
+    const handleNextMatch = () => {
+        recordTournamentResult(winner, false);
+    };
+    const isTournamentMatch = !!tournament?.isActive;
+    const activeCompetitiveMode = isTournamentMatch ? (tournament?.competitiveMode ?? false) : competitiveMode;
+    const activeTurnTime = isTournamentMatch ? (tournament?.turnTime ?? 0) : turnTime;
 
     const contextValue = {
         players,
@@ -213,9 +202,9 @@ const Gobblet = ({ onExit }) => {
         gameStatus: gameState,
         gameTitle: "Gobblet",
         rules: GOBBLET_RULES,
-        competitiveMode,
-        turnTime,
-        onTimeOut: competitiveMode ? handleTimeOut : null
+        competitiveMode: activeCompetitiveMode,
+        turnTime: activeTurnTime,
+        onTimeOut: activeCompetitiveMode ? handleTimeOut : null
     };
 
     const getExternalSelected = (playerId) =>
@@ -226,7 +215,7 @@ const Gobblet = ({ onExit }) => {
             {gameState === 'setup' && (
                 <GobbletSetup
                     onComplete={initializeGame}
-                    onBack={onExit}
+                    onBack={() => { endTournament(); onExit(); }}
                     initialPlayers={players.length ? players : null}
                     initialBoardSize={boardSize}
                     initialCompetitiveMode={competitiveMode}
@@ -237,51 +226,22 @@ const Gobblet = ({ onExit }) => {
             {(gameState === 'playing' || gameState === 'finished') && players.length >= 2 && (
                 <GameProvider value={contextValue}>
                     <GameLayout
-                        onExit={onExit}
+                        onExit={() => { endTournament(); onExit(); }}
                         onReset={resetGame}
-                        onConfig={() => { setSelected(null); setGameState('setup'); }}
+                        onConfig={() => { endTournament(); setSelected(null); setGameState('setup'); }}
+                        onShowTournament={isTournamentMatch ? () => setShowBracket(true) : null}
                         tacticalHint={`Gobblet ${boardSize}×${boardSize} • Cubre piezas más pequeñas`}
                     >
                         {gameState === 'playing' ? (
                             <div className="w-full max-w-lg mx-auto flex flex-col items-center gap-3">
-                                {/* Tablero */}
-                                <GobbletBoard
-                                    board={board}
-                                    boardSize={boardSize}
-                                    selected={selected}
-                                    players={players}
-                                    currentPlayerIndex={currentPlayerIndex}
-                                    onCellClick={handleCellClick}
-                                    isValidTarget={isValidTarget}
-                                />
-
-                                {/* Pilas de ambos jugadores — debajo del tablero */}
+                                <GobbletBoard board={board} boardSize={boardSize} selected={selected} players={players} currentPlayerIndex={currentPlayerIndex} onCellClick={handleCellClick} isValidTarget={isValidTarget} />
                                 <div className="flex items-center gap-3 px-4 py-3 rounded-2xl border w-full bg-page-text/5 border-page-text/10">
-                                    {/* P1 */}
                                     <div className={`flex-1 flex justify-center transition-opacity duration-300 ${currentPlayerIndex === 0 ? 'opacity-100' : 'opacity-40'}`}>
-                                        <GobbletExternalPiles
-                                            piles={externalPiles[players[0]?.id] ?? []}
-                                            player={players[0]}
-                                            isCurrentPlayer={currentPlayerIndex === 0}
-                                            selected={getExternalSelected(players[0]?.id)}
-                                            onSelectPile={(pileIdx) => handleSelectExternal(players[0].id, pileIdx)}
-                                            compact={boardSize === 5}
-                                        />
+                                        <GobbletExternalPiles piles={externalPiles[players[0]?.id] ?? []} player={players[0]} isCurrentPlayer={currentPlayerIndex === 0} selected={getExternalSelected(players[0]?.id)} onSelectPile={(pileIdx) => handleSelectExternal(players[0].id, pileIdx)} compact={boardSize === 5} />
                                     </div>
-
-                                    {/* Divisor */}
                                     <div className="w-px self-stretch bg-page-text/15 shrink-0" />
-
-                                    {/* P2 */}
                                     <div className={`flex-1 flex justify-center transition-opacity duration-300 ${currentPlayerIndex === 1 ? 'opacity-100' : 'opacity-40'}`}>
-                                        <GobbletExternalPiles
-                                            piles={externalPiles[players[1]?.id] ?? []}
-                                            player={players[1]}
-                                            isCurrentPlayer={currentPlayerIndex === 1}
-                                            selected={getExternalSelected(players[1]?.id)}
-                                            onSelectPile={(pileIdx) => handleSelectExternal(players[1].id, pileIdx)}
-                                            compact={boardSize === 5}
-                                        />
+                                        <GobbletExternalPiles piles={externalPiles[players[1]?.id] ?? []} player={players[1]} isCurrentPlayer={currentPlayerIndex === 1} selected={getExternalSelected(players[1]?.id)} onSelectPile={(pileIdx) => handleSelectExternal(players[1].id, pileIdx)} compact={boardSize === 5} />
                                     </div>
                                 </div>
                             </div>
@@ -290,10 +250,19 @@ const Gobblet = ({ onExit }) => {
                                 winners={winner ? [winner] : []}
                                 isDraw={false}
                                 onReplay={resetGame}
-                                onSetup={() => { resetGame(); setGameState('setup'); }}
+                                onSetup={() => { endTournament(); resetGame(); setGameState('setup'); }}
+                                isTournamentMatch={isTournamentMatch}
+                                onNextMatch={isTournamentMatch ? handleNextMatch : null}
+                                onShowBracket={isTournamentMatch ? () => setShowBracket(true) : null}
+                                tournament={tournament}
                             />
                         )}
                     </GameLayout>
+
+                    {/* Modal de bracket del torneo */}
+                    {showBracket && (
+                        <TournamentBracket tournament={tournament} onClose={() => setShowBracket(false)} />
+                    )}
                 </GameProvider>
             )}
         </div>
