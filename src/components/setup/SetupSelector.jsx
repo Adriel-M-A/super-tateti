@@ -4,7 +4,7 @@ import React from "react";
  * Componente genérico para selectores en las pantallas de configuración.
  * Soporta selección de botones únicos o una cuadrícula de opciones.
  */
-import SetupCard from './SetupCard';
+import SetupCard from "./SetupCard";
 
 const SetupSelector = ({
   icon: Icon,
@@ -12,13 +12,13 @@ const SetupSelector = ({
   options = [],
   value,
   onChange,
-  type = 'buttons', // 'buttons' | 'range'
+  type = "buttons", // 'buttons' | 'range'
   min = 0,
   max = 10,
   enabled,
   onToggle,
-  className = '',
-  iconContainerClassName = '',
+  className = "",
+  iconContainerClassName = "",
 }) => {
   return (
     <SetupCard className={className}>
@@ -34,9 +34,9 @@ const SetupSelector = ({
           </h3>
         </div>
 
-        {type === 'range' &&
-          typeof enabled === 'boolean' &&
-          typeof onToggle === 'function' && (
+        {type === "range" &&
+          typeof enabled === "boolean" &&
+          typeof onToggle === "function" && (
             <label className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400">
               <span>Activo</span>
               <input
@@ -49,7 +49,7 @@ const SetupSelector = ({
           )}
       </div>
 
-      {type === 'buttons' ? (
+      {type === "buttons" ? (
         <div className="flex gap-1.5">
           {options.map((option) => {
             const isSelected = value === option;
@@ -59,8 +59,8 @@ const SetupSelector = ({
                 onClick={() => onChange(option)}
                 className={`flex-1 py-2.5 rounded-xl font-black text-sm transition-all ${
                   isSelected
-                    ? 'bg-page-text text-page-bg scale-105 shadow-lg z-10'
-                    : 'bg-page-text/5 hover:bg-page-text/10 text-slate-500'
+                    ? "bg-page-text text-page-bg scale-105 shadow-lg z-10"
+                    : "bg-page-text/5 hover:bg-page-text/10 text-slate-500"
                 }`}
               >
                 {option}
@@ -79,7 +79,7 @@ const SetupSelector = ({
             className="flex-1 accent-page-text h-1.5 bg-page-text/10 rounded-lg appearance-none cursor-pointer"
           />
           <span className="text-xl font-black w-12 text-center text-page-text">
-            {value === 0 ? 'OFF' : value}
+            {value === 0 ? "OFF" : value}
           </span>
         </div>
       )}

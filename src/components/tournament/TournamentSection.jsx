@@ -108,7 +108,7 @@ const TournamentSection = ({ gameType, onTournamentChange }) => {
 
   return (
     <SetupCard
-      className={`transition-all duration-300 overflow-hidden ${isEnabled ? 'border-yellow-500/40 bg-yellow-500/5' : ''}`}
+      className={`transition-all duration-300 overflow-hidden ${isEnabled ? "border-yellow-500/40 bg-yellow-500/5" : ""}`}
     >
       {/* Toggle header */}
       <button
