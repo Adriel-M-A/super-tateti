@@ -1,34 +1,39 @@
-import { useState } from 'react';
-import { Timer } from 'lucide-react';
-import { COMPETITIVE_TIME_OPTIONS } from '../constants/gameConfig';
+import { useState } from "react";
+import { Timer } from "lucide-react";
+import { COMPETITIVE_TIME_RANGE } from "../constants/gameConfig";
 
 /**
  * Hook que encapsula toda la lógica del selector de Modo Competitivo en los setups.
  * Devuelve el estado y los props listos para pasar al SetupSelector.
  */
-const useCompetitiveSetup = (initialCompetitiveMode = false, initialTurnTime = 0) => {
-    const [competitiveMode, setCompetitiveMode] = useState(initialCompetitiveMode);
-    const [turnTime, setTurnTime] = useState(initialTurnTime);
+const useCompetitiveSetup = (
+  initialCompetitiveMode = false,
+  initialTurnTime = 0,
+) => {
+  const { min, max, step } = COMPETITIVE_TIME_RANGE;
+  const initial = initialCompetitiveMode ? initialTurnTime : 0;
+  const sanitizedInitial = Math.max(min, Math.min(max, initial));
 
-    const handleChange = (val) => {
-        if (val === "No") {
-            setCompetitiveMode(false);
-        } else {
-            setCompetitiveMode(true);
-            setTurnTime(val);
-        }
-    };
+  const [turnTime, setTurnTime] = useState(sanitizedInitial);
+  const competitiveMode = turnTime > 0;
 
-    // Props listos para pasarle directamente al SetupSelector con spread
-    const competitiveSelectorProps = {
-        icon: Timer,
-        title: "Modo Competitivo",
-        options: COMPETITIVE_TIME_OPTIONS,
-        value: competitiveMode ? turnTime : "No",
-        onChange: handleChange,
-    };
+  const handleChange = (val) => {
+    setTurnTime(Math.max(min, Math.min(max, val)));
+  };
 
-    return { competitiveMode, turnTime, competitiveSelectorProps };
+  // Props listos para pasarle directamente al SetupSelector con spread
+  const competitiveSelectorProps = {
+    icon: Timer,
+    title: "Modo Competitivo",
+    type: "range",
+    min,
+    max,
+    step,
+    value: turnTime,
+    onChange: handleChange,
+  };
+
+  return { competitiveMode, turnTime, competitiveSelectorProps };
 };
 
 export default useCompetitiveSetup;
